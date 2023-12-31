@@ -11,35 +11,29 @@ using static BransItems.Modules.Utils.ItemHelpers;
 
 namespace BransItems.Modules.Pickups.Items.Essences
 {
-    class EOStrength : ItemBase
+    class EOLife : ItemBase
     {
-		public override string ItemName => "Essence of Strength";
-		public override string ItemLangTokenName => "ESSENCE_OF_STRENGTH";
-		public override string ItemPickupDesc => "Slightly increase damage.";
-		public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{DamageGain}</style> damage buff. <style=cStack>(+{DamageGain}).";
+        public override string ItemName => "Essence of Life";
+        public override string ItemLangTokenName => "ESSENCE_OF_LIFE";
+        public override string ItemPickupDesc => "Slightly increase health.";
+        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{HealthGain}</style> damage buff. <style=cStack>(+{HealthGain}).";
 
-		public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
-			"Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
-			"A latent power resonated within its core, and that's when I discovered the Essence of Strength.\n\n" +
-			"As I incorporated the Essence into my gear, I felt an indescribable connection. It wasn't just a physical enhancement; it was as if the very essence of this hostile realm acknowledged my presence."
-			+ "The melding was subtle, gradual, weaving its power into the fabric of my being. My combat instincts became sharper, and the sway of my weapon felt like an extension of my will.\n\n" +
-			"In the heat of battle, the Essence of Strength subtly altered the dance of combat. Strikes that once felt labored now flowed effortlessly." +
-			"My shots, once erratic, found their mark with newfound precision. It was as though the essence adapted to my every move, amplifying my capabilities in sync with the rhythm of the ongoing struggle.\n\n" +
-			"Yet, it's not just my physical form that feels the effects. There's a subtle shift within my mind—a resonance, an understanding. The chaotic landscape that was once an enigma now feels like a battlefield where I share a silent dialogue with the terrain itself." +
-			"The Essence whispers insights, guiding me through the ebb and flow of the relentless challenges we face.\n\n" +
-			"The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
-			"It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
+        public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
+            "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
+            "A latent power resonated within its core, and that's when I discovered the Essence of Strength.\n\n" +
+            "As I incorporated the Essence into my gear, I felt an indescribable connection. It wasn't just a physical enhancement; it was as if the very essence of this hostile realm acknowledged my presence."
+            + "The melding was subtle, gradual, weaving its power into the fabric of my being. My combat instincts became sharper, and the sway of my weapon felt like an extension of my will.\n\n" +
+            "In the heat of battle, the Essence of Strength subtly altered the dance of combat. Strikes that once felt labored now flowed effortlessly." +
+            "My shots, once erratic, found their mark with newfound precision. It was as though the essence adapted to my every move, amplifying my capabilities in sync with the rhythm of the ongoing struggle.\n\n" +
+            "Yet, it's not just my physical form that feels the effects. There's a subtle shift within my mind—a resonance, an understanding. The chaotic landscape that was once an enigma now feels like a battlefield where I share a silent dialogue with the terrain itself." +
+            "The Essence whispers insights, guiding me through the ebb and flow of the relentless challenges we face.\n\n" +
+            "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
+            "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
 
-		public override ItemTier Tier => ItemTier.Tier1;
+        public override ItemTier Tier => ItemTier.Tier1;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
-
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
-
-        //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
-        //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
+        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
+        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -49,23 +43,23 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         //public override ItemTag[] ItemTags => [ItemTags.];
 
-        public static float DamageGain;
+        public static float HealthGain;
 
 
-		public override void Init(ConfigFile config)
-		{
-			CreateConfig(config);
-			CreateLang();
-			//CreateBuff();
-			CreateItem();
-			Hooks();
-		}
+        public override void Init(ConfigFile config)
+        {
+            CreateConfig(config);
+            CreateLang();
+            //CreateBuff();
+            CreateItem();
+            Hooks();
+        }
 
-		public void CreateConfig(ConfigFile config)
-		{
-			DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 1.5f, "How much base damage should Essense of Strength grant?").Value;
-			//AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
-		}
+        public void CreateConfig(ConfigFile config)
+        {
+            HealthGain = config.Bind<float>("Item: " + ItemName, "Base health given to character", 20f, "How much base health should Essense of Life grant?").Value;
+            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+        }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
@@ -284,13 +278,13 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
 
         public override void Hooks()
-		{
+        {
             RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
-		}
+        }
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
-			args.baseDamageAdd += DamageGain * GetCount(sender);
+            args.baseHealthAdd += HealthGain * GetCount(sender);
         }
     }
 }

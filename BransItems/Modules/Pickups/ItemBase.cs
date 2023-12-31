@@ -18,10 +18,10 @@ namespace BransItems.Modules.Pickups
 		public abstract string ItemLore { get; }
 
 		public abstract ItemTier Tier { get; }
-		public virtual ItemTag[] ItemTags { get; }
+		public virtual ItemTag[] ItemTags { get; } = new ItemTag[] { };
 
-		public abstract GameObject ItemModel { get; }
-		public abstract Sprite ItemIcon { get; }
+		public virtual GameObject ItemModel { get; } = Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
+		public virtual Sprite ItemIcon { get; } = Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
 
 		public virtual bool CanRemove { get; } = true;
 		public virtual bool Hidden { get; } = false;
@@ -52,11 +52,11 @@ namespace BransItems.Modules.Pickups
 			ItemDef.loreToken = "ITEM_" + ItemLangTokenName + "_LORE";
 			ItemDef.pickupModelPrefab = ItemModel;
 			ItemDef.pickupIconSprite = ItemIcon;
-			ItemDef.hidden = false;
+			ItemDef.hidden = Hidden;
 			ItemDef.canRemove = CanRemove;
-			ItemDef.tier = Tier;
+			//ItemDef.tier = Tier;
+			ItemDef.deprecatedTier = Tier;
 			ItemDef.tags = ItemTags;
-
 			var itemDisplayRuleDict = CreateItemDisplayRules();
 			ItemAPI.Add(new CustomItem(ItemDef, itemDisplayRuleDict));
 		}
