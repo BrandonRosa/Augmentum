@@ -45,9 +45,9 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override bool Hidden => false;
 
-        public override bool CanRemove => false;
+        public override bool CanRemove => true;
 
-        //public override ItemTag[] ItemTags => [ItemTags.];
+        public override ItemTag[] ItemTags => [RoR2.ItemTag.WorldUnique];
 
         public static float DamageGain;
 
