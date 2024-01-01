@@ -41,7 +41,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override bool CanRemove => true;
 
-        public override ItemTag[] ItemTags => [RoR2.ItemTag.WorldUnique];
+        public override ItemTag[] ItemTags => new ItemTag[] {RoR2.ItemTag.WorldUnique};
 
         public static float HealthGain;
 

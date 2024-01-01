@@ -57,6 +57,7 @@ namespace BransItems.Modules.Pickups
 			//ItemDef.tier = Tier;
 			ItemDef.deprecatedTier = Tier;
 			ItemDef.tags = ItemTags;
+			//ItemTag.WorldUnique
 			var itemDisplayRuleDict = CreateItemDisplayRules();
 			ItemAPI.Add(new CustomItem(ItemDef, itemDisplayRuleDict));
 		}
