@@ -11,12 +11,12 @@ using static BransItems.Modules.Utils.ItemHelpers;
 
 namespace BransItems.Modules.Pickups.Items.Essences
 {
-    class EOAcuity : ItemBase<EOAcuity>
+    class EOVelocity : ItemBase<EOVelocity>
     {
-        public override string ItemName => "Essence of Acuity";
-        public override string ItemLangTokenName => "ESSENCE_OF_ACUITY";
-        public override string ItemPickupDesc => "Slightly increase crit chance.";
-        public override string ItemFullDescription => $"Increase crit chance by <style=cIsDamage>{CritChanceGain}%</style>. <style=cStack>(+{CritChanceGain}%).";
+        public override string ItemName => "Essence of Velocity";
+        public override string ItemLangTokenName => "ESSENCE_OF_VELOCITY";
+        public override string ItemPickupDesc => "Slightly increase movement speed.";
+        public override string ItemFullDescription => $"Movement speed by <style=cIsDamage>{MoveSpeedGain}%</style>. <style=cStack>(+{MoveSpeedGain}%).";
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
@@ -44,7 +44,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override ItemTag[] ItemTags => new ItemTag[] { RoR2.ItemTag.WorldUnique };
 
 
-        public static float CritChanceGain;
+        public static float MoveSpeedGain;
 
 
         public override void Init(ConfigFile config)
@@ -58,7 +58,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            CritChanceGain = config.Bind<float>("Item: " + ItemName, "Crit chance given to character", 4, "How much crit chance should Essense of Acuity grant?").Value;
+            MoveSpeedGain = config.Bind<float>("Item: " + ItemName, "Move Speed given to character", 8, "How much movement speed should Essense of Velocity grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -285,8 +285,8 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
-            args.critAdd += CritChanceGain * GetCount(sender);
-            //KEEP IN MIND +5% increase is +5 here
+            args.moveSpeedMultAdd += MoveSpeedGain*.01f * GetCount(sender);
+            //KEEP IN MIND 8% increase here is .08
         }
     }
 }

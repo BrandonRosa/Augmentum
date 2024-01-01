@@ -9,7 +9,18 @@ using UnityEngine;
 
 namespace BransItems.Modules.Pickups
 {
-    public abstract class ItemBase
+
+	public abstract class ItemBase<T> : ItemBase where T : ItemBase<T>
+	{
+		public static T instance { get; private set; }
+
+		public ItemBase()
+		{
+			if (instance != null) throw new InvalidOperationException("Singleton class \"" + typeof(T).Name + "\" inheriting ItemBase was instantiated twice");
+			instance = this as T;
+		}
+	}
+	public abstract class ItemBase
     {
 		public abstract string ItemName { get; }
 		public abstract string ItemLangTokenName { get; }

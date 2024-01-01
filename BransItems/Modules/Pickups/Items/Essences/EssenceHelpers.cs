@@ -19,13 +19,20 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public static PickupIndex[] GetBasicEssencePickupIndex()
         {
-            PickupIndex[] EssenceIndicies = new PickupIndex[3];
+            PickupIndex[] EssenceIndicies = new PickupIndex[4];
             //PickupCatalog.FindPickupIndex(EOAcuity.itemIndex);
-            EssenceIndicies[0] = PickupCatalog.FindPickupIndex("ESSENCE_OF_ACUITY");
-            EssenceIndicies[1] = PickupCatalog.FindPickupIndex("ESSENCE_OF_LIFE");
-            EssenceIndicies[2] = PickupCatalog.FindPickupIndex("ESSENCE_OF_Strength");
+            EssenceIndicies[0] = PickupCatalog.FindPickupIndex(EOAcuity.instance.ItemDef.itemIndex);
+            EssenceIndicies[1] = PickupCatalog.FindPickupIndex(EOStrength.instance.ItemDef.itemIndex);
+            EssenceIndicies[2] = PickupCatalog.FindPickupIndex(EOLife.instance.ItemDef.itemIndex);
+            EssenceIndicies[3] = PickupCatalog.FindPickupIndex(EOVelocity.instance.ItemDef.itemIndex);
+
 
             return EssenceIndicies;
+        }
+
+        public static PickupIndex GetEssenceIndex(Xoroshiro128Plus rng)
+        {
+            return GetBasicEssencePickupIndex()[rng.RangeInt(0, 3)];
         }
     }
 }

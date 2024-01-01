@@ -17,7 +17,7 @@ using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
 
 namespace BransItems.Modules.Pickups.Equipments
 {
-    class AirTotem : EquipmentBase
+    class AirTotem : EquipmentBase<AirTotem>
     {
         public override string EquipmentName => "Air Totem";
 
@@ -35,7 +35,9 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public static GameObject ItemBodyModelPrefab;
 
-       // private UserTargetInfo currentTarget;
+        public override float Cooldown { get; } = 1f;
+
+        // private UserTargetInfo currentTarget;
 
         //private InputBankTest inputBank;
 
@@ -201,101 +203,97 @@ namespace BransItems.Modules.Pickups.Equipments
             //On.RoR2.GlobalEventManager.OnCharacterDeath += MorphEquipmentIntoAffix;
             //On.RoR2.EquipmentSlot.Update += UpdateTargets;
             //On.RoR2.EquipmentSlot.Start += Start;
-            //On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets; 
+            On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets; 
         }
 
         protected override bool ActivateEquipment(EquipmentSlot slot)
         {
             if (slot.currentTarget.pickupController
-               // && validObjectNames.Contains(slot.currentTarget.rootObject.name.Replace("(Clone)", ""))
-                //&& !slot.currentTarget.rootObject.GetComponent<RecombobulatorFlag>()
-                //&& mostRecentDeck != null
                 && Run.instance)
             {
 
-                var pickupControllerPickupIndex = slot.currentTarget.pickupController.GetComponent<PickupIndex>(); 
-                PickupCatalog.
-                if (oldPurch)
+                var pickupControllerPickupIndex = slot.currentTarget.pickupController.GetComponent<PickupIndex>();
+                ItemTier Tier= ItemTierCatalog.GetItemTierDef(ItemCatalog.GetItemDef(slot.currentTarget.pickupController.pickupIndex.itemIndex).tier).tier;  
+                if (false)
                 {
-                    if (!oldPurch.available) return false;
+                   // if (!oldPurch.available) return false;
                 }
+                // Vector3 vector = (slot.currentTarget.pickupController.transform ? slot.currentTarget.pickupController.transform.position : Vector3.zero);
+                Transform playerTransform = slot.transform;
+                Vector3 vector = slot.transform.position;
+                Vector3 normalized = (vector - slot.characterBody.corePosition).normalized;
+                
+                PickupIndex pickup = GetEssenceIndex(slot.rng);
 
-                var shopcpt = slot.currentTarget.rootObject.GetComponent<ShopTerminalBehavior>();
-                if (shopcpt && shopcpt.serverMultiShopController)
+                Ray aimRay = slot.GetAimRay();
+                Vector3 direction=aimRay.direction;
+                //Quaternion quaternion = Quaternion.LookRotation(aimRay.direction);
+                ModLogger.LogInfo("Dir" + direction.ToString());
+                PickupDropletController.CreatePickupDroplet(GetEssenceIndex(slot.rng), vector + new Vector3(0, 3, 0), direction * 40f); //normalized * 15f);
+                int spawnMore = 0;
+                switch(Tier)
                 {
-                    slot.currentTarget.rootObject = shopcpt.serverMultiShopController.transform.root.gameObject;
-                    foreach (var term in shopcpt.serverMultiShopController.terminalGameObjects)
-                        GameObject.Destroy(term);
-                }
+                    case ItemTier.Tier2:
+                        spawnMore = 3;
+                        break;
+                    case ItemTier.Tier3:
+                    case ItemTier.Boss:
+                        spawnMore = 7;
+                        break;
 
+                }
+                for (int i = 1; i <= spawnMore; i++)
+                {
+                    pickup = GetEssenceIndex(slot.rng);
+                    //ModLogger.LogInfo("Item" + PickupCatalog.GetPickupDef(pickup).internalName);
+                    PickupDropletController.CreatePickupDroplet(pickup, vector + new Vector3(.1f * i, 3, 0), direction * 40f); // normalized * 15f);
+                }
                 GameObject.Destroy(slot.currentTarget.rootObject);
-
-                var pos = slot.currentTarget.rootObject.transform.position;
-
-                WeightedSelection<DirectorCard> filteredDeck = new(8);
-                var matchCategories = mostRecentDeckCategories.Where(kvp => kvp.Key.spawnCard.prefab.name == slot.currentTarget.rootObject.name.Replace("(Clone)", "")).Select(kvp => kvp.Value);
-                for (var i = 0; i < mostRecentDeck.Count; i++)
-                {
-                    var card = mostRecentDeck.GetChoice(i);
-                    if (card.value == null || !card.value.IsAvailable()) continue;
-                    if (!validObjectNames.Contains(card.value.spawnCard.prefab.name))
-                        continue;
-                    if (respectCategory && (
-                        !mostRecentDeckCategories.TryGetValue(card.value, out var thisCategory)
-                        || !matchCategories.Contains(thisCategory)
-                        ))
-                        continue;
-                    filteredDeck.AddChoice(card);
-                }
-                if (filteredDeck.Count == 0)
-                    return false;
-
-                var draw = filteredDeck.Evaluate(rng.nextNormalizedFloat);
-
-                if (Compat_ClassicItems.enabled)
-                {
-                    var rerolls = Compat_ClassicItems.CheckEmbryoProc(slot, equipmentDef);
-                    for (var i = 0; i < rerolls; i++)
-                    {
-                        var draw2 = filteredDeck.Evaluate(rng.nextNormalizedFloat);
-                        if (draw2.selectionWeight < draw.selectionWeight)
-                            draw = draw2;
-                    }
-                }
-
-                var obj = DirectorCore.instance.TrySpawnObject(
-                    new DirectorSpawnRequest(
-                        draw.spawnCard,
-                        new DirectorPlacementRule
-                        {
-                            placementMode = DirectorPlacementRule.PlacementMode.Direct,
-                            position = pos,
-                            preventOverhead = false
-                        },
-                        this.rng
-                        ));
-                if (!obj)
-                {
-                    TinkersSatchelPlugin._logger.LogError("Recombobulator failed to replace interactable!");
-                    return false;
-                }
-                var purch = obj.GetComponent<PurchaseInteraction>();
-                if (purch && purch.costType == CostTypeIndex.Money)
-                {
-                    purch.Networkcost = Run.instance.GetDifficultyScaledCost(purch.cost);
-                }
-                obj.AddComponent<RecombobulatorFlag>();
-
-                var shopcpt2 = obj.GetComponent<MultiShopController>();
-                if (shopcpt2)
-                {
-                    foreach (var term in shopcpt2.terminalGameObjects)
-                        term.AddComponent<RecombobulatorFlag>();
-                }
+                //var pos = slot.currentTarget.rootObject.transform.position;
 
                 return true;
             }
             return false;
+        }
+        //private void EquipmentSlot_UpdateTargets(On.RoR2.EquipmentSlot.orig_UpdateTargets orig, EquipmentSlot self, EquipmentIndex targetingEquipmentIndex, bool userShouldAnticipateTarget)
+        private void UpdateTargets(On.RoR2.EquipmentSlot.orig_UpdateTargets orig, EquipmentSlot self, EquipmentIndex targetingEquipmentIndex, bool userShouldAnticipateTarget)
+        {
+            if (targetingEquipmentIndex != EquipmentDef.equipmentIndex)
+            {
+                orig(self, targetingEquipmentIndex, userShouldAnticipateTarget);
+                return;
+            }
+            self.currentTarget= new UserTargetInfo(self.FindPickupController(self.GetAimRay(), 10f, 30f, requireLoS: true, true));
+            //var res = CommonCode.FindNearestInteractable(self.gameObject, validObjectNames, self.GetAimRay(), 10f, 20f, false);
+            // Transform tsf = null;
+            //if (res) tsf = res.transform;
+            //self.currentTarget = new EquipmentSlot.UserTargetInfo
+            // {
+            //    transformToIndicateAt = tsf,
+            //     pickupController = null,
+            //     hurtBox = null,
+            //     rootObject = res
+            // };
+            var targetingComponent = self.GetComponent<TargetingControllerComponent>();
+            if (self.currentTarget.rootObject != null)
+            {
+                //var purch = res.GetComponent<PurchaseInteraction>();
+                if (true)//!res.GetComponent<RecombobulatorFlag>() && (!purch || purch.available))
+                {
+                    self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerIndicator");
+                }
+                else
+                {
+                    self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerBadIndicator");
+                }
+
+                self.targetIndicator.active = true;
+                self.targetIndicator.targetTransform = self.currentTarget.transformToIndicateAt;
+            }
+            else
+            {
+                self.targetIndicator.active = false;
+            }
         }
     }
     /*
@@ -400,4 +398,4 @@ namespace BransItems.Modules.Pickups.Equipments
     */
 
 }
-}
+

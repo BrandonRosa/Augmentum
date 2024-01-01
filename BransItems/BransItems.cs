@@ -38,7 +38,7 @@ namespace BransItems
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.BransItems"; //Our Package Name
         public const string ModName = "BransItems";
-        public const string ModVer = "0.0.3";
+        public const string ModVer = "0.0.4";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;

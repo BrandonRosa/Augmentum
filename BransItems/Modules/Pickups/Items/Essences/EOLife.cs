@@ -11,7 +11,7 @@ using static BransItems.Modules.Utils.ItemHelpers;
 
 namespace BransItems.Modules.Pickups.Items.Essences
 {
-    class EOLife : ItemBase
+    class EOLife : ItemBase<EOLife>
     {
         public override string ItemName => "Essence of Life";
         public override string ItemLangTokenName => "ESSENCE_OF_LIFE";
@@ -39,7 +39,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override bool Hidden => false;
 
-        public override bool CanRemove => true;
+        public override bool CanRemove => false;
 
         public override ItemTag[] ItemTags => new ItemTag[] {RoR2.ItemTag.WorldUnique};
 
@@ -57,7 +57,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            HealthGain = config.Bind<float>("Item: " + ItemName, "Base health given to character", 20f, "How much base health should Essense of Life grant?").Value;
+            HealthGain = config.Bind<float>("Item: " + ItemName, "Base health given to character", 15f, "How much base health should Essense of Life grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 

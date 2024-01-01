@@ -12,7 +12,7 @@ using static RoR2.ItemTag;
 
 namespace BransItems.Modules.Pickups.Items.Essences
 {
-    class EOStrength : ItemBase
+    class EOStrength : ItemBase<EOStrength>
     {
         public override string ItemName => "Essence of Strength";
         public override string ItemLangTokenName => "ESSENCE_OF_STRENGTH";
@@ -46,7 +46,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override bool Hidden => false;
 
-        public override bool CanRemove => true;
+        public override bool CanRemove => false;
 
         public override ItemTag[] ItemTags => new ItemTag[] { RoR2.ItemTag.WorldUnique };
 
