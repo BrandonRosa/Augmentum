@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BransItems.Utils
+namespace BransItems.Modules.Utils
 {
     public static class ExtensionMethods
     {

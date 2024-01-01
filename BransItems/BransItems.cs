@@ -82,7 +82,7 @@ namespace BransItems
                 MainAssets = AssetBundle.LoadFromStream(stream);
             }
 
-            var disableItems = Config.Bind<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in Aetherium?");
+            var disableItems = Config.Bind<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in BransItems?");
             if (!disableItems.Value)
             {
                 //Item Initialization
@@ -103,6 +103,25 @@ namespace BransItems
 
                 //IL.RoR2.ShopTerminalBehavior.GenerateNewPickupServer_bool += ItemBase.BlacklistFromPrinter;
                 //On.RoR2.Items.ContagiousItemManager.Init += ItemBase.RegisterVoidPairings;
+            }
+            var disableEquipment = Config.Bind<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in BransItems?");
+            if (!disableEquipment.Value)
+            {
+                //Equipment Initialization
+                var EquipmentTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(EquipmentBase)));
+
+                ModLogger.LogInfo("-----------------EQUIPMENT---------------------");
+
+                foreach (var equipmentType in EquipmentTypes)
+                {
+                    EquipmentBase equipment = (EquipmentBase)System.Activator.CreateInstance(equipmentType);
+                    if (ValidateEquipment(equipment, Equipments))
+                    {
+                        equipment.Init(Config);
+
+                        ModLogger.LogInfo("Equipment: " + equipment.EquipmentName + " Initialized!");
+                    }
+                }
             }
         }
 
@@ -130,6 +149,20 @@ namespace BransItems
                 //item.RequireUnlock = requireUnlock;
             }
             return enabled;
+        }
+
+        public bool ValidateEquipment(EquipmentBase equipment, List<EquipmentBase> equipmentList)
+        {
+            var enabled = Config.Bind<bool>("Equipment: " + equipment.EquipmentName, "Enable Equipment?", true, "Should this equipment appear in runs?").Value;
+
+            EquipmentStatusDictionary.Add(equipment, enabled);
+
+            if (enabled)
+            {
+                equipmentList.Add(equipment);
+                return true;
+            }
+            return false;
         }
 
         private void GlobalEventManager_onCharacterDeathGlobal(DamageReport report)

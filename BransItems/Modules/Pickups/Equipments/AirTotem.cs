@@ -3,6 +3,7 @@ using R2API;
 using R2API.Utils;
 using RoR2;
 using RoR2.Projectile;
+using static RoR2.EquipmentSlot;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ using UnityEngine;
 using static BransItems.BransItems;
 using static BransItems.Modules.Utils.ItemHelpers;
 using BransItems.Modules.Utils;
+using static RoR2.EquipmentSlot;
+using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
 
 namespace BransItems.Modules.Pickups.Equipments
 {
@@ -31,6 +34,13 @@ namespace BransItems.Modules.Pickups.Equipments
         public override bool UseTargeting => true;
 
         public static GameObject ItemBodyModelPrefab;
+
+        private UserTargetInfo currentTarget;
+
+        private InputBankTest inputBank;
+
+        private Indicator targetIndicator;
+
         public override void Init(ConfigFile config)
         {
             CreateLang();
@@ -41,6 +51,8 @@ namespace BransItems.Modules.Pickups.Equipments
 
             CreateEquipment();
             Hooks();
+
+            
         }
 
         private void CreateTargetingIndicator()
@@ -187,7 +199,88 @@ namespace BransItems.Modules.Pickups.Equipments
         {
             //On.RoR2.CharacterBody.OnBuffFirstStackGained += RemoveBuffFromNonElites;
             //On.RoR2.GlobalEventManager.OnCharacterDeath += MorphEquipmentIntoAffix;
-            On.RoR2.EquipmentSlot.Update += RemoveNonElitesFromTargeting;
+            On.RoR2.EquipmentSlot.Update += UpdateTargets;
+            On.RoR2.EquipmentSlot.Start += Start;
+        }
+
+        protected override bool ActivateEquipment(EquipmentSlot slot)
+        {
+            if (!slot.characterBody || !slot.characterBody.inputBank) { return false; }
+
+            var targetComponent = slot.GetComponent<TargetingControllerComponent>();
+            var displayTransform = slot.FindActiveEquipmentDisplay();
+
+
+            return FireAirTotem();
+        }
+
+        private bool FireAirTotem()
+        {
+            //UpdateTargets();
+            GenericPickupController pickupController = currentTarget.pickupController;
+            if ((bool)pickupController)
+            {
+                PickupIndex initialPickupIndex = pickupController.pickupIndex;
+                //subcooldownTimer = 0.2f;
+                PickupIndex[] array = GetBasicEssencePickupIndex();
+                    /*(from pickupIndex in PickupTransmutationManager.GetAvailableGroupFromPickupIndex(pickupController.pickupIndex)
+                                       where pickupIndex != initialPickupIndex
+                                       select pickupIndex).ToArray();*/
+                if (array == null)
+                {
+                    return false;
+                }
+                if (array.Length == 0)
+                {
+                    return false;
+                }
+                pickupController.NetworkpickupIndex = Run.instance.treasureRng.NextElementUniform(array);
+                EffectManager.SimpleEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/OmniEffect/OmniRecycleEffect"), pickupController.pickupDisplay.transform.position, Quaternion.identity, transmit: true);
+                //pickupController.NetworkRecycled = true;
+                //InvalidateCurrentTarget();
+                return true;
+            }
+            return false;
+        }
+
+        private void Start(On.RoR2.EquipmentSlot.orig_Start orig, global::RoR2.EquipmentSlot self)
+        {
+            inputBank = self.GetComponent<InputBankTest>();
+            targetIndicator = new Indicator(self.gameObject, null);
+        }
+        private Ray GetAimRay()
+        {
+            Ray result = default(Ray);
+            result.direction = inputBank.aimDirection;
+            result.origin = inputBank.aimOrigin;
+            return result;
+        }
+        private void UpdateTargets(On.RoR2.EquipmentSlot.orig_Update orig, EquipmentSlot self)
+        {
+            orig(self);
+            if (self.equipmentIndex == EquipmentDef.equipmentIndex)
+            {
+                var targetingComponent = self.GetComponent<TargetingControllerComponent>();
+                if (targetingComponent)
+                {
+                    currentTarget = new UserTargetInfo(self.FindPickupController(GetAimRay(), 10f, 30f, requireLoS: true, true));
+
+
+                    GenericPickupController pickupController = currentTarget.pickupController;
+                    bool flag5 = currentTarget.transformToIndicateAt;
+                    if (flag5)
+                    {
+
+                        if (!pickupController.Recycled)
+                        {
+                            //targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerIndicator");
+                        }
+
+                    }
+                    //targetIndicator.active = flag5;
+                    //targetIndicator.targetTransform = (flag5 ? currentTarget.transformToIndicateAt : null);
+                }
+            }
         }
 
         private void RemoveNonElitesFromTargeting(On.RoR2.EquipmentSlot.orig_Update orig, EquipmentSlot self)
@@ -203,5 +296,6 @@ namespace BransItems.Modules.Pickups.Equipments
             }
         }
 
+       
     }
 }

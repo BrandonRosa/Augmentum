@@ -81,6 +81,7 @@ namespace BransItems.Modules.Pickups
 
 		public abstract void Hooks();
 
+
         #region Targeting Setup
         //Targeting Support
         public virtual bool UseTargeting { get; } = false;
