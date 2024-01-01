@@ -11,12 +11,12 @@ using static BransItems.Modules.Utils.ItemHelpers;
 
 namespace BransItems.Modules.Pickups.Items.Essences
 {
-    class EOAcuity : ItemBase<EOAcuity>
+    class EOTotality : ItemBase<EOTotality>
     {
-        public override string ItemName => "Essence of Acuity";
-        public override string ItemLangTokenName => "ESSENCE_OF_ACUITY";
-        public override string ItemPickupDesc => "Slightly increase crit chance.";
-        public override string ItemFullDescription => $"Increase crit chance by <style=cIsDamage>{CritChanceGain}%</style>. <style=cStack>(+{CritChanceGain}%).";
+        public override string ItemName => "Essence of Totality";
+        public override string ItemLangTokenName => "ESSENCE_OF_TOTALITY";
+        public override string ItemPickupDesc => "Slightly increase all stats.";
+        public override string ItemFullDescription => $"Gain <style=cIsDamage>{AttackSpeedGain}%</style><style=cStack>(+{AttackSpeedGain}% per stack)</style> attack speed, <style=cIsDamage>{MoveSpeedGain}%</style><style=cStack>(+{MoveSpeedGain}% per stack)</style> move speed, <style=cIsDamage>{CritChanceGain}%</style><style=cStack>(+{CritChanceGain}% per stack)</style> crit chance, <style=cIsDamage>{DamageGain}</style><style=cStack>(+{DamageGain} per stack)</style> damage, and <style=cIsDamage>{HealthGain}%</style><style=cStack>(+{HealthGain} per stack)</style> health.";
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
@@ -43,8 +43,13 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override ItemTag[] ItemTags => new ItemTag[] { RoR2.ItemTag.WorldUnique };
 
+        public static float ReplaceChance;
 
+        public static float MoveSpeedGain;
+        public static float AttackSpeedGain;
         public static float CritChanceGain;
+        public static float HealthGain;
+        public static float DamageGain;
 
 
         public override void Init(ConfigFile config)
@@ -58,7 +63,12 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            CritChanceGain = config.Bind<float>("Item: " + ItemName, "Crit chance given to character", 4, "How much crit chance should Essense of Acuity grant?").Value;
+            ReplaceChance= config.Bind<float>("Item: " + ItemName, "Chance to replace other Essences", .05f, "What percent of the time will Essence of Totality replace other Essences?").Value;
+            MoveSpeedGain = config.Bind<float>("Item: " + ItemName, "Move Speed given to character", 6, "How much movement speed should Essence of Totality grant?").Value;
+            AttackSpeedGain = config.Bind<float>("Item: " + ItemName, "Attack Speed given to character", 6, "How much attack speed should Essence of Totality grant?").Value;
+            CritChanceGain = config.Bind<float>("Item: " + ItemName, "Crit Chance given to character", 3, "How much crit chance should Essence of Totality grant?").Value;
+            HealthGain = config.Bind<float>("Item: " + ItemName, "Health given to character", 15, "How much health should Essence of Totality grant?").Value;
+            DamageGain = config.Bind<float>("Item: " + ItemName, "Damage given to character", 1, "How much damage should Essence of Totality grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -285,8 +295,11 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
+            args.moveSpeedMultAdd += MoveSpeedGain * .01f * GetCount(sender);
+            args.attackSpeedMultAdd += AttackSpeedGain * .01f * GetCount(sender);
             args.critAdd += CritChanceGain * GetCount(sender);
-            //KEEP IN MIND +5% increase is +5 here
+            args.baseDamageAdd += DamageGain * GetCount(sender);
+            args.baseHealthAdd += HealthGain * GetCount(sender);
         }
     }
 }

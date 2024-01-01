@@ -35,7 +35,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public static GameObject ItemBodyModelPrefab;
 
-        public override float Cooldown { get; } = 1f;
+        public override float Cooldown { get; } = 30f;
 
         // private UserTargetInfo currentTarget;
 
