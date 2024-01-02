@@ -212,7 +212,7 @@ namespace BransItems.Modules.Pickups.Equipments
                 && Run.instance)
             {
 
-                var pickupControllerPickupIndex = slot.currentTarget.pickupController.GetComponent<PickupIndex>();
+                //var pickupControllerPickupIndex = slot.currentTarget.pickupController.GetComponent<PickupIndex>();
                 ItemTier Tier= ItemTierCatalog.GetItemTierDef(ItemCatalog.GetItemDef(slot.currentTarget.pickupController.pickupIndex.itemIndex).tier).tier;  
                 if (false)
                 {
@@ -240,10 +240,16 @@ namespace BransItems.Modules.Pickups.Equipments
                         spawnTotal = 4;
                         break;
                     case ItemTier.Tier3:
-                        spawnTotal = 6;
+                        spawnTotal = 10;
                             break;
                     case ItemTier.Boss:
-                        spawnTotal = 10;
+                        spawnTotal = 8;
+                        break;
+                    case ItemTier.Lunar:
+                        pickup = PickupCatalog.FindPickupIndex("LunarSpecialReplacement");
+                        PickupDropletController.CreatePickupDroplet(pickup, vector, direction * 40f);
+                        GameObject.Destroy(slot.currentTarget.rootObject);
+                        return true;
                         break;
 
                 }

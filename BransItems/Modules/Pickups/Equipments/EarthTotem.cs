@@ -37,7 +37,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public static GameObject ItemBodyModelPrefab;
 
-        public override float Cooldown { get; } = 1f;
+        public override float Cooldown { get; } = 140f;
 
         //public List<EquipmentDef> AbsorbedEquipments;
 
@@ -216,32 +216,37 @@ namespace BransItems.Modules.Pickups.Equipments
                 && Run.instance)
             {
 
-                var pickupControllerPickupIndex = slot.currentTarget.pickupController.GetComponent<PickupIndex>();
-                //ItemTier Tier = ItemTierCatalog.GetItemTierDef(ItemCatalog.GetItemDef(slot.currentTarget.pickupController.pickupIndex.itemIndex).tier).tier;
-                EquipmentIndex equipIndex = (EquipmentIndex)Array.IndexOf(PickupCatalog.equipmentIndexToPickupIndex, pickupControllerPickupIndex);
+                //PIKCUP TO EQUIPMENT DINDEX
+                PickupIndex pickupIndex = slot.currentTarget.pickupController.pickupIndex;
+                PickupDef pickupDef = PickupCatalog.GetPickupDef(pickupIndex);
+                EquipmentIndex equipIndex = pickupDef.equipmentIndex;
                 if (equipIndex.Equals(EquipmentIndex.None))
                 {
                     return false;
                 }
                 // Vector3 vector = (slot.currentTarget.pickupController.transform ? slot.currentTarget.pickupController.transform.position : Vector3.zero);
-                EquipmentCatalog.GetEquipmentDef(equipIndex);
+                EquipmentDef EquipDef = EquipmentCatalog.GetEquipmentDef(equipIndex); 
 
-                //Transform playerTransform = slot.transform;
-                //Vector3 vector = slot.transform.position;
-                //Vector3 normalized = (vector - slot.characterBody.corePosition).normalized;
+                var cpt = slot.characterBody.GetComponent<EarthTotemTracker>();
+                if (!cpt) cpt = slot.characterBody.gameObject.AddComponent<EarthTotemTracker>();
 
-                //PickupIndex pickup = GetEssenceIndex(slot.rng);
+                cpt.EquipDefList.Add(EquipDef);
 
-                //Ray aimRay = slot.GetAimRay();
-               // Vector3 direction = aimRay.direction;
-                //Quaternion quaternion = Quaternion.LookRotation(aimRay.direction);
-                //ModLogger.LogInfo("Dir" + direction.ToString());
-                //PickupDropletController.CreatePickupDroplet(GetEssenceIndex(slot.rng), vector + new Vector3(0, 3, 0), direction * 40f); //normalized * 15f);
-               
                 GameObject.Destroy(slot.currentTarget.rootObject);
                 //var pos = slot.currentTarget.rootObject.transform.position;
                 //foreach(AbsorbedEquipment:)
+
+                foreach (EquipmentDef ED in cpt.EquipDefList)
+                    slot.PerformEquipmentAction(ED);
                 return true;
+            }
+            else if(true && Run.instance)
+            {
+                var cpt = slot.characterBody.GetComponent<EarthTotemTracker>();
+                if (!cpt) cpt = slot.characterBody.gameObject.AddComponent<EarthTotemTracker>();
+
+                foreach (EquipmentDef ED in cpt.EquipDefList)
+                    slot.PerformEquipmentAction(ED);
             }
             return false;
         }
@@ -255,18 +260,28 @@ namespace BransItems.Modules.Pickups.Equipments
             }
             self.currentTarget = new UserTargetInfo(self.FindPickupController(self.GetAimRay(), 10f, 30f, requireLoS: true, true));
 
+            var cpt = self.characterBody.GetComponent<EarthTotemTracker>();
+            if (!cpt) cpt = self.characterBody.gameObject.AddComponent<EarthTotemTracker>();
+
             var targetingComponent = self.GetComponent<TargetingControllerComponent>();
             if (self.currentTarget.rootObject != null)
             {
-                var pickupControllerPickupIndex = self.currentTarget.pickupController.GetComponent<PickupIndex>();
-                EquipmentIndex equipIndex = (EquipmentIndex)Array.IndexOf(PickupCatalog.equipmentIndexToPickupIndex, pickupControllerPickupIndex);
+                //PIKCUP TO EQUIPMENT DINDEX
+                PickupIndex pickupIndex = self.currentTarget.pickupController.pickupIndex;
+                PickupDef pickupDef = PickupCatalog.GetPickupDef(pickupIndex);
+                EquipmentIndex equipIndex = pickupDef.equipmentIndex;
+
+
+                ModLogger.LogInfo("PickupIndex:" + pickupIndex.ToString());
+                ModLogger.LogInfo("EquipIndex:" + equipIndex.ToString());
+                //ModLogger.LogDebug("EquipDef:" + EquipmentCatalog.GetEquipmentDef(equipIndex).nameToken);
                 if (!equipIndex.Equals(EquipmentIndex.None))
                 {
                     self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerIndicator");
                 }
                 else
                 {
-                    //self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerBadIndicator");
+                    self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerBadIndicator");
                 }
 
                 self.targetIndicator.active = true;
@@ -278,7 +293,8 @@ namespace BransItems.Modules.Pickups.Equipments
             }
         }
 
-        public struct MsgEarthTotemFire : INetMessage
+        /*
+        public struct MsgEarthTotemAbsorb : INetMessage
         {
             GameObject _target;
             GameObject[] _aux;
@@ -315,23 +331,25 @@ namespace BransItems.Modules.Pickups.Equipments
                     return;
                 }
 
-                var pbh = _target.GetComponent<PackBoxHandler>();
-                if (!pbh) pbh = _target.AddComponent<PackBoxHandler>();
+                var pbh = _target.GetComponent<EarthTotemAbsorbHandler>();
+                if (!pbh) pbh = _target.AddComponent<EarthTotemAbsorbHandler>();
 
                 var pbt = _owner.GetComponent<EarthTotemTracker>();
                 if (!pbt) pbt = _owner.AddComponent<EarthTotemTracker>();
 
-                pbh.PackGlobal(pbt, _aux);
+                pbh.AbsorbGlobal(pbt, _aux);
             }
 
-            public MsgEarthTotemFire(GameObject target, EarthTotemTracker owner, GameObject[] aux)
+            public MsgEarthTotemAbsorb(GameObject target, EarthTotemTracker owner, GameObject[] aux)
             {
                 _target = target;
                 _owner = owner.gameObject;
                 _aux = aux;
             }
         }
+        */
 
+        /*
         public struct MsgPackboxPlace : INetMessage
         {
             GameObject _target;
@@ -365,7 +383,7 @@ namespace BransItems.Modules.Pickups.Equipments
                     return;
                 }
 
-                var pbh = _target.GetComponent<PackBoxHandler>();
+                var pbh = _target.GetComponent<EarthTotemAbsorbHandler>();
                 var pbt = _owner.GetComponent<EarthTotemTracker>();
 
                 if (!pbh || !pbt)
@@ -374,7 +392,7 @@ namespace BransItems.Modules.Pickups.Equipments
                     return;
                 }
 
-                pbh.PlaceGlobal(pbt, _pos);
+                pbh.FireGlobal(pbt, _pos);
             }
 
             public MsgPackboxPlace(GameObject target, EarthTotemTracker owner, Vector3 pos)
@@ -384,23 +402,24 @@ namespace BransItems.Modules.Pickups.Equipments
                 _pos = pos;
             }
         }
+        */
     }
 
     public class EarthTotemTracker : MonoBehaviour
     {
-        public GameObject packedObject;
-        public Transform groundTarget;
+        public List<EquipmentDef> EquipDefList;
+        //public Transform groundTarget;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
         void Awake()
         {
-            groundTarget = new GameObject().transform;
+            EquipDefList = new List<EquipmentDef>();
         }
     }
 
-    public class PackBoxHandler : MonoBehaviour
+    public class EarthTotemAbsorbHandler : MonoBehaviour
     {
-        public bool isBoxed = false;
+        public bool isAbsorbed = false;
         public bool queuedDeactivate = false;
         public Dictionary<GameObject, Vector3> auxiliaryPackedObjects = new();
 
@@ -441,7 +460,7 @@ namespace BransItems.Modules.Pickups.Equipments
             if (queuedDeactivate)
             {
                 queuedDeactivate = false;
-                isBoxed = true;
+                isAbsorbed = true;
                 var loc = gameObject.GetComponentInChildren<ModelLocator>();
                 if (loc)
                     loc.modelTransform.gameObject.SetActive(false);
@@ -456,14 +475,15 @@ namespace BransItems.Modules.Pickups.Equipments
             }
         }
 
-        public bool TryPlaceServer(EarthTotemTracker from, Vector3 pos)
+        /*
+        public bool TryFireServer(EarthTotemTracker from, Vector3 pos)
         {
             if (!NetworkServer.active)
             {
                 ModLogger.LogError("PackBoxHandler.TryPlaceServer called on client");
                 return false;
             }
-            if (!from || from.packedObject != gameObject)
+            if (!from || from.EquipDefList != gameObject)
             {
                 ModLogger.LogError("PackBoxHandler.TryPlaceServer called on null PackBoxTracker, or this PackBoxHandler was not contained in it");
                 return false;
@@ -474,7 +494,7 @@ namespace BransItems.Modules.Pickups.Equipments
             return true;
         }
 
-        public void PlaceClient(Vector3 pos)
+        public void FireClient(Vector3 pos)
         {
             EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/TeleportOutBoom"), new EffectData
             {
@@ -483,7 +503,7 @@ namespace BransItems.Modules.Pickups.Equipments
             }, true);
         }
 
-        public void PlaceGlobal(EarthTotemTracker from, Vector3 pos)
+        public void FireGlobal(EarthTotemTracker from, Vector3 pos)
         {
             var body = GetComponent<CharacterBody>();
             if (body && body.master)
@@ -505,13 +525,13 @@ namespace BransItems.Modules.Pickups.Equipments
                     loc.modelTransform.gameObject.SetActive(true);
                 }
             }
-            from.packedObject = null;
-            isBoxed = false;
+            from.EquipDefList = null;
+            isAbsorbed = false;
             if (NetworkClient.active)
-                PlaceClient(pos);
+                FireClient(pos);
         }
 
-        public bool TryPackServer(EarthTotemTracker into)
+        public bool TryAbsorbServer(EarthTotemTracker into)
         {
             if (!NetworkServer.active)
             {
@@ -528,7 +548,7 @@ namespace BransItems.Modules.Pickups.Equipments
             return true;
         }
 
-        public void PackClient()
+        public void AbsorbClient()
         {
             EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/TeleportOutBoom"), new EffectData
             {
@@ -537,15 +557,16 @@ namespace BransItems.Modules.Pickups.Equipments
             }, true);
         }
 
-        public void PackGlobal(EarthTotemTracker into, GameObject[] auxOverride)
+        public void AbsorbGlobal(EarthTotemTracker into, GameObject[] auxOverride)
         {
             DirectorCore.instance.RemoveAllOccupiedNodes(gameObject);
-            into.packedObject = gameObject;
+            into.EquipDefList = gameObject;
             queuedDeactivate = true;
             CollectAuxiliary(auxOverride);
             if (NetworkClient.active)
-                PackClient();
+                AbsorbClient();
         }
+        */
     }
 
 
