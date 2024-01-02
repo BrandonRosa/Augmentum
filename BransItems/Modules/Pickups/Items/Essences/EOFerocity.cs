@@ -8,16 +8,15 @@ using System.Text;
 using UnityEngine;
 using static BransItems.BransItems;
 using static BransItems.Modules.Utils.ItemHelpers;
-using static RoR2.ItemTag;
 
 namespace BransItems.Modules.Pickups.Items.Essences
 {
-    class EOStrength : ItemBase<EOStrength>
+    class EOFerocity : ItemBase<EOFerocity>
     {
-        public override string ItemName => "Essence of Strength";
-        public override string ItemLangTokenName => "ESSENCE_OF_STRENGTH";
-        public override string ItemPickupDesc => "Slightly increase damage.";
-        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{DamageGain}</style> damage buff. <style=cStack>(+{DamageGain}).";
+        public override string ItemName => "Essence of Ferocity";
+        public override string ItemLangTokenName => "ESSENCE_OF_FEROCITY";
+        public override string ItemPickupDesc => "Slightly increase attack speed.";
+        public override string ItemFullDescription => $"Increase movement speed by <style=cIsDamage>{AttackSpeedGain}%</style>. <style=cStack>(+{AttackSpeedGain}%).";
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
@@ -33,14 +32,8 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override ItemTier Tier => ItemTier.Tier1;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
-
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
-
-        //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
-        //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
+        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
+        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -50,23 +43,24 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override ItemTag[] ItemTags => new ItemTag[] { RoR2.ItemTag.WorldUnique };
 
-        public static float DamageGain;
+
+        public static float AttackSpeedGain;
 
 
-		public override void Init(ConfigFile config)
-		{
-			CreateConfig(config);
-			CreateLang();
-			//CreateBuff();
-			CreateItem();
-			Hooks();
-		}
+        public override void Init(ConfigFile config)
+        {
+            CreateConfig(config);
+            CreateLang();
+            //CreateBuff();
+            CreateItem();
+            Hooks();
+        }
 
-		public void CreateConfig(ConfigFile config)
-		{
-			DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 1.5f, "How much base damage should Essense of Strength grant?").Value;
-			//AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
-		}
+        public void CreateConfig(ConfigFile config)
+        {
+            AttackSpeedGain = config.Bind<float>("Item: " + ItemName, "Attack speed given to character", 8, "How much attack speed should Essense of Ferocity grant?").Value;
+            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+        }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
@@ -285,13 +279,14 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
 
         public override void Hooks()
-		{
+        {
             RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
-		}
+        }
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
-			args.baseDamageAdd += DamageGain * GetCount(sender);
+            args.attackSpeedMultAdd += AttackSpeedGain * .01f * GetCount(sender);
+            //KEEP IN MIND 8% increase here is .08
         }
     }
 }

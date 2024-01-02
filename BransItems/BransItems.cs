@@ -24,7 +24,10 @@ namespace BransItems
     [BepInDependency(R2API.R2API.PluginGUID, R2API.R2API.PluginVersion)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(ModGuid, ModName, ModVer)]
-    //[R2APISubmoduleDependency(nameof(ItemAPI))]
+    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(RecalculateStatsAPI))]//nameof(BuffAPI), nameof(ResourcesAPI), nameof(EffectAPI), nameof(ProjectileAPI), nameof(ArtifactAPI), nameof(LoadoutAPI),   
+                             // nameof(PrefabAPI), nameof(SoundAPI), nameof(OrbAPI),
+                             // nameof(NetworkingAPI), nameof(DirectorAPI), nameof(RecalculateStatsAPI), nameof(UnlockableAPI), nameof(EliteAPI),
+                             // nameof(CommandHelper), nameof(DamageAPI))]
 
 
     //This is the main declaration of our plugin class. BepInEx searches for all classes inheriting from BaseUnityPlugin to initialize on startup.
@@ -35,7 +38,7 @@ namespace BransItems
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.BransItems"; //Our Package Name
         public const string ModName = "BransItems";
-        public const string ModVer = "0.0.3";
+        public const string ModVer = "0.0.4";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;
@@ -79,7 +82,7 @@ namespace BransItems
                 MainAssets = AssetBundle.LoadFromStream(stream);
             }
 
-            var disableItems = Config.Bind<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in Aetherium?");
+            var disableItems = Config.Bind<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in BransItems?");
             if (!disableItems.Value)
             {
                 //Item Initialization
@@ -100,6 +103,25 @@ namespace BransItems
 
                 //IL.RoR2.ShopTerminalBehavior.GenerateNewPickupServer_bool += ItemBase.BlacklistFromPrinter;
                 //On.RoR2.Items.ContagiousItemManager.Init += ItemBase.RegisterVoidPairings;
+            }
+            var disableEquipment = Config.Bind<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in BransItems?");
+            if (!disableEquipment.Value)
+            {
+                //Equipment Initialization
+                var EquipmentTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(EquipmentBase)));
+
+                ModLogger.LogInfo("-----------------EQUIPMENT---------------------");
+
+                foreach (var equipmentType in EquipmentTypes)
+                {
+                    EquipmentBase equipment = (EquipmentBase)System.Activator.CreateInstance(equipmentType);
+                    if (ValidateEquipment(equipment, Equipments))
+                    {
+                        equipment.Init(Config);
+
+                        ModLogger.LogInfo("Equipment: " + equipment.EquipmentName + " Initialized!");
+                    }
+                }
             }
         }
 
@@ -127,6 +149,20 @@ namespace BransItems
                 //item.RequireUnlock = requireUnlock;
             }
             return enabled;
+        }
+
+        public bool ValidateEquipment(EquipmentBase equipment, List<EquipmentBase> equipmentList)
+        {
+            var enabled = Config.Bind<bool>("Equipment: " + equipment.EquipmentName, "Enable Equipment?", true, "Should this equipment appear in runs?").Value;
+
+            EquipmentStatusDictionary.Add(equipment, enabled);
+
+            if (enabled)
+            {
+                equipmentList.Add(equipment);
+                return true;
+            }
+            return false;
         }
 
         private void GlobalEventManager_onCharacterDeathGlobal(DamageReport report)
