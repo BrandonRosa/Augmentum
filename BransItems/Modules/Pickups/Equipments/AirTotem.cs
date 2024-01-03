@@ -246,7 +246,7 @@ namespace BransItems.Modules.Pickups.Equipments
                         spawnTotal = 8;
                         break;
                     case ItemTier.Lunar:
-                        pickup = PickupCatalog.FindPickupIndex("LunarSpecialReplacement");
+                        pickup = PickupCatalog.FindPickupIndex(RoR2Content.Items.LunarSpecialReplacement.itemIndex);
                         PickupDropletController.CreatePickupDroplet(pickup, vector, direction * 40f);
                         GameObject.Destroy(slot.currentTarget.rootObject);
                         return true;

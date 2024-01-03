@@ -37,7 +37,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public static GameObject ItemBodyModelPrefab;
 
-        public override float Cooldown { get; } = 140f;
+        public override float Cooldown { get; } = 1;//140f;
 
         //public List<EquipmentDef> AbsorbedEquipments;
 
@@ -206,8 +206,25 @@ namespace BransItems.Modules.Pickups.Equipments
             //On.RoR2.CharacterBody.OnBuffFirstStackGained += RemoveBuffFromNonElites;
             //On.RoR2.GlobalEventManager.OnCharacterDeath += MorphEquipmentIntoAffix;
             //On.RoR2.EquipmentSlot.Update += UpdateTargets;
-            //On.RoR2.EquipmentSlot.Start += Start;
+            On.RoR2.EquipmentSlot.FixedUpdate += FixedUpdate;
             On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets;
+        }
+
+        private void FixedUpdate(On.RoR2.EquipmentSlot.orig_FixedUpdate orig, EquipmentSlot self)
+        {
+            orig(self);
+            var cpt = self.characterBody.GetComponent<EarthTotemTracker>();
+            if (!cpt) cpt = self.characterBody.gameObject.AddComponent<EarthTotemTracker>();
+
+            if (cpt.Firing ==true)
+            {
+                EquipmentDef fireNext = cpt.GetEquipDefDuringFiringSequence();
+                if(fireNext!=null)
+                {
+                    self.UpdateTargets(fireNext.equipmentIndex, false);
+                    self.PerformEquipmentAction(fireNext);
+                }
+            }
         }
 
         protected override bool ActivateEquipment(EquipmentSlot slot)
@@ -224,7 +241,6 @@ namespace BransItems.Modules.Pickups.Equipments
                 {
                     return false;
                 }
-                // Vector3 vector = (slot.currentTarget.pickupController.transform ? slot.currentTarget.pickupController.transform.position : Vector3.zero);
                 EquipmentDef EquipDef = EquipmentCatalog.GetEquipmentDef(equipIndex); 
 
                 var cpt = slot.characterBody.GetComponent<EarthTotemTracker>();
@@ -233,11 +249,8 @@ namespace BransItems.Modules.Pickups.Equipments
                 cpt.EquipDefList.Add(EquipDef);
 
                 GameObject.Destroy(slot.currentTarget.rootObject);
-                //var pos = slot.currentTarget.rootObject.transform.position;
-                //foreach(AbsorbedEquipment:)
 
-                foreach (EquipmentDef ED in cpt.EquipDefList)
-                    slot.PerformEquipmentAction(ED);
+                cpt.StartFire();
                 return true;
             }
             else if(true && Run.instance)
@@ -245,12 +258,12 @@ namespace BransItems.Modules.Pickups.Equipments
                 var cpt = slot.characterBody.GetComponent<EarthTotemTracker>();
                 if (!cpt) cpt = slot.characterBody.gameObject.AddComponent<EarthTotemTracker>();
 
-                foreach (EquipmentDef ED in cpt.EquipDefList)
-                    slot.PerformEquipmentAction(ED);
+                //foreach (EquipmentDef ED in cpt.EquipDefList)
+                //slot.PerformEquipmentAction(ED);
+                cpt.StartFire();
             }
             return false;
         }
-        //private void EquipmentSlot_UpdateTargets(On.RoR2.EquipmentSlot.orig_UpdateTargets orig, EquipmentSlot self, EquipmentIndex targetingEquipmentIndex, bool userShouldAnticipateTarget)
         private void UpdateTargets(On.RoR2.EquipmentSlot.orig_UpdateTargets orig, EquipmentSlot self, EquipmentIndex targetingEquipmentIndex, bool userShouldAnticipateTarget)
         {
             if (targetingEquipmentIndex != EquipmentDef.equipmentIndex)
@@ -292,6 +305,8 @@ namespace BransItems.Modules.Pickups.Equipments
                 self.targetIndicator.active = false;
             }
         }
+
+        
 
         /*
         public struct MsgEarthTotemAbsorb : INetMessage
@@ -408,12 +423,63 @@ namespace BransItems.Modules.Pickups.Equipments
     public class EarthTotemTracker : MonoBehaviour
     {
         public List<EquipmentDef> EquipDefList;
+        public float FireFrequency;
+        public float TimeUntilNextFire;
+        public bool Firing;
+        public int EquipDefFireIndex;
         //public Transform groundTarget;
 
         //[System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
         void Awake()
         {
             EquipDefList = new List<EquipmentDef>();
+            FireFrequency = .25f; //in seconds
+            Firing = false;
+            EquipDefFireIndex = -1;
+            TimeUntilNextFire = -1;
+        }
+
+        public void StartFire()
+        {
+            Firing = true;
+            EquipDefFireIndex = 0;
+            TimeUntilNextFire = FireFrequency;
+        }
+
+        void StopFire()
+        {
+            Firing = false;
+            EquipDefFireIndex = -1;
+            TimeUntilNextFire = -1;
+        }
+
+        void Update()
+        {
+
+        }
+
+        public EquipmentDef GetEquipDefDuringFiringSequence()
+        {
+            if (Firing == true)
+            {
+                TimeUntilNextFire = Mathf.Max(TimeUntilNextFire - Time.fixedDeltaTime, 0f);
+                if (TimeUntilNextFire <= 0)
+                {
+                    EquipmentDef equipDef = EquipDefList[EquipDefFireIndex];
+                    EquipDefFireIndex++;
+                    if(EquipDefFireIndex>EquipDefList.Count-1)
+                    {
+                        StopFire();
+                    }
+                    return equipDef;
+                }
+                else
+                {
+                    
+                }
+            }
+            
+            return null;
         }
     }
 
