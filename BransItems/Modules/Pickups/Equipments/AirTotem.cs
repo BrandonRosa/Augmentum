@@ -37,6 +37,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public override float Cooldown { get; } = 30f;
 
+
         // private UserTargetInfo currentTarget;
 
         //private InputBankTest inputBank;

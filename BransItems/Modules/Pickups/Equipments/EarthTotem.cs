@@ -37,7 +37,9 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public static GameObject ItemBodyModelPrefab;
 
-        public override float Cooldown { get; } = 1;//140f;
+        public override float Cooldown { get; } = 15;//140f;
+
+        public float StartCooldown = 15f;
 
         //public List<EquipmentDef> AbsorbedEquipments;
 
@@ -208,22 +210,37 @@ namespace BransItems.Modules.Pickups.Equipments
             //On.RoR2.EquipmentSlot.Update += UpdateTargets;
             On.RoR2.EquipmentSlot.FixedUpdate += FixedUpdate;
             On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets;
+            //RecalculateStatsAPI.
+        }
+
+
+        public static float CalculateAdditionalCooldown(float numOfAbsorb, float highestCooldown)
+        {
+            //For Number of Items Y=MaxCooldownFromNumberOfAbsorbtions*(1-e^(-x/3))
+            //For Highest Cooldown Y=HighestCooldown/3
+            float numOfItemsCooldown = (float)(45 * (1 - Math.Exp(-(double)numOfAbsorb / 4)));
+            float highestCooldownCooldown = (float)highestCooldown / 1.25f;
+            return numOfItemsCooldown + highestCooldownCooldown;
         }
 
         private void FixedUpdate(On.RoR2.EquipmentSlot.orig_FixedUpdate orig, EquipmentSlot self)
         {
             orig(self);
-            var cpt = self.characterBody.GetComponent<EarthTotemTracker>();
-            if (!cpt) cpt = self.characterBody.gameObject.AddComponent<EarthTotemTracker>();
+            var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
+            if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
 
             if (cpt.Firing ==true)
             {
-                EquipmentDef fireNext = cpt.GetEquipDefDuringFiringSequence();
-                if(fireNext!=null)
-                {
-                    self.UpdateTargets(fireNext.equipmentIndex, false);
-                    self.PerformEquipmentAction(fireNext);
-                }
+                cpt.FireSequence(self);
+                //if(fireNext!=null)
+                //{
+                    
+               // }
+               // else if(cpt.Firing ==false)
+               // {
+                    
+                    //cpt.StopFire();
+               // }
             }
         }
 
@@ -243,24 +260,31 @@ namespace BransItems.Modules.Pickups.Equipments
                 }
                 EquipmentDef EquipDef = EquipmentCatalog.GetEquipmentDef(equipIndex); 
 
-                var cpt = slot.characterBody.GetComponent<EarthTotemTracker>();
-                if (!cpt) cpt = slot.characterBody.gameObject.AddComponent<EarthTotemTracker>();
+                var cpt = slot.characterBody.master.GetComponent<EarthTotemTracker>();
+                if (!cpt) cpt = slot.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
 
-                cpt.EquipDefList.Add(EquipDef);
+                cpt.AddToList(EquipDef);
 
                 GameObject.Destroy(slot.currentTarget.rootObject);
 
                 cpt.StartFire();
+                //NEGATIVE to ADD to cooldown!
+                //ModLogger.LogInfo("Count Absorbed:" + cpt.EquipDefList.Count + "   Count Absorbed:" + cpt.HighestCooldown + "Cooldown Added:" + AddToCooldown(cpt.EquipDefList.Count, cpt.HighestCooldown));
+                //slot.characterBody.inventory.DeductActiveEquipmentCooldown(-AddToCooldown(cpt.EquipDefList.Count, cpt.HighestCooldown));
                 return true;
             }
             else if(true && Run.instance)
             {
-                var cpt = slot.characterBody.GetComponent<EarthTotemTracker>();
-                if (!cpt) cpt = slot.characterBody.gameObject.AddComponent<EarthTotemTracker>();
+                var cpt = slot.characterBody.master.GetComponent<EarthTotemTracker>();
+                if (!cpt) cpt = slot.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
 
                 //foreach (EquipmentDef ED in cpt.EquipDefList)
                 //slot.PerformEquipmentAction(ED);
                 cpt.StartFire();
+                //NEGATIVE to ADD to cooldown!
+                //ModLogger.LogInfo("Count Absorbed:"+cpt.EquipDefList.Count+ "   Count Absorbed:" + cpt.HighestCooldown+ "Cooldown Added:" + AddToCooldown(cpt.EquipDefList.Count, cpt.HighestCooldown));
+                //slot.characterBody.inventory.DeductActiveEquipmentCooldown(-AddToCooldown(cpt.EquipDefList.Count, cpt.HighestCooldown));
+                return true;
             }
             return false;
         }
@@ -273,8 +297,8 @@ namespace BransItems.Modules.Pickups.Equipments
             }
             self.currentTarget = new UserTargetInfo(self.FindPickupController(self.GetAimRay(), 10f, 30f, requireLoS: true, true));
 
-            var cpt = self.characterBody.GetComponent<EarthTotemTracker>();
-            if (!cpt) cpt = self.characterBody.gameObject.AddComponent<EarthTotemTracker>();
+            var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
+            if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();//self.characterBody.gameObject.AddComponent<EarthTotemTracker>();
 
             var targetingComponent = self.GetComponent<TargetingControllerComponent>();
             if (self.currentTarget.rootObject != null)
@@ -285,8 +309,7 @@ namespace BransItems.Modules.Pickups.Equipments
                 EquipmentIndex equipIndex = pickupDef.equipmentIndex;
 
 
-                ModLogger.LogInfo("PickupIndex:" + pickupIndex.ToString());
-                ModLogger.LogInfo("EquipIndex:" + equipIndex.ToString());
+                
                 //ModLogger.LogDebug("EquipDef:" + EquipmentCatalog.GetEquipmentDef(equipIndex).nameToken);
                 if (!equipIndex.Equals(EquipmentIndex.None))
                 {
@@ -427,6 +450,7 @@ namespace BransItems.Modules.Pickups.Equipments
         public float TimeUntilNextFire;
         public bool Firing;
         public int EquipDefFireIndex;
+        public float HighestCooldown;
         //public Transform groundTarget;
 
         //[System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
@@ -437,6 +461,7 @@ namespace BransItems.Modules.Pickups.Equipments
             Firing = false;
             EquipDefFireIndex = -1;
             TimeUntilNextFire = -1;
+            HighestCooldown = 0;
         }
 
         public void StartFire()
@@ -446,19 +471,21 @@ namespace BransItems.Modules.Pickups.Equipments
             TimeUntilNextFire = FireFrequency;
         }
 
-        void StopFire()
+        public void StopFire()
         {
             Firing = false;
             EquipDefFireIndex = -1;
             TimeUntilNextFire = -1;
         }
 
-        void Update()
+        public void AddToList(EquipmentDef ED)
         {
-
+            EquipDefList.Add(ED);
+            if (HighestCooldown < ED.cooldown)
+                HighestCooldown = ED.cooldown;
         }
 
-        public EquipmentDef GetEquipDefDuringFiringSequence()
+        public EquipmentDef FireSequence(EquipmentSlot self)
         {
             if (Firing == true)
             {
@@ -467,11 +494,16 @@ namespace BransItems.Modules.Pickups.Equipments
                 {
                     EquipmentDef equipDef = EquipDefList[EquipDefFireIndex];
                     EquipDefFireIndex++;
+                    
                     if(EquipDefFireIndex>EquipDefList.Count-1)
                     {
+                        //NEGATIVE to ADD to cooldown!
+                        ModLogger.LogInfo("Count Absorbed:" + EquipDefList.Count + "   Count Absorbed:" + HighestCooldown + "Cooldown Added:" + EarthTotem.CalculateAdditionalCooldown(EquipDefList.Count, HighestCooldown));
+                        self.characterBody.inventory.DeductActiveEquipmentCooldown(-EarthTotem.CalculateAdditionalCooldown(EquipDefList.Count, HighestCooldown));
                         StopFire();
                     }
-                    return equipDef;
+                    self.UpdateTargets(equipDef.equipmentIndex, false);
+                    self.PerformEquipmentAction(equipDef);
                 }
                 else
                 {
@@ -481,6 +513,8 @@ namespace BransItems.Modules.Pickups.Equipments
             
             return null;
         }
+
+
     }
 
     public class EarthTotemAbsorbHandler : MonoBehaviour
