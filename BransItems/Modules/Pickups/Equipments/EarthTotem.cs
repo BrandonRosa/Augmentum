@@ -227,7 +227,7 @@ namespace BransItems.Modules.Pickups.Equipments
         {
             //Y=(140-35)(1-exp(-(x-1)/5.3))+35-Cooldown;
             //y=(180-45)(1-exp(-(x-1)/10))+45-cooldown
-            return (180f-45f)*(1f- (float)Math.Exp(-((double)numOfAbsorb-1)/7.3f))+45-(float)instance.Cooldown;
+            return (280f-45f)*(1f- (float)Math.Exp(-((double)numOfAbsorb-1)/6.6f))+45-(float)instance.Cooldown;
         }
 
         private void FixedUpdate(On.RoR2.EquipmentSlot.orig_FixedUpdate orig, EquipmentSlot self)
