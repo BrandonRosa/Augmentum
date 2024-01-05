@@ -214,13 +214,20 @@ namespace BransItems.Modules.Pickups.Equipments
         }
 
 
-        public static float CalculateAdditionalCooldown(float numOfAbsorb, float highestCooldown)
+        public static float CalcAdditionalCooldownComplex(float numOfAbsorb, float highestCooldown)
         {
             //For Number of Items Y=MaxCooldownFromNumberOfAbsorbtions*(1-e^(-x/3))
             //For Highest Cooldown Y=HighestCooldown/3
             float numOfItemsCooldown = (float)(45 * (1 - Math.Exp(-(double)numOfAbsorb / 4)));
             float highestCooldownCooldown = (float)highestCooldown / 1.25f;
             return numOfItemsCooldown + highestCooldownCooldown;
+        }
+
+        public static float CalcAdditionalCooldownByAbsorb(float numOfAbsorb)
+        {
+            //Y=(140-35)(1-exp(-(x-1)/5.3))+35-Cooldown;
+            //y=(180-45)(1-exp(-(x-1)/10))+45-cooldown
+            return (180f-45f)*(1f- (float)Math.Exp(-((double)numOfAbsorb-1)/7.3f))+45-(float)instance.Cooldown;
         }
 
         private void FixedUpdate(On.RoR2.EquipmentSlot.orig_FixedUpdate orig, EquipmentSlot self)
@@ -231,6 +238,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
             if (cpt.Firing ==true)
             {
+
                 cpt.FireSequence(self);
                 //if(fireNext!=null)
                 //{
@@ -246,6 +254,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
         protected override bool ActivateEquipment(EquipmentSlot slot)
         {
+            //See if a pikcupController is being targetted
             if (slot.currentTarget.pickupController
                 && Run.instance)
             {
@@ -254,36 +263,51 @@ namespace BransItems.Modules.Pickups.Equipments
                 PickupIndex pickupIndex = slot.currentTarget.pickupController.pickupIndex;
                 PickupDef pickupDef = PickupCatalog.GetPickupDef(pickupIndex);
                 EquipmentIndex equipIndex = pickupDef.equipmentIndex;
+
+                //If its not an equipment, dont run return false;
                 if (equipIndex.Equals(EquipmentIndex.None))
                 {
                     return false;
                 }
                 EquipmentDef EquipDef = EquipmentCatalog.GetEquipmentDef(equipIndex); 
 
+                //Look for EarthTotemTracker, if its not there, add it.
                 var cpt = slot.characterBody.master.GetComponent<EarthTotemTracker>();
                 if (!cpt) cpt = slot.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
 
-                cpt.AddToList(EquipDef);
+                //Check for Equipment exceptions:
+                bool SkipAbsorbtion = false;
+                if(equipIndex==EarthTotem.instance.EquipmentDef.equipmentIndex)
+                {
+                    SkipAbsorbtion = true;
+                    cpt.EarthTotemAbsorbedCount++;
+                }
 
+                //Add Absorbed Item to list if SkipAbsorbtion flag wasnt triggered
+                if(!SkipAbsorbtion)
+                    cpt.AddToList(EquipDef);
+
+                //Destroy the pickup
                 GameObject.Destroy(slot.currentTarget.rootObject);
 
+                //Start the Firing Sequence
+                slot.subcooldownTimer = cpt.TimeUntilNextFire * cpt.EquipDefList.Count;
                 cpt.StartFire();
-                //NEGATIVE to ADD to cooldown!
-                //ModLogger.LogInfo("Count Absorbed:" + cpt.EquipDefList.Count + "   Count Absorbed:" + cpt.HighestCooldown + "Cooldown Added:" + AddToCooldown(cpt.EquipDefList.Count, cpt.HighestCooldown));
-                //slot.characterBody.inventory.DeductActiveEquipmentCooldown(-AddToCooldown(cpt.EquipDefList.Count, cpt.HighestCooldown));
                 return true;
             }
             else if(true && Run.instance)
             {
+                //Look for EarthTotemTracker, if its not there, add it.
                 var cpt = slot.characterBody.master.GetComponent<EarthTotemTracker>();
                 if (!cpt) cpt = slot.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
 
-                //foreach (EquipmentDef ED in cpt.EquipDefList)
-                //slot.PerformEquipmentAction(ED);
+                //If the list is empty dont trigger equipment
+                if (cpt.EquipDefList.Count == 0)
+                    return false;
+
+                //Start the Firing Sequence
+                slot.subcooldownTimer = cpt.TimeUntilNextFire * cpt.EquipDefList.Count;
                 cpt.StartFire();
-                //NEGATIVE to ADD to cooldown!
-                //ModLogger.LogInfo("Count Absorbed:"+cpt.EquipDefList.Count+ "   Count Absorbed:" + cpt.HighestCooldown+ "Cooldown Added:" + AddToCooldown(cpt.EquipDefList.Count, cpt.HighestCooldown));
-                //slot.characterBody.inventory.DeductActiveEquipmentCooldown(-AddToCooldown(cpt.EquipDefList.Count, cpt.HighestCooldown));
                 return true;
             }
             return false;
@@ -297,8 +321,9 @@ namespace BransItems.Modules.Pickups.Equipments
             }
             self.currentTarget = new UserTargetInfo(self.FindPickupController(self.GetAimRay(), 10f, 30f, requireLoS: true, true));
 
+            //Check to see if the master has the EarthTotemTracker, if not, add it.
             var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
-            if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();//self.characterBody.gameObject.AddComponent<EarthTotemTracker>();
+            if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
 
             var targetingComponent = self.GetComponent<TargetingControllerComponent>();
             if (self.currentTarget.rootObject != null)
@@ -310,7 +335,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
 
                 
-                //ModLogger.LogDebug("EquipDef:" + EquipmentCatalog.GetEquipmentDef(equipIndex).nameToken);
+                //See if Equipment is being targetted
                 if (!equipIndex.Equals(EquipmentIndex.None))
                 {
                     self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerIndicator");
@@ -331,116 +356,6 @@ namespace BransItems.Modules.Pickups.Equipments
 
         
 
-        /*
-        public struct MsgEarthTotemAbsorb : INetMessage
-        {
-            GameObject _target;
-            GameObject[] _aux;
-            GameObject _owner;
-
-            public void Deserialize(NetworkReader reader)
-            {
-                _target = reader.ReadGameObject();
-                _owner = reader.ReadGameObject();
-                _aux = new GameObject[reader.ReadInt32()];
-                for (var i = 0; i < _aux.Length; i++)
-                    _aux[i] = reader.ReadGameObject();
-            }
-
-            public void Serialize(NetworkWriter writer)
-            {
-                writer.Write(_target);
-                writer.Write(_owner);
-                writer.Write(_aux.Length);
-                for (var i = 0; i < _aux.Length; i++)
-                    writer.Write(_aux[i]);
-            }
-
-            public void OnReceived()
-            {
-                if (!_target)
-                {
-                    ModLogger.LogError($"Received MsgPackboxPack for null GameObject");
-                    return;
-                }
-                if (!_owner)
-                {
-                    ModLogger.LogError($"Received MsgPackboxPack for null GameObject");
-                    return;
-                }
-
-                var pbh = _target.GetComponent<EarthTotemAbsorbHandler>();
-                if (!pbh) pbh = _target.AddComponent<EarthTotemAbsorbHandler>();
-
-                var pbt = _owner.GetComponent<EarthTotemTracker>();
-                if (!pbt) pbt = _owner.AddComponent<EarthTotemTracker>();
-
-                pbh.AbsorbGlobal(pbt, _aux);
-            }
-
-            public MsgEarthTotemAbsorb(GameObject target, EarthTotemTracker owner, GameObject[] aux)
-            {
-                _target = target;
-                _owner = owner.gameObject;
-                _aux = aux;
-            }
-        }
-        */
-
-        /*
-        public struct MsgPackboxPlace : INetMessage
-        {
-            GameObject _target;
-            GameObject _owner;
-            Vector3 _pos;
-
-            public void Deserialize(NetworkReader reader)
-            {
-                _target = reader.ReadGameObject();
-                _owner = reader.ReadGameObject();
-                _pos = reader.ReadVector3();
-            }
-
-            public void Serialize(NetworkWriter writer)
-            {
-                writer.Write(_target);
-                writer.Write(_owner);
-                writer.Write(_pos);
-            }
-
-            public void OnReceived()
-            {
-                if (!_target)
-                {
-                    ModLogger.LogError($"Received MsgPackboxPlace for null GameObject");
-                    return;
-                }
-                if (!_owner)
-                {
-                    ModLogger.LogError($"Received MsgPackboxPlace for null GameObject");
-                    return;
-                }
-
-                var pbh = _target.GetComponent<EarthTotemAbsorbHandler>();
-                var pbt = _owner.GetComponent<EarthTotemTracker>();
-
-                if (!pbh || !pbt)
-                {
-                    ModLogger.LogError($"MsgPackboxPlace has an invalid GameObject (names: {_target.name} {_owner.name})");
-                    return;
-                }
-
-                pbh.FireGlobal(pbt, _pos);
-            }
-
-            public MsgPackboxPlace(GameObject target, EarthTotemTracker owner, Vector3 pos)
-            {
-                _target = target;
-                _owner = owner.gameObject;
-                _pos = pos;
-            }
-        }
-        */
     }
 
     public class EarthTotemTracker : MonoBehaviour
@@ -451,6 +366,7 @@ namespace BransItems.Modules.Pickups.Equipments
         public bool Firing;
         public int EquipDefFireIndex;
         public float HighestCooldown;
+        public int EarthTotemAbsorbedCount;
         //public Transform groundTarget;
 
         //[System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
@@ -462,13 +378,14 @@ namespace BransItems.Modules.Pickups.Equipments
             EquipDefFireIndex = -1;
             TimeUntilNextFire = -1;
             HighestCooldown = 0;
+            EarthTotemAbsorbedCount = 0;
         }
 
         public void StartFire()
         {
             Firing = true;
             EquipDefFireIndex = 0;
-            TimeUntilNextFire = FireFrequency;
+            TimeUntilNextFire = FireFrequency+Time.fixedDeltaTime;
         }
 
         public void StopFire()
@@ -492,14 +409,24 @@ namespace BransItems.Modules.Pickups.Equipments
                 TimeUntilNextFire = Mathf.Max(TimeUntilNextFire - Time.fixedDeltaTime, 0f);
                 if (TimeUntilNextFire <= 0)
                 {
+                    TimeUntilNextFire = FireFrequency + Time.fixedDeltaTime;
                     EquipmentDef equipDef = EquipDefList[EquipDefFireIndex];
                     EquipDefFireIndex++;
                     
                     if(EquipDefFireIndex>EquipDefList.Count-1)
                     {
                         //NEGATIVE to ADD to cooldown!
-                        ModLogger.LogInfo("Count Absorbed:" + EquipDefList.Count + "   Count Absorbed:" + HighestCooldown + "Cooldown Added:" + EarthTotem.CalculateAdditionalCooldown(EquipDefList.Count, HighestCooldown));
-                        self.characterBody.inventory.DeductActiveEquipmentCooldown(-EarthTotem.CalculateAdditionalCooldown(EquipDefList.Count, HighestCooldown));
+                        ModLogger.LogInfo("Count Absorbed:" + EquipDefList.Count + "   Count Absorbed:" + HighestCooldown + "Cooldown Added:" + EarthTotem.CalcAdditionalCooldownComplex(EquipDefList.Count, HighestCooldown));
+                        float cooldownAdded = EarthTotem.CalcAdditionalCooldownByAbsorb(Math.Max(EquipDefList.Count,1));
+
+                        //Adjust cooldown by gesture of drowned and fuelcells
+                        int gesture = self.inventory.GetItemCount(RoR2Content.Items.AutoCastEquipment);
+                        if (gesture > 0)
+                            gesture += self.inventory.GetItemCount(RoR2Content.Items.EquipmentMagazine);
+
+                        //Do Gesture Math
+                        float adjustedCooldownAdded = cooldownAdded * .5f * (float)Math.Pow(.75f, gesture - 1);
+                        self.characterBody.inventory.DeductActiveEquipmentCooldown(-adjustedCooldownAdded);
                         StopFire();
                     }
                     self.UpdateTargets(equipDef.equipmentIndex, false);
