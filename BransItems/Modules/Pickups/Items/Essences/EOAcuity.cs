@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using BransItems.Modules.ItemTiers.CoreTier;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -30,7 +31,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
             "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
             "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
 
-        public override ItemTier Tier => ItemTier.Tier1;
+        public override ItemTier Tier => EssenceHelpers.essenceTier; //ItemTier.AssignedAtRuntime;
 
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
         //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
@@ -39,9 +40,9 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override bool Hidden => false;
 
-        public override bool CanRemove => false;
+        public override bool CanRemove => EssenceHelpers.canRemoveEssence;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { RoR2.ItemTag.WorldUnique };
+        public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
 
         public static float CritChanceGain;
@@ -49,11 +50,13 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override void Init(ConfigFile config)
         {
+            //ItemDef._itemTierDef = EssenceHelpers.essenceTierDef;
             CreateConfig(config);
             CreateLang();
             //CreateBuff();
             CreateItem();
             Hooks();
+
         }
 
         public void CreateConfig(ConfigFile config)

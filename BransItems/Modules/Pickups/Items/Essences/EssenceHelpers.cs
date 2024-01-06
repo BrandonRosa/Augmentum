@@ -9,11 +9,18 @@ using UnityEngine;
 using static BransItems.BransItems;
 using static BransItems.Modules.Utils.ItemHelpers;
 using BransItems.Modules;
+using BransItems.Modules.ItemTiers.CoreTier;
 
 namespace BransItems.Modules.Pickups.Items.Essences
 {
     public static class EssenceHelpers
     {
+        //public static ItemTier essenceTiers => ItemTier.;
+        public static ItemTierDef essenceTierDef => Core.instance.itemTierDef; 
+        public static ItemTier essenceTier => Core.instance.itemTierDef._tier;
+        public static bool canRemoveEssence = false;
+        public static ItemTag[] essenceItemTags => new ItemTag[] { RoR2.ItemTag.WorldUnique };
+
         //public 
         public static ItemDef[] MainEssenceList = { };
 
@@ -37,6 +44,15 @@ namespace BransItems.Modules.Pickups.Items.Essences
                 return PickupCatalog.FindPickupIndex(EOTotality.instance.ItemDef.itemIndex);
             else
                 return GetBasicEssencePickupIndex()[rng.RangeInt(0, 5)];
+        }
+
+
+        public static PickupIndex[] GetEssenceDrops(Xoroshiro128Plus rng, int dropCount)
+        {
+            PickupIndex[] pickupArray = new PickupIndex[dropCount];
+            for (int i = 0; i < dropCount; i++)
+                pickupArray[i] = GetEssenceIndex(rng);
+            return pickupArray;
         }
     }
 }

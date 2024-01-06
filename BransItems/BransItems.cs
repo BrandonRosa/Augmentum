@@ -8,6 +8,8 @@ using R2API.Utils;
 using System.Linq;
 using BransItems.Modules.Pickups;
 using System.Collections.Generic;
+using BransItems.Modules.ItemTiers;
+using RoR2.ContentManagement;
 
 namespace BransItems
 {
@@ -55,6 +57,7 @@ namespace BransItems
         //public List<BuffBase> Buffs = new List<BuffBase>();
         public List<ItemBase> Items = new List<ItemBase>();
         public List<EquipmentBase> Equipments = new List<EquipmentBase>();
+        public List<ItemTierBase> ItemTiers = new List<ItemTierBase>();
         //public List<EliteEquipmentBase> EliteEquipments = new List<EliteEquipmentBase>();
        // public List<InteractableBase> Interactables = new List<InteractableBase>();
        // public List<SurvivorBase> Survivors = new List<SurvivorBase>();
@@ -80,6 +83,26 @@ namespace BransItems
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BransItems.bransitems_assets"))
             {
                 MainAssets = AssetBundle.LoadFromStream(stream);
+            }
+
+            //var disableSurvivor = Config.ActiveBind<bool>("Survivor", "Disable All Survivors?", false, "Do you wish to disable every survivor in Aetherium?");
+            if (true)
+            {
+                //ItemTier Initialization
+                var ItemTierTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(ItemTierBase)));
+
+                ModLogger.LogInfo("-----------------ITEMTIERS---------------------");
+
+                foreach (var itemTierType in ItemTierTypes)
+                {
+                    ItemTierBase itemtier = (ItemTierBase)System.Activator.CreateInstance(itemTierType);
+                    if (true)//ValidateSurvivor(itemtier, Survivors))
+                    {
+                        itemtier.Init();
+
+                        ModLogger.LogInfo("ItemTier: " + itemtier.TierName + " Initialized!");
+                    }
+                }
             }
 
             var disableItems = Config.Bind<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in BransItems?");
@@ -123,6 +146,10 @@ namespace BransItems
                     }
                 }
             }
+
+            
+
+            
         }
 
         public bool ValidateItem(ItemBase item, List<ItemBase> itemList)

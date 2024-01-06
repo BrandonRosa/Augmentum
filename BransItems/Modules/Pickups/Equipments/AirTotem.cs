@@ -14,6 +14,8 @@ using static BransItems.Modules.Utils.ItemHelpers;
 using BransItems.Modules.Utils;
 using static RoR2.EquipmentSlot;
 using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using BransItems.Modules.Pickups.Items.NoTier;
+using BransItems.Modules.Pickups.Items.Tier3;
 
 namespace BransItems.Modules.Pickups.Equipments
 {
@@ -225,6 +227,7 @@ namespace BransItems.Modules.Pickups.Equipments
                 Vector3 normalized = (vector - slot.characterBody.corePosition).normalized;
                 
                 PickupIndex pickup = GetEssenceIndex(slot.rng);
+                int LootedClamCount = slot.inventory.GetItemCount(LootedBloodburstClam.instance.ItemDef.itemIndex);
 
                 Ray aimRay = slot.GetAimRay();
                 Vector3 direction=aimRay.direction;
@@ -254,6 +257,7 @@ namespace BransItems.Modules.Pickups.Equipments
                         break;
 
                 }
+                spawnTotal += LootedClamCount*BloodburstClam.AdditionalDrops;
                 for (int i = 1; i <= spawnTotal; i++)
                 {
                     pickup = GetEssenceIndex(slot.rng);

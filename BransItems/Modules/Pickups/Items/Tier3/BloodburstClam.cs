@@ -8,67 +8,58 @@ using System.Text;
 using UnityEngine;
 using static BransItems.BransItems;
 using static BransItems.Modules.Utils.ItemHelpers;
-using static RoR2.ItemTag;
+using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using UnityEngine.Networking;
+using BransItems.Modules.Pickups.Items.Essences;
+using BransItems.Modules.Pickups.Items.NoTier;
 
-namespace BransItems.Modules.Pickups.Items.Essences
+namespace BransItems.Modules.Pickups.Items.Tier3
 {
-    class EOStrength : ItemBase<EOStrength>
+    class BloodburstClam : ItemBase<BloodburstClam>
     {
-        public override string ItemName => "Essence of Strength";
-        public override string ItemLangTokenName => "ESSENCE_OF_STRENGTH";
-        public override string ItemPickupDesc => "Slightly increase damage.";
-        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{DamageGain}</style> damage buff. <style=cStack>(+{DamageGain}).";
+        public override string ItemName => "Bloodbust Clam";
+        public override string ItemLangTokenName => "BLOODBURST_CLAM";
+        public override string ItemPickupDesc => "On pickup, crack open for 20 essences which boost stats. Future essence drops will come with 1 more.";
+        public override string ItemFullDescription => $"Drop 20 essences <style=cIsDamage>{DropCount}%</style>.Future essence drops will come with 1<style=cStack>(+{AdditionalDrops}%) more.";
 
-        public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
-            "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
-            "A latent power resonated within its core, and that's when I discovered the Essence of Strength.\n\n" +
-            "As I incorporated the Essence into my gear, I felt an indescribable connection. It wasn't just a physical enhancement; it was as if the very essence of this hostile realm acknowledged my presence."
-            + "The melding was subtle, gradual, weaving its power into the fabric of my being. My combat instincts became sharper, and the sway of my weapon felt like an extension of my will.\n\n" +
-            "In the heat of battle, the Essence of Strength subtly altered the dance of combat. Strikes that once felt labored now flowed effortlessly." +
-            "My shots, once erratic, found their mark with newfound precision. It was as though the essence adapted to my every move, amplifying my capabilities in sync with the rhythm of the ongoing struggle.\n\n" +
-            "Yet, it's not just my physical form that feels the effects. There's a subtle shift within my mind—a resonance, an understanding. The chaotic landscape that was once an enigma now feels like a battlefield where I share a silent dialogue with the terrain itself." +
-            "The Essence whispers insights, guiding me through the ebb and flow of the relentless challenges we face.\n\n" +
-            "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
-            "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
+        public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." + 
+            "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality."+
+            "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
 
-        public override ItemTier Tier => EssenceHelpers.essenceTier; //ItemTier.AssignedAtRuntime;
+        public override ItemTier Tier => ItemTier.Tier3;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
-
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
-
-        //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
-        //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
+        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
+        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
 
         public static GameObject ItemBodyModelPrefab;
 
         public override bool Hidden => false;
 
-        public override bool CanRemove => EssenceHelpers.canRemoveEssence;
+        public override bool CanRemove => false;
 
-        public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
-
-        public static float DamageGain;
+        public override ItemTag[] ItemTags => new ItemTag[] { };
 
 
-		public override void Init(ConfigFile config)
-		{
-            //ItemDef._itemTierDef = EssenceHelpers.essenceTierDef;
+        public static int DropCount;
+
+        public static int AdditionalDrops;
+
+
+        public override void Init(ConfigFile config)
+        {
             CreateConfig(config);
-			CreateLang();
-			//CreateBuff();
-			CreateItem();
-			Hooks();
-            
+            CreateLang();
+            //CreateBuff();
+            CreateItem();
+            Hooks();
         }
 
-		public void CreateConfig(ConfigFile config)
-		{
-			DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 1.5f, "How much base damage should Essense of Strength grant?").Value;
-			//AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
-		}
+        public void CreateConfig(ConfigFile config)
+        {
+            DropCount = config.Bind<int>("Item: " + ItemName, "Number of essences dropped", 20, "How many essences should drop from this item?").Value;
+            AdditionalDrops = config.Bind<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?").Value;
+            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+        }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
@@ -287,13 +278,86 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
 
         public override void Hooks()
-		{
-            RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
-		}
+        {
+            //On.RoR2.Inventory.GiveItem_ItemIndex_int += Inventory_GiveItem_ItemIndex_int;
+            //On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
+            //On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
+            //CharacterBody.instancesList.
+            On.RoR2.CharacterBody.FixedUpdate += CharacterBody_FixedUpdate;
+        }
+
+        private void CharacterBody_FixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self)
+        {
+            orig(self);
+            if (!self || !NetworkServer.active) return;
+            else if (self.inventory.GetItemCount(ItemDef.itemIndex) <= 0) return;
+
+            DropEssences(self);
+            BreakItem(self);
+        }
+
+        private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
+        {
+            orig(self);
+            if (self.inventory.GetItemCount(ItemDef.itemIndex)>0 || !self || !NetworkServer.active) return;
+
+            DropEssences(self);
+            BreakItem(self);
+        }
+        /*
+        private void CharacterMaster_OnItemAddedClient(On.RoR2.CharacterMaster.orig_OnItemAddedClient orig, CharacterMaster self, ItemIndex itemIndex)
+        {
+            orig(self, itemIndex);
+            if ( itemIndex != ItemDef.itemIndex || !self || !NetworkServer.active) return;
+
+            DropEssences(self.);
+            BreakItem();
+        }
+
+        private void Inventory_GiveItem_ItemIndex_int(On.RoR2.Inventory.orig_GiveItem_ItemIndex_int orig, Inventory self, ItemIndex itemIndex, int count)
+        {
+            orig(self, itemIndex, count);
+            if (count <= 0 || itemIndex != ItemDef.itemIndex || !self || !NetworkServer.active) return;
+
+            DropEssences(self);
+            BreakItem();
+            
+        }
+        */
+        private void BreakItem(CharacterBody self)
+        {
+            self.inventory.RemoveItem(BloodburstClam.instance.ItemDef.itemIndex);
+            self.inventory.GiveItem(LootedBloodburstClam.instance.ItemDef.itemIndex);
+        }
+
+        public void DropEssences(CharacterBody self)
+        {
+            //Get Count of LootedBloodburst clams
+            int LootedClamCount = self.inventory.GetItemCount(LootedBloodburstClam.instance.ItemDef.itemIndex)*AdditionalDrops;
+            int totalLoot = LootedClamCount + DropCount;
+            float dropUpVelocityStrength = 20f;
+
+            float dropForwardVelocityStrength = 2f;
+
+            Transform dropTransform = self.transform;
+
+            //Get array of loot
+            PickupIndex[] dropList = EssenceHelpers.GetEssenceDrops(RoR2Application.rng, totalLoot);
+
+            float num = 360f / (float)totalLoot;
+            Vector3 val = Vector3.up * dropUpVelocityStrength + dropTransform.forward * dropForwardVelocityStrength;
+            Quaternion val2 = Quaternion.AngleAxis(num, Vector3.up);
+            for (int i = 0; i < totalLoot; i++)
+            {
+                PickupDropletController.CreatePickupDroplet(dropList[i], dropTransform.position + Vector3.up * 1.5f, val);
+                val = val2 * val;
+            }
+        }
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
-			args.baseDamageAdd += DamageGain * GetCount(sender);
+            args.critAdd += DropCount * GetCount(sender);
+            //KEEP IN MIND +5% increase is +5 here
         }
     }
 }
