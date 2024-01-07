@@ -8,28 +8,23 @@ using System.Text;
 using UnityEngine;
 using static BransItems.BransItems;
 using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
-using UnityEngine.AddressableAssets;
+using BransItems.Modules.Pickups.Items.Tier3;
 
-namespace BransItems.Modules.Pickups.Items.Tier3
+namespace BransItems.Modules.Pickups.Items.NoTier
 {
-    class DiscoveryMedallion : ItemBase<DiscoveryMedallion>
+    class DiscoveryMedallionConsumed : ItemBase<DiscoveryMedallionConsumed>
     {
-        //ADD IN SHARESUITE BLACKLIST
-        public override string ItemName => "Discovery Medallion";
-        public override string ItemLangTokenName => "DISCOVERY_MEDALLION";
-        public override string ItemPickupDesc => "On pickup, wish for a Red tier item. Future wishes will come with more choices.";
-        public override string ItemFullDescription => $"On pickup, wish for 1 of <style=cIsDamage>{Choices}%</style> Red tier items. Future wishes will come with 1<style=cStack>(+{AdditionalChoices}) more choice.";
+        public override string ItemName => "Consumed Discovery Medallion";
+        public override string ItemLangTokenName => "DISCOVERY_MEDALLION_CONSUMED";
+        public override string ItemPickupDesc => "Future wishes will come with 1 more choice.";
+        public override string ItemFullDescription => $"Future wishes  will come with 1<style=cStack>(+{DiscoveryMedallion.AdditionalChoices})</style) more.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
             "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
 
-        public override ItemTier Tier => ItemTier.Tier3;
+        public override ItemTier Tier => ItemTier.NoTier;
 
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
         //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
@@ -40,14 +35,12 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override bool CanRemove => false;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist };
+        public override ItemTag[] ItemTags => new ItemTag[] { };
 
 
-        public static int Choices;
+        //public static int DropCount;
 
-        public static int AdditionalChoices;
-
-        public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
+        //public static int AdditionalDrops;
 
 
         public override void Init(ConfigFile config)
@@ -61,8 +54,8 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            Choices = config.Bind<int>("Item: " + ItemName, "Number of choices to choose from", 2, "How many choices should Discovery Medallion give?").Value;
-            AdditionalChoices = config.Bind<int>("Item: " + ItemName, "Extra choices in future wishes", 1, "How many extra wishes should DiscoveryMedallion give?").Value;
+            //DropCount = config.Bind<int>("Item: " + ItemName, "Number of essences dropped", 20, "How many essences should drop from this item?").Value;
+            //AdditionalDrops = config.Bind<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -284,61 +277,10 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override void Hooks()
         {
-            //On.RoR2.Inventory.GiveItem_ItemIndex_int += Inventory_GiveItem_ItemIndex_int;
-            //On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
-            //On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
-            //CharacterBody.instancesList.
-            On.RoR2.CharacterBody.FixedUpdate += CharacterBody_FixedUpdate;
-        }
-
-        private void CharacterBody_FixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self)
-        {
-            orig(self);
-            if (!self || !NetworkServer.active) return;
-            else if (self.inventory.GetItemCount(ItemDef.itemIndex) <= 0) return;
-
-            DropWishes(self);
-            BreakItem(self);
+            // On.RoR2.Inventory.GiveItem_ItemIndex_int += Inventory_GiveItem_ItemIndex_int; ;
         }
 
 
-        private void BreakItem(CharacterBody self)
-        {
-            self.inventory.RemoveItem(DiscoveryMedallion.instance.ItemDef.itemIndex);
-            self.inventory.GiveItem(DiscoveryMedallionConsumed.instance.ItemDef.itemIndex);
-        }
 
-        public void DropWishes(CharacterBody self)
-        {
-            //Get Count of LootedBloodburst clams
-            int ConsumedDiscoveryMedallion = self.inventory.GetItemCount(DiscoveryMedallionConsumed.instance.ItemDef.itemIndex) * AdditionalChoices;
-            int totalLoot = ConsumedDiscoveryMedallion + Choices;
-            float dropUpVelocityStrength = 20f;
-
-            float dropForwardVelocityStrength = 2f;
-
-            Transform dropTransform = self.transform;
-
-            ItemIndex[] itemIndex=ItemHelpers.GetRandomSelectionFromArray(ItemCatalog.tier3ItemList, totalLoot, RoR2Application.rng);
-            PickupIndex[] pickupIndex = new PickupIndex[itemIndex.Length];
-            for (int i=0;i<itemIndex.Length;i++)
-                pickupIndex[i]=PickupCatalog.FindPickupIndex(itemIndex[i]);
-
-            PickupDropletController.CreatePickupDroplet(new GenericPickupController.CreatePickupInfo
-            {
-                pickerOptions = PickupPickerController.GenerateOptionsFromArray(pickupIndex),
-                prefabOverride = potentialPrefab,
-                position = self.transform.position,
-                rotation = Quaternion.identity,
-                pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier3)
-            },
-                            self.transform.position, Vector3.up * dropUpVelocityStrength); //+ self.dropTransform.forward * self.dropForwardVelocityStrength);
-        }
-
-        private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
-        {
-            args.critAdd += Choices * GetCount(sender);
-            //KEEP IN MIND +5% increase is +5 here
-        }
     }
 }

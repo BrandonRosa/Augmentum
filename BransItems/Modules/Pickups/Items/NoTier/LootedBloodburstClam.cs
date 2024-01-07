@@ -9,6 +9,7 @@ using UnityEngine;
 using static BransItems.BransItems;
 using static BransItems.Modules.Utils.ItemHelpers;
 using UnityEngine.Networking;
+using BransItems.Modules.Pickups.Items.Tier3;
 
 namespace BransItems.Modules.Pickups.Items.NoTier
 {
@@ -17,7 +18,7 @@ namespace BransItems.Modules.Pickups.Items.NoTier
         public override string ItemName => "Looted Bloodbust Clam";
         public override string ItemLangTokenName => "LOOTED_BLOODBURST_CLAM";
         public override string ItemPickupDesc => "Future essence drops will come with 1 more.";
-        public override string ItemFullDescription => $"Future essence drops will come with 1<style=cStack>(+{AdditionalDrops})</style) more.";
+        public override string ItemFullDescription => $"Future essence drops will come with 1<style=cStack>(+{BloodburstClam.AdditionalDrops})</style) more.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
@@ -37,9 +38,9 @@ namespace BransItems.Modules.Pickups.Items.NoTier
         public override ItemTag[] ItemTags => new ItemTag[] { };
 
 
-        public static int DropCount;
+        //public static int DropCount;
 
-        public static int AdditionalDrops;
+        //public static int AdditionalDrops;
 
 
         public override void Init(ConfigFile config)
@@ -53,8 +54,8 @@ namespace BransItems.Modules.Pickups.Items.NoTier
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of essences dropped", 20, "How many essences should drop from this item?").Value;
-            AdditionalDrops = config.Bind<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?").Value;
+            //DropCount = config.Bind<int>("Item: " + ItemName, "Number of essences dropped", 20, "How many essences should drop from this item?").Value;
+            //AdditionalDrops = config.Bind<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 

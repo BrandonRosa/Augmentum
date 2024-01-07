@@ -17,6 +17,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 {
     class BloodburstClam : ItemBase<BloodburstClam>
     {
+        //ADD SHARESUITE BLACKLIST
         public override string ItemName => "Bloodbust Clam";
         public override string ItemLangTokenName => "BLOODBURST_CLAM";
         public override string ItemPickupDesc => "On pickup, crack open for 20 essences which boost stats. Future essence drops will come with 1 more.";

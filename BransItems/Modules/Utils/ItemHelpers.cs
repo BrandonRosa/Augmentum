@@ -139,23 +139,26 @@ namespace BransItems.Modules.Utils
             return index;
         }
 
-        public static  [] GetRandomSelectionFromArray(List<ItemIndex> itemList, int maxCount, Xoroshiro128Plus rng)
+        public static  T[] GetRandomSelectionFromArray<T>(List<T> itemList, int maxCount, Xoroshiro128Plus rng)
         {
-            int selectionSize = itemList.Count > maxCount ? maxCount : itemList.Count;
-            ItemIndex[] selection = new ItemIndex[selectionSize];
-            HashSet<ItemIndex> usedItems = new HashSet<ItemIndex>();
+            int selectionSize = Math.Min(itemList.Count,maxCount);
+            T[] selection = new T[selectionSize];
+            HashSet<T> usedItems = new HashSet<T>();
 
             for(int i=0;i<selectionSize;i++)
             {
-                ItemIndex selectedItem;
+                T selectedItem;
                 do
                 {
                     selectedItem = itemList[rng.RangeInt(0, itemList.Count)];
-                } while (!usedItems.Contains(selectedItem));
+                } while (usedItems.Contains(selectedItem));
                 selection[i] = selectedItem;
+                usedItems.Add(selectedItem);
             }
-
+            //(T[])Convert.ChangeType(value, typeof(T[]));
             return selection;
         }
+
+        //public static PickupIndex[] ItemIndexToPickupIndex
     }
 }
