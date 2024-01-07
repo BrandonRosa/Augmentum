@@ -14,6 +14,8 @@ using static BransItems.Modules.Utils.ItemHelpers;
 using BransItems.Modules.Utils;
 using static RoR2.EquipmentSlot;
 using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using BransItems.Modules.Pickups.Items.NoTier;
+using BransItems.Modules.Pickups.Items.Tier3;
 
 namespace BransItems.Modules.Pickups.Equipments
 {
@@ -36,6 +38,7 @@ namespace BransItems.Modules.Pickups.Equipments
         public static GameObject ItemBodyModelPrefab;
 
         public override float Cooldown { get; } = 30f;
+
 
         // private UserTargetInfo currentTarget;
 
@@ -212,7 +215,7 @@ namespace BransItems.Modules.Pickups.Equipments
                 && Run.instance)
             {
 
-                var pickupControllerPickupIndex = slot.currentTarget.pickupController.GetComponent<PickupIndex>();
+                //var pickupControllerPickupIndex = slot.currentTarget.pickupController.GetComponent<PickupIndex>();
                 ItemTier Tier= ItemTierCatalog.GetItemTierDef(ItemCatalog.GetItemDef(slot.currentTarget.pickupController.pickupIndex.itemIndex).tier).tier;  
                 if (false)
                 {
@@ -224,25 +227,38 @@ namespace BransItems.Modules.Pickups.Equipments
                 Vector3 normalized = (vector - slot.characterBody.corePosition).normalized;
                 
                 PickupIndex pickup = GetEssenceIndex(slot.rng);
+                int LootedClamCount = slot.inventory.GetItemCount(LootedBloodburstClam.instance.ItemDef.itemIndex);
 
                 Ray aimRay = slot.GetAimRay();
                 Vector3 direction=aimRay.direction;
                 //Quaternion quaternion = Quaternion.LookRotation(aimRay.direction);
                 ModLogger.LogInfo("Dir" + direction.ToString());
-                PickupDropletController.CreatePickupDroplet(GetEssenceIndex(slot.rng), vector + new Vector3(0, 3, 0), direction * 40f); //normalized * 15f);
-                int spawnMore = 0;
+                //PickupDropletController.CreatePickupDroplet(GetEssenceIndex(slot.rng), vector + new Vector3(0, 3, 0), direction * 40f); //normalized * 15f);
+                int spawnTotal = 0;
                 switch(Tier)
                 {
+                    case ItemTier.Tier1:
+                        spawnTotal = 1;
+                        break;
                     case ItemTier.Tier2:
-                        spawnMore = 3;
+                        spawnTotal = 4;
                         break;
                     case ItemTier.Tier3:
+                        spawnTotal = 10;
+                            break;
                     case ItemTier.Boss:
-                        spawnMore = 7;
+                        spawnTotal = 8;
+                        break;
+                    case ItemTier.Lunar:
+                        pickup = PickupCatalog.FindPickupIndex(RoR2Content.Items.LunarSpecialReplacement.itemIndex);
+                        PickupDropletController.CreatePickupDroplet(pickup, vector, direction * 40f);
+                        GameObject.Destroy(slot.currentTarget.rootObject);
+                        return true;
                         break;
 
                 }
-                for (int i = 1; i <= spawnMore; i++)
+                spawnTotal += LootedClamCount*BloodburstClam.AdditionalDrops;
+                for (int i = 1; i <= spawnTotal; i++)
                 {
                     pickup = GetEssenceIndex(slot.rng);
                     //ModLogger.LogInfo("Item" + PickupCatalog.GetPickupDef(pickup).internalName);
@@ -296,106 +312,7 @@ namespace BransItems.Modules.Pickups.Equipments
             }
         }
     }
-    /*
-
-    protected override bool ActivateEquipment(EquipmentSlot slot)
-    {
-        if (!slot.characterBody || !slot.characterBody.inputBank) { return false; }
-
-        var targetComponent = slot.GetComponent<TargetingControllerComponent>();
-        var displayTransform = slot.FindActiveEquipmentDisplay();
-
-
-        return FireAirTotem();
-    }
-
-    private void InvalidateCurrentTarget()
-    {
-        currentTarget = default(UserTargetInfo);
-    }
-    private bool FireAirTotem()
-    {
-        //UpdateTargets();
-        GenericPickupController pickupController = currentTarget.pickupController;
-        if ((bool)pickupController)
-        {
-            PickupIndex initialPickupIndex = pickupController.pickupIndex;
-            //subcooldownTimer = 0.2f;
-            PickupIndex[] array = GetBasicEssencePickupIndex();
-                //(from pickupIndex in PickupTransmutationManager.GetAvailableGroupFromPickupIndex(pickupController.pickupIndex)
-                                  // where pickupIndex != initialPickupIndex
-                                  // select pickupIndex).ToArray();
-            if (array == null)
-            {
-                return false;
-            }
-            if (array.Length == 0)
-            {
-                return false;
-            }
-            pickupController.NetworkpickupIndex = Run.instance.treasureRng.NextElementUniform(array);
-            EffectManager.SimpleEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/OmniEffect/OmniRecycleEffect"), pickupController.pickupDisplay.transform.position, Quaternion.identity, transmit: true);
-            //pickupController.NetworkRecycled = true;
-            InvalidateCurrentTarget();
-            return true;
-        }
-        return false;
-    }
-
-    private void Start(On.RoR2.EquipmentSlot.orig_Start orig, global::RoR2.EquipmentSlot self)
-    {
-        inputBank = self.GetComponent<InputBankTest>();
-        targetIndicator = new Indicator(self.gameObject, null);
-    }
-    private Ray GetAimRay()
-    {
-        Ray result = default(Ray);
-        result.direction = inputBank.aimDirection;
-        result.origin = inputBank.aimOrigin;
-        return result;
-    }
-    private void UpdateTargets(On.RoR2.EquipmentSlot.orig_UpdateTargets orig, EquipmentSlot self, EquipmentIndex targetingEquipmentIndex, bool userShouldAnticipateTarget)
-    {
-        //orig(self);
-        bool AirFlag = targetingEquipmentIndex == EquipmentDef.equipmentIndex;
-        if (AirFlag)//(self.equipmentIndex == EquipmentDef.equipmentIndex)
-        {
-            var targetingComponent = self.GetComponent<TargetingControllerComponent>();
-            if (targetingComponent)
-            {
-                currentTarget = new UserTargetInfo(self.FindPickupController(self.GetAimRay(), 10f, 30f, requireLoS: true, true));
-
-
-                GenericPickupController pickupController = currentTarget.pickupController;
-                bool flag5 = currentTarget.transformToIndicateAt;
-                if (flag5)
-                {
-
-                    if (!pickupController.Recycled)
-                    {
-                        targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerIndicator");
-                    }
-
-                }
-                targetIndicator.active = flag5;
-                targetIndicator.targetTransform = (flag5 ? currentTarget.transformToIndicateAt : null);
-            }
-        }
-    }
-
-    private void RemoveNonElitesFromTargeting(On.RoR2.EquipmentSlot.orig_Update orig, EquipmentSlot self)
-    {
-        orig(self);
-        if (self.equipmentIndex == EquipmentDef.equipmentIndex)
-        {
-            var targetingComponent = self.GetComponent<TargetingControllerComponent>();
-            if (targetingComponent)
-            {
-                targetingComponent.AdditionalBullseyeFunctionality = (bullseyeSearch) => bullseyeSearch.FilterElites();
-            }
-        }
-    }
-    */
+    
 
 }
 
