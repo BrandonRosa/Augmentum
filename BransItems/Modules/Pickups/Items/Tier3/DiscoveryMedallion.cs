@@ -319,10 +319,9 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
             Transform dropTransform = self.transform;
 
-            ItemIndex[] itemIndex=ItemHelpers.GetRandomSelectionFromArray(ItemCatalog.tier3ItemList, totalLoot, RoR2Application.rng);
-            PickupIndex[] pickupIndex = new PickupIndex[itemIndex.Length];
-            for (int i=0;i<itemIndex.Length;i++)
-                pickupIndex[i]=PickupCatalog.FindPickupIndex(itemIndex[i]);
+            
+
+            PickupIndex[] pickupIndex=ItemHelpers.GetRandomSelectionFromArray(Run.instance.availableTier3DropList, totalLoot, RoR2Application.rng);
 
             PickupDropletController.CreatePickupDroplet(new GenericPickupController.CreatePickupInfo
             {
@@ -333,12 +332,6 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                 pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier3)
             },
                             self.transform.position, Vector3.up * dropUpVelocityStrength); //+ self.dropTransform.forward * self.dropForwardVelocityStrength);
-        }
-
-        private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
-        {
-            args.critAdd += Choices * GetCount(sender);
-            //KEEP IN MIND +5% increase is +5 here
         }
     }
 }
