@@ -4,6 +4,7 @@ using RoR2;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace BransItems.Modules.ItemTiers
 {
@@ -43,7 +44,7 @@ namespace BransItems.Modules.ItemTiers
         /// <summary>
         /// The ItemTierDef that represents this ItemTierBase
         /// </summary>
-        public abstract ItemTierDef itemTierDef { get; }
+        public ItemTierDef itemTierDef  = ScriptableObject.CreateInstance<ItemTierDef>();
 
         /// <summary>
         /// The pickup display for this ItemTierDef, note that this is not the droplet VFX, but the VFX that appears when the item's pickup is in the world.
@@ -60,9 +61,9 @@ namespace BransItems.Modules.ItemTiers
         /// </summary>
         public List<PickupIndex> AvailableTierDropList { get; internal set; } = new List<PickupIndex>();
 
-        public abstract GameObject highlightPrefab { get; }
+        public GameObject highlightPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
 
-        public abstract GameObject dropletDisplayPrefab { get; }
+        public GameObject dropletDisplayPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
 
         public virtual bool canRestack { get; } = true;
 
@@ -70,7 +71,7 @@ namespace BransItems.Modules.ItemTiers
 
         public virtual bool isDroppable { get; } = true;
 
-        public virtual string TierName { get; internal set; } = "";
+        public virtual string TierName { get; internal set; } = "DEFAULT";
 
  
 
@@ -90,8 +91,13 @@ namespace BransItems.Modules.ItemTiers
             itemTierDef.darkColorIndex = darkColorIndex;  //ColorCatalog.ColorIndex.Teleporter;
             itemTierDef.tier= ItemTier.AssignedAtRuntime;
             
-            BransItems.ModLogger.LogWarning(itemTierDef.tier.ToString());
-            BransItems.ModLogger.LogWarning("Correct:"+ ItemTier.AssignedAtRuntime.ToString());
+            //BransItems.ModLogger.LogWarning(itemTierDef.tier.ToString());
+            //BransItems.ModLogger.LogWarning("Correct:"+ ItemTier.AssignedAtRuntime.ToString());
+            //BransItems.ModLogger.LogWarning("MyTierName:" + itemTierDef.name);
+           // BransItems.ModLogger.LogWarning("MyTierCanScrap:" + itemTierDef.canScrap);
+
+            //if(!itemTierDef.name.Equals(TierName))
+               // BransItems.ModLogger.LogWarning("NAME DIDNT SAVE");
             //ItemTierDef.bgIconTexture.
             ContentAddition.AddItemTierDef(itemTierDef);
         }

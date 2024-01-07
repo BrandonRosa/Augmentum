@@ -233,22 +233,25 @@ namespace BransItems.Modules.Pickups.Equipments
         private void FixedUpdate(On.RoR2.EquipmentSlot.orig_FixedUpdate orig, EquipmentSlot self)
         {
             orig(self);
-            var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
-            if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
-
-            if (cpt.Firing ==true)
+            if (self.equipmentIndex == EarthTotem.instance.EquipmentDef.equipmentIndex)
             {
+                var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
+                if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
 
-                cpt.FireSequence(self);
-                //if(fireNext!=null)
-                //{
-                    
-               // }
-               // else if(cpt.Firing ==false)
-               // {
-                    
+                if (cpt.Firing == true)
+                {
+
+                    cpt.FireSequence(self);
+                    //if(fireNext!=null)
+                    //{
+
+                    // }
+                    // else if(cpt.Firing ==false)
+                    // {
+
                     //cpt.StopFire();
-               // }
+                    // }
+                }
             }
         }
 

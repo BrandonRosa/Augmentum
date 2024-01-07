@@ -12,13 +12,13 @@ namespace BransItems.Modules.ItemTiers.CoreTier
 {
     class Core : ItemTierBase<Core>
     {
-        public override ItemTierDef itemTierDef => ScriptableObject.CreateInstance<ItemTierDef>(); // new ItemTierDef();
+        //public override ItemTierDef itemTierDef = ScriptableObject.CreateInstance<ItemTierDef>(); // new ItemTierDef();
 
         //public override GameObject PickupDisplayVFX => throw new NotImplementedException();
 
-        public override GameObject highlightPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
+        //public override GameObject highlightPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
 
-        public override GameObject dropletDisplayPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
+        //public override GameObject dropletDisplayPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
 
         public override bool canRestack => true;
 
@@ -35,6 +35,10 @@ namespace BransItems.Modules.ItemTiers.CoreTier
         public override void Init()
         {
             CreateTier();
+            //BransItems.ModLogger.LogWarning(itemTierDef.tier.ToString());
+            //BransItems.ModLogger.LogWarning("Correct:" + ItemTier.AssignedAtRuntime.ToString());
+            //BransItems.ModLogger.LogWarning("MyTierName:" + itemTierDef.name);
+            //BransItems.ModLogger.LogWarning("MyTierCanScrap:" + itemTierDef.canScrap);
 
         }
     }

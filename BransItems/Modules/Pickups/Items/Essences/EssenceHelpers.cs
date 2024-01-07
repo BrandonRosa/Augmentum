@@ -18,7 +18,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         //public static ItemTier essenceTiers => ItemTier.;
         public static ItemTierDef essenceTierDef => Core.instance.itemTierDef; 
         public static ItemTier essenceTier => Core.instance.itemTierDef._tier;
-        public static bool canRemoveEssence = false;
+        public static bool canRemoveEssence = true;
         public static ItemTag[] essenceItemTags => new ItemTag[] { RoR2.ItemTag.WorldUnique };
 
         //public 
