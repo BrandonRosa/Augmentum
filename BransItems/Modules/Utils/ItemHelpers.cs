@@ -138,5 +138,24 @@ namespace BransItems.Modules.Utils
 
             return index;
         }
+
+        public static  [] GetRandomSelectionFromArray(List<ItemIndex> itemList, int maxCount, Xoroshiro128Plus rng)
+        {
+            int selectionSize = itemList.Count > maxCount ? maxCount : itemList.Count;
+            ItemIndex[] selection = new ItemIndex[selectionSize];
+            HashSet<ItemIndex> usedItems = new HashSet<ItemIndex>();
+
+            for(int i=0;i<selectionSize;i++)
+            {
+                ItemIndex selectedItem;
+                do
+                {
+                    selectedItem = itemList[rng.RangeInt(0, itemList.Count)];
+                } while (!usedItems.Contains(selectedItem));
+                selection[i] = selectedItem;
+            }
+
+            return selection;
+        }
     }
 }
