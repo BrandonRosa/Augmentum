@@ -29,8 +29,8 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override ItemTier Tier => ItemTier.Tier3;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -282,9 +282,9 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         {
             //On.RoR2.Inventory.GiveItem_ItemIndex_int += Inventory_GiveItem_ItemIndex_int;
             //On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
-            //On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
+            On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
             //CharacterBody.instancesList.
-            On.RoR2.CharacterBody.FixedUpdate += CharacterBody_FixedUpdate;
+            //On.RoR2.CharacterBody.FixedUpdate += CharacterBody_FixedUpdate;
         }
 
         private void CharacterBody_FixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self)
@@ -300,7 +300,8 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
         {
             orig(self);
-            if (self.inventory.GetItemCount(ItemDef.itemIndex)>0 || !self || !NetworkServer.active) return;
+            if (!self || !NetworkServer.active) return;
+            if (self.inventory.GetItemCount(ItemDef.itemIndex)<=0 ) return;
 
             DropEssences(self);
             BreakItem(self);
@@ -336,9 +337,9 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             //Get Count of LootedBloodburst clams
             int LootedClamCount = self.inventory.GetItemCount(LootedBloodburstClam.instance.ItemDef.itemIndex)*AdditionalDrops;
             int totalLoot = LootedClamCount + DropCount;
-            float dropUpVelocityStrength = 20f;
+            float dropUpVelocityStrength = 25f;
 
-            float dropForwardVelocityStrength = 2f;
+            float dropForwardVelocityStrength = 5f;
 
             Transform dropTransform = self.transform;
 

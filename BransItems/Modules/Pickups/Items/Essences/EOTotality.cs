@@ -30,10 +30,12 @@ namespace BransItems.Modules.Pickups.Items.Essences
             "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
             "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
 
-        public override ItemTier Tier => EssenceHelpers.essenceTier; ////ItemTier.AssignedAtRuntime;
+        public override ItemTierDef ModdedTierDef => EssenceHelpers.essenceTierDef; ////ItemTier.AssignedAtRuntime;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
+        public override ItemTier Tier => ItemTier.AssignedAtRuntime;
+
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal5/source/crystal5.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal5/source/TempCrystal5.png");
 
         public static GameObject ItemBodyModelPrefab;
 

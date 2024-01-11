@@ -16,7 +16,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Velocity";
         public override string ItemLangTokenName => "ESSENCE_OF_VELOCITY";
         public override string ItemPickupDesc => "Slightly increase movement speed.";
-        public override string ItemFullDescription => $"Increase movement speed by <style=cIsDamage>{MoveSpeedGain}%</style>. <style=cStack>(+{MoveSpeedGain}%).";
+        public override string ItemFullDescription => $"Increase movement speed by <style=cIsDamage>{MoveSpeedGain}%</style><style=cStack>(+{MoveSpeedGain}%)</style>.";
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
@@ -30,10 +30,12 @@ namespace BransItems.Modules.Pickups.Items.Essences
             "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
             "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
 
-        public override ItemTier Tier => EssenceHelpers.essenceTier; //ItemTier.AssignedAtRuntime;
+        public override ItemTierDef ModdedTierDef => EssenceHelpers.essenceTierDef; //ItemTier.AssignedAtRuntime;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
+        public override ItemTier Tier => ItemTier.AssignedAtRuntime;
+
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal6/source/crystal6.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal6/source/TempCrystal6.png");
 
         public static GameObject ItemBodyModelPrefab;
 

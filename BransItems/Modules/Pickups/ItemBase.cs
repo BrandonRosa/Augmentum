@@ -28,6 +28,8 @@ namespace BransItems.Modules.Pickups
 		public abstract string ItemFullDescription { get; }
 		public abstract string ItemLore { get; }
 
+		public virtual ItemTierDef ModdedTierDef { get; } = null;
+
 		public abstract ItemTier Tier { get; }
 		public virtual ItemTag[] ItemTags { get; } = new ItemTag[] { };
 
@@ -38,6 +40,7 @@ namespace BransItems.Modules.Pickups
 		public virtual bool Hidden { get; } = false;
         public bool AIBlacklisted { get; internal set; }
         public bool PrinterBlacklisted { get; internal set; }
+
 
         public ItemDef ItemDef;
 
@@ -66,7 +69,10 @@ namespace BransItems.Modules.Pickups
 			ItemDef.hidden = Hidden;
 			ItemDef.canRemove = CanRemove;
 			//ItemDef.tier = Tier;
-			ItemDef.deprecatedTier = Tier;
+			if(ModdedTierDef==null)
+				ItemDef.deprecatedTier = Tier;
+			else
+				ItemDef._itemTierDef = ModdedTierDef;
 			ItemDef.tags = ItemTags;
 			//ItemTag.WorldUnique
 			var itemDisplayRuleDict = CreateItemDisplayRules();

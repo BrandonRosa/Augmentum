@@ -10,6 +10,9 @@ using BransItems.Modules.Pickups;
 using System.Collections.Generic;
 using BransItems.Modules.ItemTiers;
 using RoR2.ContentManagement;
+using BransItems.Modules.ColorCatalogEntry;
+using BransItems.Modules.ItemTiers.CoreTier;
+using BransItems.Modules.Utils;
 
 namespace BransItems
 {
@@ -26,7 +29,7 @@ namespace BransItems
     [BepInDependency(R2API.R2API.PluginGUID, R2API.R2API.PluginVersion)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(ModGuid, ModName, ModVer)]
-    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(RecalculateStatsAPI))]//nameof(BuffAPI), nameof(ResourcesAPI), nameof(EffectAPI), nameof(ProjectileAPI), nameof(ArtifactAPI), nameof(LoadoutAPI),   
+    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(RecalculateStatsAPI), nameof(ColorsAPI))]//nameof(BuffAPI), nameof(ResourcesAPI), nameof(EffectAPI), nameof(ProjectileAPI), nameof(ArtifactAPI), nameof(LoadoutAPI),   
                              // nameof(PrefabAPI), nameof(SoundAPI), nameof(OrbAPI),
                              // nameof(NetworkingAPI), nameof(DirectorAPI), nameof(RecalculateStatsAPI), nameof(UnlockableAPI), nameof(EliteAPI),
                              // nameof(CommandHelper), nameof(DamageAPI))]
@@ -40,7 +43,7 @@ namespace BransItems
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.BransItems"; //Our Package Name
         public const string ModName = "BransItems";
-        public const string ModVer = "0.0.4";
+        public const string ModVer = "0.4.0";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;
@@ -72,9 +75,12 @@ namespace BransItems
         //public static Dictionary<BuffBase, bool> BuffStatusDictionary = new Dictionary<BuffBase, bool>();
         public static Dictionary<ItemBase, bool> ItemStatusDictionary = new Dictionary<ItemBase, bool>();
         public static Dictionary<EquipmentBase, bool> EquipmentStatusDictionary = new Dictionary<EquipmentBase, bool>();
-       // public static Dictionary<EliteEquipmentBase, bool> EliteEquipmentStatusDictionary = new Dictionary<EliteEquipmentBase, bool>();
+        // public static Dictionary<EliteEquipmentBase, bool> EliteEquipmentStatusDictionary = new Dictionary<EliteEquipmentBase, bool>();
         //public static Dictionary<InteractableBase, bool> InteractableStatusDictionary = new Dictionary<InteractableBase, bool>();
-       // public static Dictionary<SurvivorBase, bool> SurvivorStatusDictionary = new Dictionary<SurvivorBase, bool>();
+        // public static Dictionary<SurvivorBase, bool> SurvivorStatusDictionary = new Dictionary<SurvivorBase, bool>();
+
+        public static ColorCatalog.ColorIndex TempCoreLight = ColorCatalogUtils.RegisterColor(new Color32(21, 99, 58, 255));
+        public static ColorCatalog.ColorIndex TempCoreDark = ColorCatalogUtils.RegisterColor(new Color32(1, 126, 62, 255));
 
         public void Awake()
         {
@@ -86,6 +92,26 @@ namespace BransItems
             }
 
             //var disableSurvivor = Config.ActiveBind<bool>("Survivor", "Disable All Survivors?", false, "Do you wish to disable every survivor in Aetherium?");
+            /*
+            if (true)
+            {
+                //ItemTier Initialization
+                var ColorCatalogEntries = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(ColorCatalogEntryBase)));
+
+                ModLogger.LogInfo("-----------------COLORS---------------------");
+
+                foreach (var colorCatalogEntry in ColorCatalogEntries)
+                {
+                    ColorCatalogEntryBase color = (ColorCatalogEntryBase)System.Activator.CreateInstance(colorCatalogEntry);
+                    if (true)//ValidateSurvivor(itemtier, Survivors))
+                    {
+                        color.Init();
+
+                        ModLogger.LogInfo("Color: " + color.ColorCatalogEntryName + " Initialized!");
+                    }
+                }
+            }
+            */
             if (true)
             {
                 //ItemTier Initialization
@@ -121,6 +147,12 @@ namespace BransItems
                         item.Init(Config);
 
                         ModLogger.LogInfo("Item: " + item.ItemName + " Initialized!");
+
+                        if(item.ItemDef==Core.instance.itemTierDef)
+                        {
+                            Core.instance.ItemsWithThisTier.Add(item.ItemDef.itemIndex);
+                            Core.instance.AvailableTierDropList.Add(PickupCatalog.FindPickupIndex(item.ItemDef.itemIndex));
+                        }
                     }
                 }
 

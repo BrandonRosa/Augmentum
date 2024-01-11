@@ -31,8 +31,8 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override ItemTier Tier => ItemTier.Tier3;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/discoveryMedallion.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallion.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -286,9 +286,9 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         {
             //On.RoR2.Inventory.GiveItem_ItemIndex_int += Inventory_GiveItem_ItemIndex_int;
             //On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
-            //On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
+            On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
             //CharacterBody.instancesList.
-            On.RoR2.CharacterBody.FixedUpdate += CharacterBody_FixedUpdate;
+            //On.RoR2.CharacterBody.FixedUpdate += CharacterBody_FixedUpdate;
         }
 
         private void CharacterBody_FixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self)
@@ -296,6 +296,16 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             orig(self);
             if (!self || !NetworkServer.active) return;
             else if (self.inventory.GetItemCount(ItemDef.itemIndex) <= 0) return;
+
+            DropWishes(self);
+            BreakItem(self);
+        }
+
+        private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
+        {
+            orig(self);
+            if (!self || !NetworkServer.active) return;
+            if (self.inventory.GetItemCount(ItemDef.itemIndex) <= 0) return;
 
             DropWishes(self);
             BreakItem(self);

@@ -35,6 +35,9 @@ namespace BransItems.Modules.Pickups.Equipments
             $"and all the user needs to do is sever the specimen's connection to its soul.\"";
         public override bool UseTargeting => true;
 
+        public override GameObject EquipmentModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.prefab");
+        public override Sprite EquipmentIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.png");
+
         public static GameObject ItemBodyModelPrefab;
 
         public override float Cooldown { get; } = 15;//140f;

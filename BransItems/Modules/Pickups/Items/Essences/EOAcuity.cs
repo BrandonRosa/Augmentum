@@ -17,7 +17,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Acuity";
         public override string ItemLangTokenName => "ESSENCE_OF_ACUITY";
         public override string ItemPickupDesc => "Slightly increase crit chance.";
-        public override string ItemFullDescription => $"Increase crit chance by <style=cIsDamage>{CritChanceGain}%</style>. <style=cStack>(+{CritChanceGain}%).";
+        public override string ItemFullDescription => $"Increase crit chance by <style=cIsDamage>{CritChanceGain}%</style><style=cStack>(+{CritChanceGain}%)</style>.";
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
@@ -31,10 +31,10 @@ namespace BransItems.Modules.Pickups.Items.Essences
             "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
             "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
 
-        public override ItemTier Tier => EssenceHelpers.essenceTier; //ItemTier.AssignedAtRuntime;
+        public override ItemTierDef ModdedTierDef => EssenceHelpers.essenceTierDef; //ItemTier.AssignedAtRuntime;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.prefab");//("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -44,6 +44,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
+        public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
         public static float CritChanceGain;
 
