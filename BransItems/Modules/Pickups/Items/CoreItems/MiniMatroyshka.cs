@@ -43,7 +43,7 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
 
         public override bool CanRemove => true;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy };
 
 
         public static int DropCount;
@@ -294,14 +294,45 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
             On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
             //On.RoR2.EquipmentSlot.OnEquipmentExecuted += EquipmentSlot_OnEquipmentExecuted;
             //On.RoR2.ChestBehavior.ItemDrop += ChestBehavior_ItemDrop;
-            On.RoR2.PurchaseInteraction.CanBeAffordedByInteractor += PurchaseInteraction_CanBeAffordedByInteractor;
+            //On.RoR2.PurchaseInteraction.CanBeAffordedByInteractor += PurchaseInteraction_CanBeAffordedByInteractor;
+            On.RoR2.PurchaseInteraction.OnInteractionBegin += PurchaseInteraction_OnInteractionBegin;
             
+        }
+
+        private void PurchaseInteraction_OnInteractionBegin(On.RoR2.PurchaseInteraction.orig_OnInteractionBegin orig, PurchaseInteraction self, Interactor activator)
+        {
+            orig(self, activator);
+            ModLogger.LogWarning("Interaction:" + self.name.Substring(0, self.name.Length - 7));
+            ModLogger.LogWarning("Activator:" + activator.name);
+            if (whiteList.Contains(self.name.Substring(0, self.name.Length - 7)))
+            {
+                if (MiniList.Count > 0)
+                {
+                    foreach (CharacterBody body in MiniList.Keys)
+                    {
+                        if (body.isActiveAndEnabled)
+                        {
+                            if (activator.gameObject == body.gameObject)
+                            {
+                                DropMini(body, MiniList[body]);
+                                //GiveTiny(body, MiniList[body]);
+                                BreakItem(body);
+                                MiniList.Remove(body);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
         }
 
         private bool PurchaseInteraction_CanBeAffordedByInteractor(On.RoR2.PurchaseInteraction.orig_CanBeAffordedByInteractor orig, PurchaseInteraction self, Interactor activator)
         {
             bool ans = orig(self, activator);
-            if(ans && whiteList.Contains(self.name))
+            ModLogger.LogWarning("Interaction:" + self.name.Substring(0,self.name.Length-7)); //To remove "(Clone)"
+            ModLogger.LogWarning("Activator:" + activator.name);
+            if (ans && whiteList.Contains(self.name.Substring(0, self.name.Length - 7)))
             {
                 if(MiniList.Count>0)
                 {

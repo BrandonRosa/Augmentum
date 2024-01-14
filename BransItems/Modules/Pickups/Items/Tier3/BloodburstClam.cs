@@ -38,7 +38,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override bool CanRemove => false;
 
-        public override ItemTag[] ItemTags => new ItemTag[] {ItemTag.AIBlacklist };
+        public override ItemTag[] ItemTags => new ItemTag[] {ItemTag.AIBlacklist, ItemTag.Utility };
 
 
         public static int DropCount;
@@ -330,6 +330,10 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         {
             self.inventory.RemoveItem(BloodburstClam.instance.ItemDef.itemIndex);
             self.inventory.GiveItem(LootedBloodburstClam.instance.ItemDef.itemIndex);
+            if (self.master)
+            {
+                CharacterMasterNotificationQueue.SendTransformNotification(self.master, BloodburstClam.instance.ItemDef.itemIndex, LootedBloodburstClam.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+            }
         }
 
         public void DropEssences(CharacterBody self)

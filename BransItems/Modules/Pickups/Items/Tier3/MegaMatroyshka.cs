@@ -42,7 +42,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override bool CanRemove => true;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
 
 
         public static int DropCount;
@@ -296,14 +296,15 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             //On.RoR2.EquipmentSlot.OnEquipmentExecuted += EquipmentSlot_OnEquipmentExecuted;
         }
 
-        private void CharacterBody_HandleOnKillEffectsServer(On.RoR2.CharacterBody.orig_HandleOnKillEffectsServer orig, CharacterBody victim, DamageReport damageReport)
+        private void CharacterBody_HandleOnKillEffectsServer(On.RoR2.CharacterBody.orig_HandleOnKillEffectsServer orig, CharacterBody killer, DamageReport damageReport)
         {
-            orig(victim, damageReport);
-            if(victim.isElite)
+            orig(killer, damageReport);
+            ModLogger.LogWarning("Body:" + killer.name);
+            if(damageReport.victimBody.isElite)//killer.isElite)
             {
-                if(damageReport.attackerBody)
+                if(killer)
                 {
-                    CharacterBody self = damageReport.attackerBody;
+                    CharacterBody self = killer;
                     if (MegaList.Count > 0)
                     {
                         foreach (CharacterBody body in MegaList.Keys)
@@ -353,6 +354,14 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         private void GiveMassive(CharacterBody body, int count)
         {
             body.inventory.GiveItem(MassiveMatroyshka.instance.ItemDef.itemIndex, count);
+            body.inventory.GiveItem(MegaMatroyshkaShells.instance.ItemDef.itemIndex, count);
+            if (body.master)
+            {
+                //GenericPickupController.SendPickupMessage(body.master, PickupCatalog.FindPickupIndex(MassiveMatroyshka.instance.ItemDef.itemIndex));
+                CharacterMasterNotificationQueue.SendTransformNotification(body.master, MegaMatroyshka.instance.ItemDef.itemIndex, MegaMatroyshkaShells.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+                CharacterMasterNotificationQueue.SendTransformNotification(body.master, MegaMatroyshka.instance.ItemDef.itemIndex, MassiveMatroyshka.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+            }
+            //NetworkServer.Se
         }
 
         private void DropMega(CharacterBody body, int count)
@@ -369,7 +378,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             Transform dropTransform = body.transform;
 
             //Get array of loot
-            List<PickupIndex> dropList = Run.instance.availableTier2DropList;
+            List<PickupIndex> dropList = Run.instance.availableTier3DropList;
 
 
             float num = 360f / (float)count;

@@ -40,7 +40,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override bool CanRemove => false;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.Utility };
 
 
         public static int Choices;
@@ -316,6 +316,10 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         {
             self.inventory.RemoveItem(DiscoveryMedallion.instance.ItemDef.itemIndex);
             self.inventory.GiveItem(DiscoveryMedallionConsumed.instance.ItemDef.itemIndex);
+            if (self.master)
+            {
+                CharacterMasterNotificationQueue.SendTransformNotification(self.master, DiscoveryMedallion.instance.ItemDef.itemIndex, DiscoveryMedallionConsumed.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+            }
         }
 
         public void DropWishes(CharacterBody self)

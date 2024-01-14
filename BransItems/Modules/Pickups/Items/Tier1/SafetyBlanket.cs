@@ -19,12 +19,12 @@ using BransItems.Modules.Pickups.Items.Tier3;
 
 namespace BransItems.Modules.Pickups.Items.Tier1
 {
-    class MediumMatroyshka : ItemBase<MediumMatroyshka>
+    class SafetyBlanket : ItemBase<SafetyBlanket>
     {
-        public override string ItemName => "Medium Matroyshka";
-        public override string ItemLangTokenName => "MEDIUM_MATROYSHKA";
-        public override string ItemPickupDesc => "The next time you use an equipment, crack open for a mini surprise.";
-        public override string ItemFullDescription => $"The next time you use an equipment, crack open for <style=cIsDamage>{DropCount}%</style> white items. Gain Mini Matroyshka.";
+        public override string ItemName => "Safety Blanket";
+        public override string ItemLangTokenName => "SAFETY_BLANKET";
+        public override string ItemPickupDesc => "Slightly increase your one shot protection fraction and invincibility time.";
+        public override string ItemFullDescription => $"Increase your oneshot protection. Not more than <style=cIsDamage>{FractionCap}%</style>. Increase your invincibility frames by <style=cIsDamage>{IFramesAdded}%</style></style><style=cStack>(+{IFramesAdded} per stack)</style> seconds.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
@@ -44,11 +44,13 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
 
 
-        public static int DropCount;
+        public static float FractionCap;
+
+        public static float IFramesAdded;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
 
-        public static Dictionary<CharacterBody,int> MediumList = new Dictionary<CharacterBody,int>();
+        public static Dictionary<CharacterBody, int> MediumList = new Dictionary<CharacterBody, int>();
 
         public override void Init(ConfigFile config)
         {
@@ -61,7 +63,8 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of white items dropped", 1, "How many white items should drop from this item?").Value;
+            FractionCap = config.Bind<float>("Item: " + ItemName, "Plateau value", .6f, "What value shoud Saftey Blanket plateu to?").Value;
+            IFramesAdded = config.Bind<float>("Item: " + ItemName, "Added Invincibility Time", .1f, "How much invincibility time should Safety Blanket add?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -287,145 +290,26 @@ namespace BransItems.Modules.Pickups.Items.Tier1
             //On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
             //TeleporterInteraction.onTeleporterBeginChargingGlobal += TeleporterInteraction_onTeleporterBeginChargingGlobal;
             //CharacterBody.instancesList.
-            On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
-            On.RoR2.EquipmentSlot.OnEquipmentExecuted += EquipmentSlot_OnEquipmentExecuted;
+            //On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
+            //On.RoR2.EquipmentSlot.OnEquipmentExecuted += EquipmentSlot_OnEquipmentExecuted;
+            On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+            On.RoR2.HealthComponent.TriggerOneShotProtection += HealthComponent_TriggerOneShotProtection;
         }
 
-        private void EquipmentSlot_OnEquipmentExecuted(On.RoR2.EquipmentSlot.orig_OnEquipmentExecuted orig, EquipmentSlot equipSlot)
-        {
-            
-            orig(equipSlot);
-            
-            if (equipSlot.characterBody)
-            {
-                CharacterBody self = equipSlot.characterBody;
-                if (MediumList.Count > 0)
-                {
-                    foreach (CharacterBody body in MediumList.Keys)
-                    {
-                        if (body.isActiveAndEnabled)
-                        {
-                            if (self == body)
-                            {
-                                DropMedium(body, MediumList[body]);
-                                GiveMini(body, MediumList[body]);
-                                BreakItem(body);
-                                MediumList.Remove(body);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
+        private void HealthComponent_TriggerOneShotProtection(On.RoR2.HealthComponent.orig_TriggerOneShotProtection orig, HealthComponent self)
         {
             orig(self);
-            //If Self exists
-            if (self)
-            {
-                //Check to see if the character has atleast 1 SmallMatroyshka
-                int currentCount = self.inventory.GetItemCount(ItemDef.itemIndex);
-                if (currentCount > 0)
-                {
-                    //Check to see if its in the dictionary if not add it to the dictionary
-                    int prevCount = 0;
-                    if (MediumList.TryGetValue(self, out prevCount))
-                    {
-                        //If it is, see if the number of smallMatroyshka has changed.
-                        if (prevCount > currentCount)
-                            MediumList[self] = currentCount;
-                    }
-                    else
-                        MediumList.Add(self, currentCount);
-                }
-            }
+            int blanketCount = self.body.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
+            if(blanketCount>0)
+                self.ospTimer+=IFramesAdded*blanketCount;
         }
 
-        private void TeleporterInteraction_onTeleporterBeginChargingGlobal(TeleporterInteraction obj)
+        private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
         {
-            if(MediumList.Count>0)
-            {
-                foreach (CharacterBody body in MediumList.Keys)
-                {
-                    if (body.isActiveAndEnabled)
-                    {
-                        DropMedium(body, MediumList[body]);
-                        GiveMini(body, MediumList[body]);
-                        BreakItem(body);
-                    }
-                }
-            }
-        }
-
-        private void GiveMini(CharacterBody body, int count)
-        {
-            body.inventory.GiveItem(MiniMatroyshka.instance.ItemDef.itemIndex,count);
-            if (body.master)
-            {
-                //GenericPickupController.SendPickupMessage(body.master, PickupCatalog.FindPickupIndex(MassiveMatroyshka.instance.ItemDef.itemIndex));
-                //CharacterMasterNotificationQueue.SendTransformNotification(body.master, MegaMatroyshka.instance.ItemDef.itemIndex, MegaMatroyshkaShells.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
-                CharacterMasterNotificationQueue.SendTransformNotification(body.master, MediumMatroyshka.instance.ItemDef.itemIndex, MiniMatroyshka.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
-            }
-        }
-
-        private void DropMedium(CharacterBody body, int count)
-        {
-            //Get Count of LootedBloodburst clams
-            int MegaShellCount = body.inventory.GetItemCount(MegaMatroyshkaShells.instance.ItemDef.itemIndex);
-            int DiscoveryMedallionCount= body.inventory.GetItemCount(DiscoveryMedallionConsumed.instance.ItemDef.itemIndex);
-            int WishOptions = 1 + MegaShellCount * MegaMatroyshka.AdditionalChoices + DiscoveryMedallionCount * DiscoveryMedallion.AdditionalChoices;
-            bool isWish = MegaShellCount > 0;
-
-            float dropUpVelocityStrength = 25f;
-            float dropForwardVelocityStrength = 5f;
-
-            Transform dropTransform = body.transform;
-
-            //Get array of loot
-            List<PickupIndex> dropList = Run.instance.availableTier1DropList;
-            
-
-            float num = 360f / (float)count;
-            if (count == 1)
-                dropForwardVelocityStrength = 0f;
-
-            
-
-            Vector3 val = Vector3.up * dropUpVelocityStrength + dropTransform.forward * dropForwardVelocityStrength;
-            Quaternion val2 = Quaternion.AngleAxis(num, Vector3.up);
-
-            for (int i = 0; i < count; i++)
-            {
-                if (isWish)
-                {
-                    PickupIndex[] drops = ItemHelpers.GetRandomSelectionFromArray(dropList, WishOptions, RoR2Application.rng);
-                    PickupDropletController.CreatePickupDroplet(new GenericPickupController.CreatePickupInfo
-                    {
-                        pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),
-                        prefabOverride = potentialPrefab,
-                        position = body.transform.position,
-                        rotation = Quaternion.identity,
-                        pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier1)
-                    },
-                            dropTransform.position + Vector3.up * 1.5f, val);
-                }
-                else
-                {
-                    PickupIndex[] drops = ItemHelpers.GetRandomSelectionFromArray(dropList, 1, RoR2Application.rng);
-                    PickupDropletController.CreatePickupDroplet(drops[0], dropTransform.position + Vector3.up * 1.5f, val);
-                }
-                val = val2 * val;
-            }
-        }
-
-        private void BreakItem(CharacterBody self)
-        {
-            self.inventory.RemoveItem(MediumMatroyshka.instance.ItemDef.itemIndex);
-            
+            orig(self);
+            int blanketCount = self.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
+            float oneshot = (.6f - .05f)*(1f - (float)Math.Exp(-(blanketCount - 1f) / (25f)));
+            self.oneShotProtectionFraction= Mathf.Max(0f, oneshot+self.oneShotProtectionFraction - (1f - 1f / self.cursePenalty));
         }
     }
-
-
 }

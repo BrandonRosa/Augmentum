@@ -42,7 +42,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public override bool CanRemove => true;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
 
 
         public static int DropCount;
@@ -363,6 +363,12 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         private void GiveMedium(CharacterBody body, int count)
         {
             body.inventory.GiveItem(MediumMatroyshka.instance.ItemDef.itemIndex, count);
+            if (body.master)
+            {
+                //GenericPickupController.SendPickupMessage(body.master, PickupCatalog.FindPickupIndex(MassiveMatroyshka.instance.ItemDef.itemIndex));
+                //CharacterMasterNotificationQueue.SendTransformNotification(body.master, MegaMatroyshka.instance.ItemDef.itemIndex, MegaMatroyshkaShells.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+                CharacterMasterNotificationQueue.SendTransformNotification(body.master, MassiveMatroyshka.instance.ItemDef.itemIndex, MediumMatroyshka.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+            }
         }
 
         private void DropMassive(CharacterBody body, int count)
