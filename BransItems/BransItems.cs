@@ -10,8 +10,9 @@ using BransItems.Modules.Pickups;
 using System.Collections.Generic;
 using BransItems.Modules.ItemTiers;
 using RoR2.ContentManagement;
-using BransItems.Modules.ColorCatalogEntry;
+//using BransItems.Modules.ColorCatalogEntry;
 using BransItems.Modules.ItemTiers.CoreTier;
+using BransItems.Modules.ItemTiers.HighlanderTier;
 using BransItems.Modules.Utils;
 
 namespace BransItems
@@ -28,22 +29,26 @@ namespace BransItems
 
     [BepInDependency(R2API.R2API.PluginGUID, R2API.R2API.PluginVersion)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [BepInPlugin(ModGuid, ModName, ModVer)]
-    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(RecalculateStatsAPI), nameof(ColorsAPI))]//nameof(BuffAPI), nameof(ResourcesAPI), nameof(EffectAPI), nameof(ProjectileAPI), nameof(ArtifactAPI), nameof(LoadoutAPI),   
-                             // nameof(PrefabAPI), nameof(SoundAPI), nameof(OrbAPI),
-                             // nameof(NetworkingAPI), nameof(DirectorAPI), nameof(RecalculateStatsAPI), nameof(UnlockableAPI), nameof(EliteAPI),
-                             // nameof(CommandHelper), nameof(DamageAPI))]
+    //  [BepInDependency(R2API.ColorsAPI.PluginGUID)]
+    [BepInDependency(R2API.R2API.PluginGUID)]
+    [BepInDependency(R2API.RecalculateStatsAPI.PluginGUID)]
+
+    //[R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(RecalculateStatsAPI), nameof(ColorsAPI))]//nameof(BuffAPI), nameof(ResourcesAPI), nameof(EffectAPI), nameof(ProjectileAPI), nameof(ArtifactAPI), nameof(LoadoutAPI),   
+    // nameof(PrefabAPI), nameof(SoundAPI), nameof(OrbAPI),
+    // nameof(NetworkingAPI), nameof(DirectorAPI), nameof(RecalculateStatsAPI), nameof(UnlockableAPI), nameof(EliteAPI),
+    // nameof(CommandHelper), nameof(DamageAPI))]
 
 
     //This is the main declaration of our plugin class. BepInEx searches for all classes inheriting from BaseUnityPlugin to initialize on startup.
     //BaseUnityPlugin itself inherits from MonoBehaviour, so you can use this as a reference for what you can declare and use in your plugin class: https://docs.unity3d.com/ScriptReference/MonoBehaviour.html
+    [BepInPlugin(ModGuid, ModName, ModVer)]
     public class BransItems : BaseUnityPlugin
     {
         //The Plugin GUID should be a unique ID for this plugin, which is human readable (as it is used in places like the config).
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.BransItems"; //Our Package Name
         public const string ModName = "BransItems";
-        public const string ModVer = "0.4.0";
+        public const string ModVer = "0.6.0";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;
@@ -79,18 +84,21 @@ namespace BransItems
         //public static Dictionary<InteractableBase, bool> InteractableStatusDictionary = new Dictionary<InteractableBase, bool>();
         // public static Dictionary<SurvivorBase, bool> SurvivorStatusDictionary = new Dictionary<SurvivorBase, bool>();
 
-        public static ColorCatalog.ColorIndex TempCoreLight = ColorCatalogUtils.RegisterColor(new Color32(21, 99, 58, 255));
-        public static ColorCatalog.ColorIndex TempCoreDark = ColorCatalogUtils.RegisterColor(new Color32(1, 126, 62, 255));
-
+        //public static ColorCatalog.ColorIndex TempCoreLight = ColorsAPI.RegisterColor(Color.cyan);//new Color32(21, 99, 58, 255));//ColorCatalogUtils.RegisterColor(new Color32(21, 99, 58, 255));
+        //public static ColorCatalog.ColorIndex TempCoreDark = ColorsAPI.RegisterColor(Color.cyan); //new Color32(1, 126, 62, 255)); //ColorCatalogUtils.RegisterColor(new Color32(1, 126, 62, 255));
         public void Awake()
         {
             ModLogger = this.Logger;
+        }
+
+        private void Start()
+        { 
 
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BransItems.bransitems_assets"))
             {
                 MainAssets = AssetBundle.LoadFromStream(stream);
             }
-
+            Modules.ColorCatalogEntry.Colors.Init();
             //var disableSurvivor = Config.ActiveBind<bool>("Survivor", "Disable All Survivors?", false, "Do you wish to disable every survivor in Aetherium?");
             /*
             if (true)
@@ -147,11 +155,17 @@ namespace BransItems
                         item.Init(Config);
 
                         ModLogger.LogInfo("Item: " + item.ItemName + " Initialized!");
-
-                        if(item.ItemDef==Core.instance.itemTierDef)
+                        if (item.ItemDef._itemTierDef==Core.instance.itemTierDef)
                         {
                             Core.instance.ItemsWithThisTier.Add(item.ItemDef.itemIndex);
                             Core.instance.AvailableTierDropList.Add(PickupCatalog.FindPickupIndex(item.ItemDef.itemIndex));
+                            ModLogger.LogWarning("Name" + item.ItemName);
+                        }
+                        if (item.ItemDef._itemTierDef== Highlander.instance.itemTierDef)
+                        {
+                            Highlander.instance.ItemsWithThisTier.Add(item.ItemDef.itemIndex);
+                            Highlander.instance.AvailableTierDropList.Add(PickupCatalog.FindPickupIndex(item.ItemDef.itemIndex));
+                            ModLogger.LogWarning("Name" + item.ItemName);
                         }
                     }
                 }

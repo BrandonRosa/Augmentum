@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using BransItems.Modules.ColorCatalogEntry;
 using BransItems.Modules.ColorCatalogEntry.CoreColors;
 using BransItems.Modules.ItemTiers;
 using BransItems.Modules.Pickups.Items.Essences;
@@ -40,8 +41,8 @@ namespace BransItems.Modules.ItemTiers.CoreTier
         /// </summary>
         public override void Init()
         {
-            colorIndex = BransItems.TempCoreLight;//ColorsAPI.RegisterColor(Color.gray);
-            darkColorIndex = BransItems.TempCoreDark;//ColorsAPI.RegisterColor(Color.gray);
+            colorIndex = Colors.TempCoreLight;//ColorsAPI.RegisterColor(Color.gray);
+            darkColorIndex = Colors.TempCoreDark;//ColorsAPI.RegisterColor(Color.gray);
             
             //colorIndex = CoreLight.instance.colorIndex;//CoreLight.instance.colorCatalogEntry.ColorIndex;//new Color(.08f, .39f, .23f));//(new Color32(21, 99, 58, 255)));
             //darkColorIndex = CoreDark.instance.colorIndex; //new Color(0f,.49f,.24f));//(new Color32(1, 126, 62, 255)));

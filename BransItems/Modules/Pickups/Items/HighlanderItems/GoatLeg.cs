@@ -8,63 +8,68 @@ using System.Text;
 using UnityEngine;
 using static BransItems.BransItems;
 using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
-using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
-using UnityEngine.AddressableAssets;
-using BransItems.Modules.Pickups.Items.CoreItems;
-using BransItems.Modules.Pickups.Items.Tier3;
+using static RoR2.ItemTag;
+using BransItems.Modules.ItemTiers.HighlanderTier;
 
-namespace BransItems.Modules.Pickups.Items.Tier1
+namespace BransItems.Modules.Pickups.Items.HighlanderItems
 {
-    class SafetyBlanket : ItemBase<SafetyBlanket>
+    class GoatLeg : ItemBase<GoatLeg>
     {
-        public override string ItemName => "Safety Blanket";
-        public override string ItemLangTokenName => "SAFETY_BLANKET";
-        public override string ItemPickupDesc => "Slightly increase your one shot protection fraction and invincibility time.";
-        public override string ItemFullDescription => $"Increase your oneshot protection. Not more than <style=cIsDamage>{FractionCap}%</style>. Increase your invincibility frames by <style=cIsDamage>{IFramesAdded}%</style></style><style=cStack>(+{IFramesAdded} per stack)</style> seconds.";
+        public override string ItemName => "Goat Leg";
+        public override string ItemLangTokenName => "GOAT_LEG";
+        public override string ItemPickupDesc => "Slightly increase movement speed.";
+        public override string ItemFullDescription => $"Increase movemement speed by <style=cIsDamage>{MovementGain}</style> <style=cStack>(+{MovementGain})</style>.";
 
-        public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
-            "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
-            "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
+        public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
+            "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
+            "A latent power resonated within its core, and that's when I discovered the Essence of Strength.\n\n" +
+            "As I incorporated the Essence into my gear, I felt an indescribable connection. It wasn't just a physical enhancement; it was as if the very essence of this hostile realm acknowledged my presence."
+            + "The melding was subtle, gradual, weaving its power into the fabric of my being. My combat instincts became sharper, and the sway of my weapon felt like an extension of my will.\n\n" +
+            "In the heat of battle, the Essence of Strength subtly altered the dance of combat. Strikes that once felt labored now flowed effortlessly." +
+            "My shots, once erratic, found their mark with newfound precision. It was as though the essence adapted to my every move, amplifying my capabilities in sync with the rhythm of the ongoing struggle.\n\n" +
+            "Yet, it's not just my physical form that feels the effects. There's a subtle shift within my mind—a resonance, an understanding. The chaotic landscape that was once an enigma now feels like a battlefield where I share a silent dialogue with the terrain itself." +
+            "The Essence whispers insights, guiding me through the ebb and flow of the relentless challenges we face.\n\n" +
+            "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
+            "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
 
-        public override ItemTier Tier => ItemTier.Tier1;
+        public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png");
+        public override ItemTier Tier => ItemTier.AssignedAtRuntime;
+
+        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
+        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
+
+        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal4/source/crystal4.prefab");
+        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal4/source/TempCrystal4.png");
+
+        //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
+        //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
 
         public static GameObject ItemBodyModelPrefab;
 
         public override bool Hidden => false;
 
-        public override bool CanRemove => true;
+        public override bool CanRemove => false;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
+        public static float MovementGain;
 
-        public static float FractionCap;
-
-        public static float IFramesAdded;
-
-        public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
-
-        public static Dictionary<CharacterBody, int> MediumList = new Dictionary<CharacterBody, int>();
 
         public override void Init(ConfigFile config)
         {
+            //ItemDef._itemTierDef = EssenceHelpers.essenceTierDef;
             CreateConfig(config);
             CreateLang();
             //CreateBuff();
             CreateItem();
             Hooks();
+
         }
 
         public void CreateConfig(ConfigFile config)
         {
-            FractionCap = config.Bind<float>("Item: " + ItemName, "Plateau value", .6f, "What value shoud Saftey Blanket plateu to?").Value;
-            IFramesAdded = config.Bind<float>("Item: " + ItemName, "Added Invincibility Time", .1f, "How much invincibility time should Safety Blanket add?").Value;
+            MovementGain = config.Bind<float>("Item: " + ItemName, "Move Speed given to character", 20, "How much movement speed should Essense of Velocity grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -286,34 +291,13 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         public override void Hooks()
         {
-            //On.RoR2.Inventory.GiveItem_ItemIndex_int += Inventory_GiveItem_ItemIndex_int;
-            //On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
-            //TeleporterInteraction.onTeleporterBeginChargingGlobal += TeleporterInteraction_onTeleporterBeginChargingGlobal;
-            //CharacterBody.instancesList.
-            //On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
-            //On.RoR2.EquipmentSlot.OnEquipmentExecuted += EquipmentSlot_OnEquipmentExecuted;
-            On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
-            On.RoR2.HealthComponent.TriggerOneShotProtection += HealthComponent_TriggerOneShotProtection;
+            RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
         }
 
-        private void HealthComponent_TriggerOneShotProtection(On.RoR2.HealthComponent.orig_TriggerOneShotProtection orig, HealthComponent self)
+        private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
-            orig(self);
-            if (!self.body)
-                return;
-            int blanketCount = self.body.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
-            if(blanketCount>0)
-                self.ospTimer+=IFramesAdded*blanketCount;
-        }
-
-        private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
-        {
-            orig(self);
-            if (!self)
-                return;
-            int blanketCount = self.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
-            float oneshot = (.6f - .05f)*(1f - (float)Math.Exp(-(blanketCount - 1f) / (25f)));
-            self.oneShotProtectionFraction= Mathf.Max(0f, oneshot+self.oneShotProtectionFraction - (1f - 1f / self.cursePenalty));
+            args.moveSpeedMultAdd += MovementGain * .01f * GetCount(sender);
+            //KEEP IN MIND 8% increase here is .08
         }
     }
 }

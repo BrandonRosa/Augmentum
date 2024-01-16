@@ -13,6 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Modules\Utils\ColorCatalogUtils.cs" />
+  </ItemGroup>
+
+  
+
+  <ItemGroup>
     <None Remove="bransitems_assets" />
     <None Remove="bransitems_assets.manifest" />
   </ItemGroup>
@@ -70,6 +76,9 @@
     <Reference Include="ProBuilderMeshOps">
       <HintPath>libs\ProBuilderMeshOps.dll</HintPath>
       <Private>false</Private>
+    </Reference>
+    <Reference Include="R2API.Colors">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Dev\BepInEx\plugins\RiskofThunder-R2API_Colors\R2API.Colors\R2API.Colors.dll</HintPath>
     </Reference>
     <Reference Include="R2API.Items">
       <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Dev\BepInEx\plugins\RiskofThunder-R2API_Items\R2API.Items\R2API.Items.dll</HintPath>

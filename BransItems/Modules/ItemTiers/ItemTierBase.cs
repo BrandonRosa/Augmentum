@@ -8,6 +8,7 @@ using UnityEngine.AddressableAssets;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+
 namespace BransItems.Modules.ItemTiers
 {
 
@@ -56,12 +57,12 @@ namespace BransItems.Modules.ItemTiers
         /// <summary>
         /// A list of all the items that have this Tier
         /// </summary>
-        public List<ItemIndex> ItemsWithThisTier { get; internal set; } = new List<ItemIndex>();
+        public List<ItemIndex> ItemsWithThisTier;
 
         /// <summary>
         /// A list of the available items that can drop in the current run, returns null or an outdated list if a run is not active.
         /// </summary>
-        public List<PickupIndex> AvailableTierDropList { get; internal set; } = new List<PickupIndex>();
+        public List<PickupIndex> AvailableTierDropList;
 
         public GameObject highlightPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
 
@@ -81,6 +82,8 @@ namespace BransItems.Modules.ItemTiers
 
         public void CreateTier()
         {
+            ItemsWithThisTier = new List<ItemIndex>();
+            AvailableTierDropList = new List<PickupIndex>();
             itemTierDef.canRestack = canRestack;
             itemTierDef.canScrap = canScrap;
             itemTierDef.isDroppable = isDroppable;
@@ -103,5 +106,7 @@ namespace BransItems.Modules.ItemTiers
             //ItemTierDef.bgIconTexture.
             ContentAddition.AddItemTierDef(itemTierDef);
         }
+
+        
     }
 }

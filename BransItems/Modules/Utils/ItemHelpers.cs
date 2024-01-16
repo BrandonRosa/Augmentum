@@ -159,6 +159,32 @@ namespace BransItems.Modules.Utils
             return selection;
         }
 
+        public static List<ItemDef> ItemDefsWithTier(ItemTierDef itemTierDef)
+        {
+            HashSet<ItemDef > items = new HashSet<ItemDef>();
+            foreach (ItemDef itemDef in ItemCatalog.allItemDefs)
+            {
+                if (itemDef.tier == itemTierDef.tier) //&& !itemDef.tags.Contains(ItemTag.WorldUnique))
+                {
+                    items.Add(itemDef);
+                }
+            }
+            return items.ToList<ItemDef>();
+        }
+
+        public static List<PickupDef> PickupDefsWithTier(ItemTierDef itemTierDef)
+        {
+            HashSet<PickupDef> items = new HashSet<PickupDef>();
+            foreach (PickupDef pickupDef in PickupCatalog.allPickups)
+            {
+                if (pickupDef.itemTier == itemTierDef.tier)// && !itemDef.tags.Contains(ItemTag.WorldUnique))
+                {
+                    items.Add(pickupDef);
+                }
+            }
+            return items.ToList<PickupDef>();
+        }
+
         //public static PickupIndex[] ItemIndexToPickupIndex
     }
 }
