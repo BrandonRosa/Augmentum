@@ -12,9 +12,6 @@
     <None Remove="libs\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Modules\Utils\ColorCatalogUtils.cs" />
-  </ItemGroup>
 
   
 

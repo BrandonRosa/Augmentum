@@ -9,6 +9,9 @@ namespace BransItems.Modules.Utils
     public static partial class ColorCatalogUtils
     {
         private static bool _hookEnabled = false;
+
+        private static List<Color32> indexToColor32 = new List<Color32>();
+        private static List<string> indexToHexString = new List<string>();
         internal static void SetHooks()
         {
             if (_hookEnabled)
@@ -33,8 +36,8 @@ namespace BransItems.Modules.Utils
         //ColorCatalog has 0-28 Enums, the array has 0-27 slots 
         private static string ColorCatalog_GetColorHexString(On.RoR2.ColorCatalog.orig_GetColorHexString orig, RoR2.ColorCatalog.ColorIndex colorIndex)
         {
-            if(colorIndex> ColorCatalog.ColorIndex.Count && (int)colorIndex <= ColorCatalog.indexToHexString.Length)
-                return ColorCatalog.indexToHexString[(int)colorIndex-1];
+            if ((int)colorIndex < 0)
+                return indexToHexString[-1 - ((int)colorIndex)];
             return orig(colorIndex);
             /*
             if (colorIndex < ColorCatalog.ColorIndex.None || (int)colorIndex >= ColorCatalog.indexToColor32.Length || colorIndex == ColorCatalog.ColorIndex.Count)
@@ -49,9 +52,9 @@ namespace BransItems.Modules.Utils
 
         private static UnityEngine.Color32 ColorCatalog_GetColor(On.RoR2.ColorCatalog.orig_GetColor orig, RoR2.ColorCatalog.ColorIndex colorIndex)
         {
-            
-            if (colorIndex > ColorCatalog.ColorIndex.Count && (int)colorIndex <= ColorCatalog.indexToColor32.Length)
-                return ColorCatalog.indexToColor32[(int)colorIndex-1];
+
+            if ((int)colorIndex < 0)
+                return indexToColor32[-1 - ((int)colorIndex)];
             return orig(colorIndex);
             /*
             if (colorIndex < ColorCatalog.ColorIndex.None || (int)colorIndex >= ColorCatalog.indexToColor32.Length || colorIndex == ColorCatalog.ColorIndex.Count)
@@ -67,7 +70,7 @@ namespace BransItems.Modules.Utils
         public static ColorCatalog.ColorIndex RegisterColor(Color color)
         {
             ColorCatalogUtils.SetHooks();
-            int nextColorIndex = ColorCatalog.indexToColor32.Length;
+            int nextColorIndex = -indexToColor32.Count-1;
             ColorCatalog.ColorIndex newIndex = (ColorCatalog.ColorIndex)nextColorIndex;
             //List<Color32> colorList = new List<Color32> (ColorCatalog.indexToColor32);
             //colorList.Add(color);
@@ -76,8 +79,10 @@ namespace BransItems.Modules.Utils
             //List<string> hexList = new List<string>(ColorCatalog.indexToHexString);
             //hexList.Add(Util.RGBToHex(color));
             //ColorCatalog.indexToHexString = (hexList.ToArray());
-            HG.ArrayUtils.ArrayAppend(ref ColorCatalog.indexToColor32, color);
-            HG.ArrayUtils.ArrayAppend(ref ColorCatalog.indexToHexString, Util.RGBToHex(color));
+            //HG.ArrayUtils.ArrayAppend(ref ColorCatalog.indexToColor32, color);
+            //HG.ArrayUtils.ArrayAppend(ref ColorCatalog.indexToHexString, Util.RGBToHex(color));
+            indexToColor32.Add(color);
+            indexToHexString.Add(Util.RGBToHex(color));
             return newIndex;
         }
     }
