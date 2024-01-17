@@ -164,7 +164,7 @@ namespace BransItems.Modules.Utils
             HashSet<ItemDef > items = new HashSet<ItemDef>();
             foreach (ItemDef itemDef in ItemCatalog.allItemDefs)
             {
-                if (itemDef.tier == itemTierDef.tier) //&& !itemDef.tags.Contains(ItemTag.WorldUnique))
+                if (itemDef.itemIndex != ItemIndex.None && itemDef.tier == itemTierDef.tier) //&& !itemDef.tags.Contains(ItemTag.WorldUnique))
                 {
                     items.Add(itemDef);
                 }
@@ -177,7 +177,7 @@ namespace BransItems.Modules.Utils
             HashSet<PickupDef> items = new HashSet<PickupDef>();
             foreach (PickupDef pickupDef in PickupCatalog.allPickups)
             {
-                if (pickupDef.itemTier == itemTierDef.tier)// && !itemDef.tags.Contains(ItemTag.WorldUnique))
+                if (pickupDef.itemIndex!= ItemIndex.None && pickupDef.itemTier == itemTierDef.tier)// && !itemDef.tags.Contains(ItemTag.WorldUnique))
                 {
                     items.Add(pickupDef);
                 }

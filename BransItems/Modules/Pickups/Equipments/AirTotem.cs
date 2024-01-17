@@ -247,7 +247,7 @@ namespace BransItems.Modules.Pickups.Equipments
                         spawnTotal = 3;
                         break;
                     case ItemTier.Tier3:
-                        spawnTotal = 10;
+                        spawnTotal = 15;
                             break;
                     case ItemTier.Boss:
                         spawnTotal = 8;

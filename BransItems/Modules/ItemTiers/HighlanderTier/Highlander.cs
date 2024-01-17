@@ -33,6 +33,10 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         public static float CompatShrineChance = .25f;
 
+        public static float BarrelChance = .02f;
+
+        public static float EliteDeathChance = .01f;
+
         //public ColorCatalog.ColorIndex colorIndex = ColorsAPI.RegisterColor(new Color32(21,99,58,255));//ColorCatalog.ColorIndex.Money;//CoreLight.instance.colorCatalogEntry.ColorIndex;
 
         //public ColorCatalog.ColorIndex darkColorIndex = ColorsAPI.RegisterColor(new Color32(1,126,62,255));//ColorCatalog.ColorIndex.Money;//CoreDark.instance.colorCatalogEntry.ColorIndex;
@@ -66,6 +70,29 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
             //On.RoR2.CharacterBody.OnInventoryChanged;
             On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
             On.RoR2.ShrineCombatBehavior.OnDefeatedServer += ShrineCombatBehavior_OnDefeatedServer;
+            On.RoR2.BarrelInteraction.CoinDrop += BarrelInteraction_CoinDrop;
+            On.RoR2.DeathRewards.OnKilledServer += DeathRewards_OnKilledServer;
+        }
+
+        private void DeathRewards_OnKilledServer(On.RoR2.DeathRewards.orig_OnKilledServer orig, DeathRewards self, DamageReport damageReport)
+        {
+            orig(self, damageReport);
+            if(damageReport.victimBody.isElite)
+            {
+                if (RoR2Application.rng.RangeFloat(0f, 1f) <= EliteDeathChance)
+                {
+                    DropItem(damageReport.victimBody.transform, 5.5f);
+                }
+            }
+        }
+
+        private void BarrelInteraction_CoinDrop(On.RoR2.BarrelInteraction.orig_CoinDrop orig, BarrelInteraction self)
+        {
+            orig(self);
+            if (RoR2Application.rng.RangeFloat(0f, 1f) <= BarrelChance)
+            {
+                DropItem(self.gameObject.transform, 5.5f);
+            }
         }
 
         private void ShrineCombatBehavior_OnDefeatedServer(On.RoR2.ShrineCombatBehavior.orig_OnDefeatedServer orig, ShrineCombatBehavior self)
@@ -73,17 +100,21 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
             orig(self);
             if (RoR2Application.rng.RangeFloat(0f, 1f) <= CompatShrineChance)
             {
-                List<PickupDef> HighList = ItemHelpers.PickupDefsWithTier(this.itemTierDef);
-                PickupDef pickupDef = HighList[RoR2Application.rng.RangeInt(0,HighList.Count)];
-                PickupDropletController.CreatePickupDroplet(pickupDef.pickupIndex, self.gameObject.transform.position + Vector3.up * 8.5f, Vector3.up * 25f);
-                BransItems.ModLogger.LogWarning("Count:" + AvailableTierDropList.Count);
-                BransItems.ModLogger.LogWarning("List0:" + AvailableTierDropList[0].ToString());
-                BransItems.ModLogger.LogWarning("List1:" + AvailableTierDropList[1].ToString());
-                Chat.SendBroadcastChat(new Chat.SimpleChatMessage
-                {
-                    baseToken = "<color=#FAF7B9><size=120%>" + "You have been rewarded with a gift from the Highlands." + "</color></size>"
-                });
+                DropItem(self.gameObject.transform, 8.5f);
             }
+        }
+
+        private void DropItem(Transform location, float height)
+        {
+            List<PickupDef> HighList = ItemHelpers.PickupDefsWithTier(this.itemTierDef);
+            int picked = RoR2Application.rng.RangeInt(0, HighList.Count);
+            //BransItems.ModLogger.LogWarning("Item#"+picked+"   Count:"+HighList.Count+"    Name"+ItemCatalog.GetItemDef(HighList[picked].itemIndex).nameToken+"     index"+ HighList[picked].itemIndex);
+            PickupDef pickupDef = HighList[picked];
+            PickupDropletController.CreatePickupDroplet(pickupDef.pickupIndex, location.position + Vector3.up * height, Vector3.up * 25f);
+            Chat.SendBroadcastChat(new Chat.SimpleChatMessage
+            {
+                baseToken = "<color=#FAF7B9><size=120%>" + "You have been rewarded with a gift from the Highlands." + "</color></size>"
+            });
         }
 
         private void CharacterMaster_OnItemAddedClient(On.RoR2.CharacterMaster.orig_OnItemAddedClient orig, CharacterMaster self, ItemIndex itemIndex)

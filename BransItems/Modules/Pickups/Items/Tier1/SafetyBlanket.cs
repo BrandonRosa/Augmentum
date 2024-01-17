@@ -299,7 +299,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         private void HealthComponent_TriggerOneShotProtection(On.RoR2.HealthComponent.orig_TriggerOneShotProtection orig, HealthComponent self)
         {
             orig(self);
-            if (!self.body)
+            if (!self || !self.body)
                 return;
             int blanketCount = self.body.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
             if(blanketCount>0)
@@ -309,11 +309,12 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
         {
             orig(self);
-            if (!self)
-                return;
-            int blanketCount = self.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
-            float oneshot = (.6f - .05f)*(1f - (float)Math.Exp(-(blanketCount - 1f) / (25f)));
-            self.oneShotProtectionFraction= Mathf.Max(0f, oneshot+self.oneShotProtectionFraction - (1f - 1f / self.cursePenalty));
+            if (self)
+            {
+                int blanketCount = self.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
+                float oneshot = (.6f - .05f) * (1f - (float)Math.Exp(-(blanketCount - 1f) / (25f)));
+                self.oneShotProtectionFraction = Mathf.Max(0f, oneshot + self.oneShotProtectionFraction - (1f - 1f / self.cursePenalty));
+            }
         }
     }
 }

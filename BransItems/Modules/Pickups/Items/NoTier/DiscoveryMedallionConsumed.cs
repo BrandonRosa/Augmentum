@@ -26,7 +26,7 @@ namespace BransItems.Modules.Pickups.Items.NoTier
 
         public override ItemTier Tier => ItemTier.NoTier;
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
+        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
         public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallionconsumed.png");
 
         public static GameObject ItemBodyModelPrefab;

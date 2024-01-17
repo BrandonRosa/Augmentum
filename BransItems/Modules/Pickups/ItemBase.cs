@@ -72,7 +72,7 @@ namespace BransItems.Modules.Pickups
 			if(ModdedTierDef==null)
 				ItemDef.deprecatedTier = Tier;
 			else
-				ItemDef._itemTierDef = ModdedTierDef;
+				ItemDef._itemTierDef = ModdedTierDef						;
 			ItemDef.tags = ItemTags;
 			//ItemTag.WorldUnique
 			var itemDisplayRuleDict = CreateItemDisplayRules();

@@ -423,7 +423,7 @@ namespace BransItems.Modules.Pickups.Equipments
                     {
                         //NEGATIVE to ADD to cooldown!
                         ModLogger.LogInfo("Count Absorbed:" + EquipDefList.Count + "   Count Absorbed:" + HighestCooldown + "Cooldown Added:" + EarthTotem.CalcAdditionalCooldownComplex(EquipDefList.Count, HighestCooldown));
-                        float cooldownAdded = EarthTotem.CalcAdditionalCooldownByAbsorb(Math.Max(EquipDefList.Count,1));
+                        float cooldownAdded = EarthTotem.CalcAdditionalCooldownByAbsorb(Math.Max(EquipDefList.Count-EarthTotemAbsorbedCount,1));
 
                         //Adjust cooldown by gesture of drowned and fuelcells
                         int gesture = self.inventory.GetItemCount(RoR2Content.Items.AutoCastEquipment);
