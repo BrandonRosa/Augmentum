@@ -31,11 +31,15 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         public override string TierName => "Highlander";
 
-        public static float CompatShrineChance = .25f;
+        public static float CompatShrineChance = .20f;
 
         public static float BarrelChance = .02f;
 
         public static float EliteDeathChance = .01f;
+
+        public static float ChanceShrineFail = .02f;
+
+        public static float ChanceShrineSuceed = .01f;
 
         //public ColorCatalog.ColorIndex colorIndex = ColorsAPI.RegisterColor(new Color32(21,99,58,255));//ColorCatalog.ColorIndex.Money;//CoreLight.instance.colorCatalogEntry.ColorIndex;
 
@@ -72,6 +76,29 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
             On.RoR2.ShrineCombatBehavior.OnDefeatedServer += ShrineCombatBehavior_OnDefeatedServer;
             On.RoR2.BarrelInteraction.CoinDrop += BarrelInteraction_CoinDrop;
             On.RoR2.DeathRewards.OnKilledServer += DeathRewards_OnKilledServer;
+            On.RoR2.ShrineChanceBehavior.AddShrineStack += ShrineChanceBehavior_AddShrineStack;
+        }
+
+        private void ShrineChanceBehavior_AddShrineStack(On.RoR2.ShrineChanceBehavior.orig_AddShrineStack orig, ShrineChanceBehavior self, Interactor activator)
+        {
+            int purchaseCount = self.successfulPurchaseCount;
+            orig(self, activator);
+            bool success = purchaseCount < self.successfulPurchaseCount;
+
+            if(success)
+            {
+                if (RoR2Application.rng.RangeFloat(0f, 1f) <= ChanceShrineSuceed)
+                {
+                    DropItem(self.gameObject.transform, 8.5f);
+                }
+            }
+            else
+            {
+                if (RoR2Application.rng.RangeFloat(0f, 1f) <= ChanceShrineFail)
+                {
+                    DropItem(self.gameObject.transform, 8.5f);
+                }
+            }
         }
 
         private void DeathRewards_OnKilledServer(On.RoR2.DeathRewards.orig_OnKilledServer orig, DeathRewards self, DamageReport damageReport)

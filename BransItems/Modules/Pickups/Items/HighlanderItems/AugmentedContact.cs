@@ -13,12 +13,12 @@ using BransItems.Modules.ItemTiers.HighlanderTier;
 
 namespace BransItems.Modules.Pickups.Items.HighlanderItems
 {
-    class CurvedHorn : ItemBase<CurvedHorn>
+    class AugmentedContact : ItemBase<CurvedHorn>
     {
-        public override string ItemName => "Curved Horn";
-        public override string ItemLangTokenName => "CURVED_HORN";
-        public override string ItemPickupDesc => "Slightly increase damage.";
-        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{DamageGain}</style> <style=cStack>(+{DamageGain})</style> damage buff.";
+        public override string ItemName => "Augmented Contact";
+        public override string ItemLangTokenName => "AUGMENTED_CONTACT";
+        public override string ItemPickupDesc => "Slightly increase crit damage.";
+        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{DamageGain}</style> <style=cStack>(+{DamageGain})</style> crit damage buff.";
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
@@ -51,7 +51,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public override bool CanRemove => false;
 
-        public override ItemTag[] ItemTags => new ItemTag[] {ItemTag.Damage };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
         public static float DamageGain;
 
@@ -69,7 +69,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 3f, "How much base damage should Curved Horn grant?").Value;
+            DamageGain = config.Bind<float>("Item: " + ItemName, "Base crit damage given to character", 10f, "How much base crit damage should Augmented Contact grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -296,7 +296,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
-            args.baseDamageAdd += DamageGain * GetCount(sender);
+            args.critDamageMultAdd += DamageGain *.01f* GetCount(sender);
         }
     }
 }
