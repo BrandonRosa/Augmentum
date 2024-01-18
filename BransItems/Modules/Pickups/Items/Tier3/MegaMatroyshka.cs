@@ -342,7 +342,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                     if (MegaList.TryGetValue(self, out prevCount))
                     {
                         //If it is, see if the number of smallMatroyshka has changed.
-                        if (prevCount > currentCount)
+                        if (prevCount !=  currentCount)
                             MegaList[self] = currentCount;
                     }
                     else

@@ -303,17 +303,22 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                 {
                     foreach (CharacterBody body in MediumList.Keys)
                     {
-                        if (body.isActiveAndEnabled)
+                        if (body != null)
                         {
-                            if (self == body)
+                            if (body.isActiveAndEnabled)
                             {
-                                DropMedium(body, MediumList[body]);
-                                GiveMini(body, MediumList[body]);
-                                BreakItem(body);
-                                MediumList.Remove(body);
-                                break;
+                                if (self == body)
+                                {
+                                    DropMedium(body, MediumList[body]);
+                                    GiveMini(body, MediumList[body]);
+                                    BreakItem(body);
+                                    MediumList.Remove(body);
+                                    break;
+                                }
                             }
                         }
+                        else
+                            MediumList.Remove(body);
                     }
                 }
             }
@@ -334,7 +339,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                     if (MediumList.TryGetValue(self, out prevCount))
                     {
                         //If it is, see if the number of smallMatroyshka has changed.
-                        if (prevCount > currentCount)
+                        if (prevCount != currentCount)
                             MediumList[self] = currentCount;
                     }
                     else

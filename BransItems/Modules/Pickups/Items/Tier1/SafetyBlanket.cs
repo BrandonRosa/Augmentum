@@ -24,7 +24,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         public override string ItemName => "Safety Blanket";
         public override string ItemLangTokenName => "SAFETY_BLANKET";
         public override string ItemPickupDesc => "Slightly increase your one shot protection fraction and invincibility time.";
-        public override string ItemFullDescription => $"Increase your oneshot protection. Not more than <style=cIsDamage>{FractionCap}%</style>. Increase your invincibility frames by <style=cIsDamage>{IFramesAdded}%</style></style><style=cStack>(+{IFramesAdded} per stack)</style> seconds.";
+        public override string ItemFullDescription => $"Increase your oneshot protection. Not more than <style=cIsDamage>{FractionCap*100}%</style> of your health. Increase your invincibility frames by <style=cIsDamage>{IFramesAdded}</style></style><style=cStack>(+{IFramesAdded} per stack)</style> seconds.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
@@ -310,11 +310,12 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         {
             orig(self);
             if (self)
-            {
-                int blanketCount = self.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
-                float oneshot = (.6f - .05f) * (1f - (float)Math.Exp(-(blanketCount - 1f) / (25f)));
-                self.oneShotProtectionFraction = Mathf.Max(0f, oneshot + self.oneShotProtectionFraction - (1f - 1f / self.cursePenalty));
-            }
+                if (self.inventory != null)
+                {
+                    int blanketCount = self.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
+                    float oneshot = (.6f - .05f) * (1f - (float)Math.Exp(-(blanketCount - 1f) / (25f)));
+                    self.oneShotProtectionFraction = Mathf.Max(0f, oneshot + self.oneShotProtectionFraction - (1f - 1f / self.cursePenalty));
+                }
         }
     }
 }

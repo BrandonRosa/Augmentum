@@ -25,7 +25,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public override string ItemName => "Massive Matroyshka";
         public override string ItemLangTokenName => "MASSIVE_MATROYSHKA";
         public override string ItemPickupDesc => "The next time a teleporter is activated, crack open for a medium surprise.";
-        public override string ItemFullDescription => $"The next time a teleporter is activated, crack open for <style=cIsDamage>{DropCount}%</style> green items. Gain Medium Matroyshka.";
+        public override string ItemFullDescription => $"The next time a teleporter is activated, crack open for <style=cIsDamage>{DropCount}</style> green items. Gain Medium Matroyshka.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
@@ -335,7 +335,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                     if (MassiveList.TryGetValue(self, out prevCount))
                     {
                         //If it is, see if the number of smallMatroyshka has changed.
-                        if (prevCount > currentCount)
+                        if (prevCount != currentCount)
                             MassiveList[self] = currentCount;
                     }
                     else
@@ -348,15 +348,26 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         {
             if (MassiveList.Count > 0)
             {
+                List<CharacterBody> removelater = new List<CharacterBody>();
                 foreach (CharacterBody body in MassiveList.Keys)
                 {
-                    if (body.isActiveAndEnabled)
+                    if (body != null)
                     {
-                        DropMassive(body, MassiveList[body]);
-                        GiveMedium(body, MassiveList[body]);
-                        BreakItem(body);
+                        if (body.isActiveAndEnabled)
+                        {
+                            DropMassive(body, MassiveList[body]);
+                            GiveMedium(body, MassiveList[body]);
+                            BreakItem(body);
+                            //MassiveList.Remove(body);
+                            removelater.Add(body);
+                        }
                     }
+                    else
+                        removelater.Add(body);
                 }
+
+                foreach (CharacterBody body in removelater)
+                    MassiveList.Remove(body);
             }
         }
 

@@ -424,7 +424,7 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
                     if (MiniList.TryGetValue(self, out prevCount))
                     {
                         //If it is, see if the number of smallMatroyshka has changed.
-                        if (prevCount > currentCount)
+                        if (prevCount != currentCount)
                             MiniList[self] = currentCount;
                     }
                     else
