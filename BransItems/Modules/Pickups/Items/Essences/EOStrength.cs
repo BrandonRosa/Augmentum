@@ -17,7 +17,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Strength";
         public override string ItemLangTokenName => "ESSENCE_OF_STRENGTH";
         public override string ItemPickupDesc => "Slightly increase damage.";
-        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{DamageGain}</style> damage buff. <style=cStack>(+{DamageGain}).";
+        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{DamageGain}</style> <style=cStack>(+{DamageGain})</style> <style=cIsDamage>damage</style> buff.";
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
@@ -31,13 +31,15 @@ namespace BransItems.Modules.Pickups.Items.Essences
             "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
             "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
 
-        public override ItemTier Tier => EssenceHelpers.essenceTier; //ItemTier.AssignedAtRuntime;
+        public override ItemTierDef ModdedTierDef => EssenceHelpers.essenceTierDef; //ItemTier.AssignedAtRuntime;
+
+        public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
         //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal4/source/crystal4.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal4/source/TempCrystal4.png");
 
         //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
         //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");

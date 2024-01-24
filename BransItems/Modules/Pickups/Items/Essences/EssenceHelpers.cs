@@ -54,5 +54,25 @@ namespace BransItems.Modules.Pickups.Items.Essences
                 pickupArray[i] = GetEssenceIndex(rng);
             return pickupArray;
         }
+
+        public static PickupIndex[] GetEssenceDropsWithoutRepeating(Xoroshiro128Plus rng, int dropCount)
+        {
+            PickupIndex[] BasicEssence = GetBasicEssencePickupIndex();
+            if(dropCount>=6)
+                return new PickupIndex[] { BasicEssence[0], BasicEssence[1], BasicEssence[2], BasicEssence[3], BasicEssence[4], PickupCatalog.FindPickupIndex(EOTotality.instance.ItemDef.itemIndex) };
+            List<PickupIndex> pickupList = new List<PickupIndex>();
+            for(int i=0; i<dropCount;i++)
+            {
+                PickupIndex pick;
+                do
+                {
+                    pick = GetEssenceIndex(rng);
+                } while (pickupList.Contains(pick));
+                pickupList.Add(pick);
+            }
+
+            return pickupList.ToArray();
+        
+        }
     }
 }

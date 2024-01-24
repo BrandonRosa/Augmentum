@@ -15,25 +15,24 @@ namespace BransItems.Modules.Pickups.Items.Essences
     {
         public override string ItemName => "Essence of Life";
         public override string ItemLangTokenName => "ESSENCE_OF_LIFE";
-        public override string ItemPickupDesc => "Slightly increase health.";
-        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{HealthGain}</style> damage buff. <style=cStack>(+{HealthGain}).";
+        public override string ItemPickupDesc => "Slightly increase maximum health.";
+        public override string ItemFullDescription => $"Gain <style=cIsHealing>{HealthGain}</style><style=cStack>(+{HealthGain})</style> <style=cIsHealing>maximum health</style>.";
 
-        public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
-            "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
-            "A latent power resonated within its core, and that's when I discovered the Essence of Strength.\n\n" +
-            "As I incorporated the Essence into my gear, I felt an indescribable connection. It wasn't just a physical enhancement; it was as if the very essence of this hostile realm acknowledged my presence."
-            + "The melding was subtle, gradual, weaving its power into the fabric of my being. My combat instincts became sharper, and the sway of my weapon felt like an extension of my will.\n\n" +
-            "In the heat of battle, the Essence of Strength subtly altered the dance of combat. Strikes that once felt labored now flowed effortlessly." +
-            "My shots, once erratic, found their mark with newfound precision. It was as though the essence adapted to my every move, amplifying my capabilities in sync with the rhythm of the ongoing struggle.\n\n" +
-            "Yet, it's not just my physical form that feels the effects. There's a subtle shift within my mind—a resonance, an understanding. The chaotic landscape that was once an enigma now feels like a battlefield where I share a silent dialogue with the terrain itself." +
-            "The Essence whispers insights, guiding me through the ebb and flow of the relentless challenges we face.\n\n" +
-            "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
-            "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
+        public override string ItemLore => $"<style=cMono>/--AUTO-TRANSCRIPTION FROM MEDICAL WARD OF UES [Redacted] --//</style>\n\n" +
+            $"\"How have you been since our last appointment?\"\n\n" +
+            $"Dr.Rodriguez's voice was casual, flipping through Joseph's medical history.\n\n" +
+            $"Joseph, perched on the examination bed, absentmindedly traced the outline of a strange stone they had found during a recent expedition. \"Better! Believe it or not.\"\n\n" +
+            $"Dr.Rodriguez raised an eyebrow, glancing at the strange stone now in Joseph's hand. \"And what's with the stone?\"\n\n" +
+            $"\"Found it on the last run. Since then, my old battle scars started healing up. Feel healthier than ever.\"\n\n" +
+            $"Dr.Rodriguez, now examining a CT scan, furrowed her brow. \"This is... unusual. Your injuries seem to have improved, but there's something else.\" She looked up, meeting her patient's eyes. \"You're riddled with dozens of tumors.\"\n\n" +
+            $"Joseph stared at Dr.Rodriguez in silence for a moment. \"Huh, well, they feel benign...\"";
 
-        public override ItemTier Tier => EssenceHelpers.essenceTier; // ItemTier.AssignedAtRuntime;
+        public override ItemTierDef ModdedTierDef => EssenceHelpers.essenceTierDef; // ItemTier.AssignedAtRuntime;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
+        public override ItemTier Tier => ItemTier.AssignedAtRuntime;
+
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal3/source/crystal3.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal3/source/TempCrystal3.png");
 
         public static GameObject ItemBodyModelPrefab;
 

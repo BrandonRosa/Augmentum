@@ -25,15 +25,18 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public override string EquipmentLangTokenName => "AIR_TOTEM";
 
-        public override string EquipmentPickupDesc => "On use, transform an item to its base essece.";
+        public override string EquipmentPickupDesc => "On use, transform an item to its base "+BransItems.EssenceKeyword+".";
 
-        public override string EquipmentFullDescription => "On use, transform an item to a essence which gives a slight stat boost.";
+        public override string EquipmentFullDescription => "<style=cIsUtility>Transform</style> an item to an " + BransItems.EssenceKeyword + " which gives a slight <style=cIsUtility>stat boost</style>.";
 
         public override string EquipmentLore =>
-
-            $"Found on a scrap of paper in an ornate case along with the device: \"[...] at that point, the binding process will become automatic, " +
-            $"and all the user needs to do is sever the specimen's connection to its soul.\"";
+            $"Excerpt from the expedition log of Captain Elara, High Altitude Surveyor \n" +
+            $"In the rarefied air atop the mountain peaks, we uncovered the Air Totem—a slender monument adorned with feathered carvings. Its mystical aura resonated with the very essence of the high-altitude winds. To our amazement, the totem revealed an extraordinary power: the ability to transmute ordinary objects into Essences.\n" +
+            $"Objects placed in the totem's presence underwent a profound transformation, acquiring an otherworldly quality. The air, charged with the magic of the totem, granted these Essences an ethereal resonance. News of this discovery spread swiftly, drawing adventurers to the heights in search of the Air Totem's transformative touch. \n";
         public override bool UseTargeting => true;
+
+        public override GameObject EquipmentModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/airtotem.prefab");
+        public override Sprite EquipmentIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/airtotem.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -241,10 +244,10 @@ namespace BransItems.Modules.Pickups.Equipments
                         spawnTotal = 1;
                         break;
                     case ItemTier.Tier2:
-                        spawnTotal = 4;
+                        spawnTotal = 3;
                         break;
                     case ItemTier.Tier3:
-                        spawnTotal = 10;
+                        spawnTotal = 15;
                             break;
                     case ItemTier.Boss:
                         spawnTotal = 8;

@@ -25,15 +25,20 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public override string EquipmentLangTokenName => "EARTH_TOTEM";
 
-        public override string EquipmentPickupDesc => "On use, absorb an equipment and fire all absorbed equipments.";
+        public override string EquipmentPickupDesc => "Absorb an equipment and fire all absorbed equipments.";
 
-        public override string EquipmentFullDescription => "On use, absorb an equipment and fire all absorbed equipments.";
+        public override string EquipmentFullDescription => "<style=cIsUtility>Absorb</style> an equipment and fire all absorbed equipments.";
 
         public override string EquipmentLore =>
 
-            $"Found on a scrap of paper in an ornate case along with the device: \"[...] at that point, the binding process will become automatic, " +
-            $"and all the user needs to do is sever the specimen's connection to its soul.\"";
+            $"Excerpt from the findings of Engineer Miriam, Equipment Specialist\n\n" +
+            $"\"In the heart of the verdant wilderness, we stumbled upon the enigmatic Earth Totem. Its roots intertwined with the soil, and its stoic form bore markings reminiscent of ancient symbols. Upon closer inspection, the totem exhibited an astonishing ability: the absorption and assimilation of nearby equipment.\n" +
+            $"When presented with other artifacts, the Earth Totem would radiate a pulsating energy, drawing the essence of the offerings into itself.Subsequently, it would release a burst of power that mirrored the absorbed equipment's effects. The harmony between the totem and the surrounding nature was palpable, as if the earth itself granted this mystical conduit its unique capabilities.\n" +
+            $"Adventurers flocked to witness the totem's absorbent prowess, offering a diverse array of equipment for assimilation. In the heart of the wilderness, the Earth Totem became a beacon of adaptability, wielding a symphony of effects drawn from the artifacts of explorers past. Its mysterious influence continues to echo through the foliage, inviting those who seek to merge the essence of their equipment with the ancient power of the Earth Totem.";
         public override bool UseTargeting => true;
+
+        public override GameObject EquipmentModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.prefab");
+        public override Sprite EquipmentIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -420,7 +425,7 @@ namespace BransItems.Modules.Pickups.Equipments
                     {
                         //NEGATIVE to ADD to cooldown!
                         ModLogger.LogInfo("Count Absorbed:" + EquipDefList.Count + "   Count Absorbed:" + HighestCooldown + "Cooldown Added:" + EarthTotem.CalcAdditionalCooldownComplex(EquipDefList.Count, HighestCooldown));
-                        float cooldownAdded = EarthTotem.CalcAdditionalCooldownByAbsorb(Math.Max(EquipDefList.Count,1));
+                        float cooldownAdded = EarthTotem.CalcAdditionalCooldownByAbsorb(Math.Max(EquipDefList.Count-EarthTotemAbsorbedCount,1));
 
                         //Adjust cooldown by gesture of drowned and fuelcells
                         int gesture = self.inventory.GetItemCount(RoR2Content.Items.AutoCastEquipment);

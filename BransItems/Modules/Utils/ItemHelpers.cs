@@ -138,5 +138,53 @@ namespace BransItems.Modules.Utils
 
             return index;
         }
+
+        public static  T[] GetRandomSelectionFromArray<T>(List<T> itemList, int maxCount, Xoroshiro128Plus rng)
+        {
+            int selectionSize = Math.Min(itemList.Count,maxCount);
+            T[] selection = new T[selectionSize];
+            HashSet<T> usedItems = new HashSet<T>();
+
+            for(int i=0;i<selectionSize;i++)
+            {
+                T selectedItem;
+                do
+                {
+                    selectedItem = itemList[rng.RangeInt(0, itemList.Count)];
+                } while (usedItems.Contains(selectedItem));
+                selection[i] = selectedItem;
+                usedItems.Add(selectedItem);
+            }
+            //(T[])Convert.ChangeType(value, typeof(T[]));
+            return selection;
+        }
+
+        public static List<ItemDef> ItemDefsWithTier(ItemTierDef itemTierDef)
+        {
+            HashSet<ItemDef > items = new HashSet<ItemDef>();
+            foreach (ItemDef itemDef in ItemCatalog.allItemDefs)
+            {
+                if (itemDef.itemIndex != ItemIndex.None && itemDef.tier == itemTierDef.tier) //&& !itemDef.tags.Contains(ItemTag.WorldUnique))
+                {
+                    items.Add(itemDef);
+                }
+            }
+            return items.ToList<ItemDef>();
+        }
+
+        public static List<PickupDef> PickupDefsWithTier(ItemTierDef itemTierDef)
+        {
+            HashSet<PickupDef> items = new HashSet<PickupDef>();
+            foreach (PickupDef pickupDef in PickupCatalog.allPickups)
+            {
+                if (pickupDef.itemIndex!= ItemIndex.None && pickupDef.itemTier == itemTierDef.tier)// && !itemDef.tags.Contains(ItemTag.WorldUnique))
+                {
+                    items.Add(pickupDef);
+                }
+            }
+            return items.ToList<PickupDef>();
+        }
+
+        //public static PickupIndex[] ItemIndexToPickupIndex
     }
 }

@@ -16,25 +16,16 @@ namespace BransItems.Modules.Pickups.Items.Essences
     {
         public override string ItemName => "Essence of Acuity";
         public override string ItemLangTokenName => "ESSENCE_OF_ACUITY";
-        public override string ItemPickupDesc => "Slightly increase crit chance.";
-        public override string ItemFullDescription => $"Increase crit chance by <style=cIsDamage>{CritChanceGain}%</style>. <style=cStack>(+{CritChanceGain}%).";
+        public override string ItemPickupDesc => "Slightly increase your Critical Strike chance.";
+        public override string ItemFullDescription => $"Increase <style=cIsDamage>Critical Strike</style> chance by <style=cIsDamage>{CritChanceGain}%</style><style=cStack>(+{CritChanceGain}%)</style>.";
 
-        public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
-            "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
-            "A latent power resonated within its core, and that's when I discovered the Essence of Strength.\n\n" +
-            "As I incorporated the Essence into my gear, I felt an indescribable connection. It wasn't just a physical enhancement; it was as if the very essence of this hostile realm acknowledged my presence."
-            + "The melding was subtle, gradual, weaving its power into the fabric of my being. My combat instincts became sharper, and the sway of my weapon felt like an extension of my will.\n\n" +
-            "In the heat of battle, the Essence of Strength subtly altered the dance of combat. Strikes that once felt labored now flowed effortlessly." +
-            "My shots, once erratic, found their mark with newfound precision. It was as though the essence adapted to my every move, amplifying my capabilities in sync with the rhythm of the ongoing struggle.\n\n" +
-            "Yet, it's not just my physical form that feels the effects. There's a subtle shift within my mind—a resonance, an understanding. The chaotic landscape that was once an enigma now feels like a battlefield where I share a silent dialogue with the terrain itself." +
-            "The Essence whispers insights, guiding me through the ebb and flow of the relentless challenges we face.\n\n" +
-            "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
-            "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
+        public override string ItemLore => $"After getting my hands on that Essence of Acuity, it's like my eyes got an upgrade or something. Everything just looks sharper, you know? And hitting those sweet spots? It's like my aim suddenly got laser-focused." +
+            $" Used to be I'd just shoot and hope for the best, but now it's like I see where to hit, and bam, right on target. It's wild, like getting a whole new set of eyes that are really good at finding the soft spots on those nasty baddies.";
 
-        public override ItemTier Tier => EssenceHelpers.essenceTier; //ItemTier.AssignedAtRuntime;
+        public override ItemTierDef ModdedTierDef => EssenceHelpers.essenceTierDef; //ItemTier.AssignedAtRuntime;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.prefab");//("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -44,6 +35,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
+        public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
         public static float CritChanceGain;
 
