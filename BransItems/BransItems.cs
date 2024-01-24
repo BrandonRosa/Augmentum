@@ -14,6 +14,8 @@ using RoR2.ContentManagement;
 using BransItems.Modules.ItemTiers.CoreTier;
 using BransItems.Modules.ItemTiers.HighlanderTier;
 using BransItems.Modules.Utils;
+using BransItems.Modules.StandaloneBuffs;
+using BransItems.Modules.ColorCatalogEntry;
 
 namespace BransItems
 {
@@ -62,7 +64,7 @@ namespace BransItems
 
         //public List<CoreModule> CoreModules = new List<CoreModule>();
         //public List<ArtifactBase> Artifacts = new List<ArtifactBase>();
-        //public List<BuffBase> Buffs = new List<BuffBase>();
+        public List<BuffBase> Buffs = new List<BuffBase>();
         public List<ItemBase> Items = new List<ItemBase>();
         public List<EquipmentBase> Equipments = new List<EquipmentBase>();
         public List<ItemTierBase> ItemTiers = new List<ItemTierBase>();
@@ -80,12 +82,14 @@ namespace BransItems
         //public static Dictionary<BuffBase, bool> BuffStatusDictionary = new Dictionary<BuffBase, bool>();
         public static Dictionary<ItemBase, bool> ItemStatusDictionary = new Dictionary<ItemBase, bool>();
         public static Dictionary<EquipmentBase, bool> EquipmentStatusDictionary = new Dictionary<EquipmentBase, bool>();
+        public static Dictionary<BuffBase, bool> BuffStatusDictionary = new Dictionary<BuffBase, bool>();
         // public static Dictionary<EliteEquipmentBase, bool> EliteEquipmentStatusDictionary = new Dictionary<EliteEquipmentBase, bool>();
         //public static Dictionary<InteractableBase, bool> InteractableStatusDictionary = new Dictionary<InteractableBase, bool>();
         // public static Dictionary<SurvivorBase, bool> SurvivorStatusDictionary = new Dictionary<SurvivorBase, bool>();
 
         //public static ColorCatalog.ColorIndex TempCoreLight = ColorsAPI.RegisterColor(Color.cyan);//new Color32(21, 99, 58, 255));//ColorCatalogUtils.RegisterColor(new Color32(21, 99, 58, 255));
         //public static ColorCatalog.ColorIndex TempCoreDark = ColorsAPI.RegisterColor(Color.cyan); //new Color32(1, 126, 62, 255)); //ColorCatalogUtils.RegisterColor(new Color32(1, 126, 62, 255));
+        public static string EssenceKeyword => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">Essence</color>";
         public void Awake()
         {
             ModLogger = this.Logger;
@@ -139,6 +143,26 @@ namespace BransItems
                 }
             }
 
+            var disableBuffs = Config.Bind<bool>("Buffs", "Disable All Standalone Buffs?", false, "Do you wish to disable every standalone buff in Aetherium?").Value;
+            if (!disableBuffs)
+            {
+                //Standalone Buff Initialization
+                var BuffTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(BuffBase)));
+
+                ModLogger.LogInfo("--------------BUFFS---------------------");
+
+                foreach (var buffType in BuffTypes)
+                {
+                    BuffBase buff = (BuffBase)System.Activator.CreateInstance(buffType);
+                    if (ValidateBuff(buff, Buffs))
+                    {
+                        buff.Init(Config);
+
+                        ModLogger.LogInfo("Buff: " + buff.BuffName + " Initialized!");
+                    }
+                }
+            }
+
             var disableItems = Config.Bind<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in BransItems?");
             if (!disableItems.Value)
             {
@@ -155,18 +179,18 @@ namespace BransItems
                         item.Init(Config);
 
                         ModLogger.LogInfo("Item: " + item.ItemName + " Initialized!");
-                        if (item.ItemDef._itemTierDef==Core.instance.itemTierDef)
-                        {
-                            Core.instance.ItemsWithThisTier.Add(item.ItemDef.itemIndex);
-                            Core.instance.AvailableTierDropList.Add(PickupCatalog.FindPickupIndex(item.ItemDef.itemIndex));
-                            ModLogger.LogWarning("Name" + item.ItemName);
-                        }
-                        if (item.ItemDef._itemTierDef== Highlander.instance.itemTierDef)
-                        {
-                            Highlander.instance.ItemsWithThisTier.Add(item.ItemDef.itemIndex);
-                            Highlander.instance.AvailableTierDropList.Add(PickupCatalog.FindPickupIndex(item.ItemDef.itemIndex));
-                            ModLogger.LogWarning("Name" + item.ItemName);
-                        }
+                        //if (item.ItemDef._itemTierDef==Core.instance.itemTierDef)
+                        //{
+                        //    Core.instance.ItemsWithThisTier.Add(item.ItemDef.itemIndex);
+                        //    Core.instance.AvailableTierDropList.Add(PickupCatalog.FindPickupIndex(item.ItemDef.itemIndex));
+                        //    ModLogger.LogWarning("Name" + item.ItemName);
+                        //}
+                        //if (item.ItemDef._itemTierDef== Highlander.instance.itemTierDef)
+                        //{
+                        //    Highlander.instance.ItemsWithThisTier.Add(item.ItemDef.itemIndex);
+                        //    Highlander.instance.AvailableTierDropList.Add(PickupCatalog.FindPickupIndex(item.ItemDef.itemIndex));
+                        //    ModLogger.LogWarning("Name" + item.ItemName);
+                        //}
                     }
                 }
 
@@ -220,6 +244,19 @@ namespace BransItems
                 }
 
                 //item.RequireUnlock = requireUnlock;
+            }
+            return enabled;
+        }
+
+        public bool ValidateBuff(BuffBase buff, List<BuffBase> buffList)
+        {
+            var enabled = Config.Bind<bool>("Buff: " + buff.BuffName, "Enable Buff?", true, "Should this buff be registered for use in the game?").Value;
+
+            BuffStatusDictionary.Add(buff, enabled);
+
+            if (enabled)
+            {
+                buffList.Add(buff);
             }
             return enabled;
         }

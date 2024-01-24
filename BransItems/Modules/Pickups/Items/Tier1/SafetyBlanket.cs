@@ -24,7 +24,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         public override string ItemName => "Safety Blanket";
         public override string ItemLangTokenName => "SAFETY_BLANKET";
         public override string ItemPickupDesc => "Slightly increase your one shot protection fraction and invincibility time.";
-        public override string ItemFullDescription => $"Increase your oneshot protection. Not more than <style=cIsDamage>{FractionCap*100}%</style> of your health. Increase your invincibility frames by <style=cIsDamage>{IFramesAdded}</style></style><style=cStack>(+{IFramesAdded} per stack)</style> seconds.";
+        public override string ItemFullDescription => $"Increase your oneshot protection. Not more than <style=cIsDamage>{FractionCap*100}%</style> of your health. Increase your invincibility frames by <style=cIsDamage>{InitialIFrames}</style><style=cStack>(+{AdditionalIFrames} per stack)</style> seconds.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
@@ -46,7 +46,9 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         public static float FractionCap;
 
-        public static float IFramesAdded;
+        public static float InitialIFrames;
+
+        public static float AdditionalIFrames;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
 
@@ -64,7 +66,8 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         public void CreateConfig(ConfigFile config)
         {
             FractionCap = config.Bind<float>("Item: " + ItemName, "Plateau value", .6f, "What value shoud Saftey Blanket plateu to?").Value;
-            IFramesAdded = config.Bind<float>("Item: " + ItemName, "Added Invincibility Time", .1f, "How much invincibility time should Safety Blanket add?").Value;
+            InitialIFrames = config.Bind<float>("Item: " + ItemName, "Initial Invincibility Time", 1f, "How much additional invincibility time should Safety Blanket add?").Value;
+            AdditionalIFrames = config.Bind<float>("Item: " + ItemName, "Added Invincibility Time", .1f, "How much invincibility time should Safety Blanket add?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -303,7 +306,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                 return;
             int blanketCount = self.body.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
             if(blanketCount>0)
-                self.ospTimer+=IFramesAdded*blanketCount;
+                self.ospTimer+=InitialIFrames*blanketCount;
         }
 
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)

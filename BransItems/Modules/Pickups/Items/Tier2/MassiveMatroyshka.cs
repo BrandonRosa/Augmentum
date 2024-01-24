@@ -288,7 +288,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             //On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
             TeleporterInteraction.onTeleporterBeginChargingGlobal += TeleporterInteraction_onTeleporterBeginChargingGlobal;
             //CharacterBody.instancesList.
-            On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
+            //On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
             //On.RoR2.EquipmentSlot.OnEquipmentExecuted += EquipmentSlot_OnEquipmentExecuted;
         }
 
@@ -346,6 +346,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         private void TeleporterInteraction_onTeleporterBeginChargingGlobal(TeleporterInteraction obj)
         {
+            /*
             if (MassiveList.Count > 0)
             {
                 List<CharacterBody> removelater = new List<CharacterBody>();
@@ -368,6 +369,23 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
                 foreach (CharacterBody body in removelater)
                     MassiveList.Remove(body);
+            }
+            */
+
+            List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
+            for (int i = 0; i < masterList.Count; i++)
+            {
+                //If the player isnt dead
+                if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+                {
+                    //if the player has a body and an inventory AND they have the item
+                    if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0)
+                    {
+                        DropMassive(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
+                        GiveMedium(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
+                        BreakItem(masterList[i].body);
+                    }
+                }
             }
         }
 

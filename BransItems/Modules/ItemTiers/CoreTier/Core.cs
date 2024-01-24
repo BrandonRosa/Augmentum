@@ -5,7 +5,7 @@ using BransItems.Modules.ColorCatalogEntry;
 using BransItems.Modules.ColorCatalogEntry.CoreColors;
 using BransItems.Modules.ItemTiers;
 using BransItems.Modules.Pickups.Items.Essences;
-
+using static BransItems.BransItems;
 using R2API;
 using RoR2;
 using UnityEngine;
@@ -30,6 +30,8 @@ namespace BransItems.Modules.ItemTiers.CoreTier
         public override bool isDroppable => true;
 
         public override string TierName => "Core";
+
+        public override Texture backgroundTexture => MainAssets.LoadAsset<Texture>("Assets/Textrures/Icons/TierBackground/BgCore.png");
 
         //public ColorCatalog.ColorIndex colorIndex = ColorsAPI.RegisterColor(new Color32(21,99,58,255));//ColorCatalog.ColorIndex.Money;//CoreLight.instance.colorCatalogEntry.ColorIndex;
 

@@ -291,7 +291,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             //On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
             //TeleporterInteraction.onTeleporterBeginChargingGlobal += TeleporterInteraction_onTeleporterBeginChargingGlobal;
             //CharacterBody.instancesList.
-            On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
+            //On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
             On.RoR2.CharacterBody.HandleOnKillEffectsServer += CharacterBody_HandleOnKillEffectsServer;
             //On.RoR2.EquipmentSlot.OnEquipmentExecuted += EquipmentSlot_OnEquipmentExecuted;
         }
@@ -299,6 +299,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         private void CharacterBody_HandleOnKillEffectsServer(On.RoR2.CharacterBody.orig_HandleOnKillEffectsServer orig, CharacterBody killer, DamageReport damageReport)
         {
             orig(killer, damageReport);
+            /*
             ModLogger.LogWarning("Body:" + killer.name);
             if(damageReport.victimBody.isElite)//killer.isElite)
             {
@@ -307,24 +308,58 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                     CharacterBody self = killer;
                     if (MegaList.Count > 0)
                     {
+                        List<CharacterBody> removelater = new List<CharacterBody>();
                         foreach (CharacterBody body in MegaList.Keys)
                         {
-                            if (body.isActiveAndEnabled)
+                            if (body != null)
                             {
-                                if (self == body)
+                                if (body.isActiveAndEnabled)
                                 {
-                                    DropMega(body, MegaList[body]);
-                                    GiveMassive(body, MegaList[body]);
-                                    BreakItem(body);
-                                    MegaList.Remove(body);
-                                    break;
+                                    if (self == body)
+                                    {
+                                        DropMega(body, MegaList[body]);
+                                        GiveMassive(body, MegaList[body]);
+                                        BreakItem(body);
+                                        MegaList.Remove(body);
+                                        break;
+                                    }
                                 }
+                                else
+                                    removelater.Add(body);
+                            }
+                            else
+                                removelater.Add(body);
+                        }
+
+                        foreach (CharacterBody body in removelater)
+                            MegaList.Remove(body);
+                    }
+                }
+            }
+            */
+            if (damageReport.victimBody.isElite)//killer.isElite)
+            {
+                if (killer)
+                {
+                    CharacterBody self = killer;
+                    List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
+                    for (int i = 0; i < masterList.Count; i++)
+                    {
+                        //If the player isnt dead
+                        if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+                        {
+                            //if the player has a body and an inventory AND they have the item
+                            if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && masterList[i].body==self)
+                            {
+                                DropMega(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
+                                GiveMassive(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
+                                BreakItem(masterList[i].body);
+                                break;
                             }
                         }
                     }
                 }
             }
-            
         }
 
         private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)

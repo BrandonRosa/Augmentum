@@ -16,19 +16,13 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Totality";
         public override string ItemLangTokenName => "ESSENCE_OF_TOTALITY";
         public override string ItemPickupDesc => "Slightly increase all stats.";
-        public override string ItemFullDescription => $"Gain <style=cIsDamage>{AttackSpeedGain}%</style><style=cStack>(+{AttackSpeedGain}% per stack)</style> attack speed, <style=cIsDamage>{MoveSpeedGain}%</style><style=cStack>(+{MoveSpeedGain}% per stack)</style> move speed, <style=cIsDamage>{CritChanceGain}%</style><style=cStack>(+{CritChanceGain}% per stack)</style> crit chance, <style=cIsDamage>{DamageGain}</style><style=cStack>(+{DamageGain} per stack)</style> damage, and <style=cIsDamage>{HealthGain}%</style><style=cStack>(+{HealthGain} per stack)</style> health.";
+        public override string ItemFullDescription => $"Gain: \n<style=cIsDamage>{AttackSpeedGain}%</style><style=cStack>(+{AttackSpeedGain}% per stack)</style> <style=cIsDamage>attack speed</style>, \n<style=cIsUtility>{MoveSpeedGain}%</style><style=cStack>(+{MoveSpeedGain}% per stack)</style> <style=cIsUtility>movement speed</style>, \n<style=cIsDamage>{CritChanceGain}%</style><style=cStack>(+{CritChanceGain}% per stack)</style> <style=cIsDamage>Critical Strike</style> chance, \n<style=cIsDamage>{DamageGain}</style><style=cStack>(+{DamageGain} per stack)</style> <style=cIsDamage>damage</style>, \nand <style=cIsHealing>{HealthGain}%</style><style=cStack>(+{HealthGain} per stack)</style> <style=cIsHealing>health</style>.";
 
-        public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
-            "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
-            "A latent power resonated within its core, and that's when I discovered the Essence of Strength.\n\n" +
-            "As I incorporated the Essence into my gear, I felt an indescribable connection. It wasn't just a physical enhancement; it was as if the very essence of this hostile realm acknowledged my presence."
-            + "The melding was subtle, gradual, weaving its power into the fabric of my being. My combat instincts became sharper, and the sway of my weapon felt like an extension of my will.\n\n" +
-            "In the heat of battle, the Essence of Strength subtly altered the dance of combat. Strikes that once felt labored now flowed effortlessly." +
-            "My shots, once erratic, found their mark with newfound precision. It was as though the essence adapted to my every move, amplifying my capabilities in sync with the rhythm of the ongoing struggle.\n\n" +
-            "Yet, it's not just my physical form that feels the effects. There's a subtle shift within my mind—a resonance, an understanding. The chaotic landscape that was once an enigma now feels like a battlefield where I share a silent dialogue with the terrain itself." +
-            "The Essence whispers insights, guiding me through the ebb and flow of the relentless challenges we face.\n\n" +
-            "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
-            "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
+        public override string ItemLore => $"Excerpt from the folk tale \"The Radiant Luminance:\"\n\n" +
+            $"\"In the twilight of ancient realms, a tale unfolds of the rarest gem, a stone coveted by noble souls of valor. Legends speak of the Radiant Luminance, an ethereal jewel that bestowed boundless strength upon those deemed worthy. " +
+            $"Whispers carried through the annals of time tell of heroes who, in their noble deeds, unwittingly birthed this precious gemstone from the very essence of their valorous souls.\n" +
+            $"As the story goes, these radiant stones shimmered with a transcendent brilliance, hidden within the deepest recesses of the heroic heart.Only those who carried the weight of righteous purpose could uncover this extraordinary relic, glistening with the combined virtues of strength, speed, and resilience." +
+            $" It is said that the Radiant Luminance, a manifestation of the noble and the just, would reveal itself only to those whose souls burned with an unwavering commitment to the greater good.A testament to the valor of heroes, this luminous gem became a beacon of hope and an eternal echo of their righteous deeds, whispered through the pages of time.\"";
 
         public override ItemTierDef ModdedTierDef => EssenceHelpers.essenceTierDef; ////ItemTier.AssignedAtRuntime;
 

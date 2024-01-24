@@ -24,11 +24,9 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
         public override string ItemName => "Mini Matroyshka";
         public override string ItemLangTokenName => "MINI_MATROYSHKA";
         public override string ItemPickupDesc => "The next time you open a chest, crack open to reveal a surprise!";
-        public override string ItemFullDescription => $"The next time you open a chest, crack open for <style=cIsDamage>{DropCount}%</style> essence items. There is nothing left.";
+        public override string ItemFullDescription => $"The next time you open a <style=cisUtility>chest</style>, crack open for {DropCount} "+BransItems.EssenceKeyword+" items. There is nothing left.";
 
-        public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
-            "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
-            "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
@@ -291,7 +289,7 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
             //On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
             //TeleporterInteraction.onTeleporterBeginChargingGlobal += TeleporterInteraction_onTeleporterBeginChargingGlobal;
             //CharacterBody.instancesList.
-            On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
+            //On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
             //On.RoR2.EquipmentSlot.OnEquipmentExecuted += EquipmentSlot_OnEquipmentExecuted;
             //On.RoR2.ChestBehavior.ItemDrop += ChestBehavior_ItemDrop;
             //On.RoR2.PurchaseInteraction.CanBeAffordedByInteractor += PurchaseInteraction_CanBeAffordedByInteractor;
@@ -302,28 +300,58 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
         private void PurchaseInteraction_OnInteractionBegin(On.RoR2.PurchaseInteraction.orig_OnInteractionBegin orig, PurchaseInteraction self, Interactor activator)
         {
             orig(self, activator);
+            /*
             ModLogger.LogWarning("Interaction:" + self.name.Substring(0, self.name.Length - 7));
             ModLogger.LogWarning("Activator:" + activator.name);
             if (whiteList.Contains(self.name.Substring(0, self.name.Length - 7)))
             {
                 if (MiniList.Count > 0)
                 {
+                    List<CharacterBody> removelater = new List<CharacterBody>();
                     foreach (CharacterBody body in MiniList.Keys)
                     {
-                        if (body.isActiveAndEnabled)
-                        {
-                            if (activator.gameObject == body.gameObject)
+                        if (body != null)
+                            if (body.isActiveAndEnabled)
                             {
-                                DropMini(body, MiniList[body]);
-                                //GiveTiny(body, MiniList[body]);
-                                BreakItem(body);
-                                MiniList.Remove(body);
-                                break;
+                                if (activator.gameObject == body.gameObject)
+                                {
+                                    DropMini(body, MiniList[body]);
+                                    //GiveTiny(body, MiniList[body]);
+                                    BreakItem(body);
+                                    MiniList.Remove(body);
+                                    break;
+                                }
                             }
+                            else
+                            {
+                                removelater.Add(body);
+                            }
+                    }
+
+                    foreach (CharacterBody body in removelater)
+                        MiniList.Remove(body);
+                }
+
+            }
+            */
+            if (whiteList.Contains(self.name.Substring(0, self.name.Length - 7)))
+            {
+                List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
+                for (int i = 0; i < masterList.Count; i++)
+                {
+                    //If the player isnt dead
+                    if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+                    {
+                        //if the player has a body and an inventory AND they have the item
+                        if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && activator.gameObject== masterList[i].body.gameObject)
+                        {
+                            DropMini(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
+                            //GiveTiny(body, MiniList[body]);
+                            BreakItem(masterList[i].body);
+                            break;
                         }
                     }
                 }
-
             }
         }
 
@@ -338,7 +366,7 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
                 {
                     foreach (CharacterBody body in MiniList.Keys)
                     {
-                        if (body.isActiveAndEnabled)
+                        if (body && body.isActiveAndEnabled)
                         {
                             if (activator.gameObject == body.gameObject)
                             {

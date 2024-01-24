@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1910841665
+CRC: 3409935892
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 8b2dcb81b41007b41d2a3b665568d40d
+    Hash: 159b8a20648ee5870157ca4075dbd616
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -43,6 +43,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_albedo.jpeg
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/diffuse.png
+- Assets/Textrures/Icons/TierBackground/BgHighlander.png
 - Assets/Textrures/Icons/Temporary/crystal5/source/5a43a134a3fb4f44af38bb586ccd45e7.fbx.fbx
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/bloodburstclam.mat
 - Assets/Textrures/Icons/Temporary/crystal6/source/crystal.fbx
@@ -52,6 +53,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal4/model.dae
 - Assets/Models/Meshes/EssenceOfStrength.blend
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_metallic.jpeg
+- Assets/Textrures/Icons/TierBackground/BgCore.png
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_roughness.jpeg
 - Assets/Textrures/Icons/Temporary/crystal/Materials/TEX_crystal.mat
 - Assets/Textrures/Icons/Temporary/crystal3/Materials/crystal_dif.mat

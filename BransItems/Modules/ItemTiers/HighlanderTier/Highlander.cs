@@ -10,6 +10,7 @@ using R2API;
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using static BransItems.BransItems;
 
 namespace BransItems.Modules.ItemTiers.HighlanderTier
 {
@@ -39,7 +40,9 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         public static float ChanceShrineFail = .02f;
 
-        public static float ChanceShrineSuceed = .01f;
+        public static float ChanceShrineSuceed = .01f; 
+
+        public override Texture backgroundTexture => MainAssets.LoadAsset<Texture>("Assets/Textrures/Icons/TierBackground/BgHighlander.png");
 
         //public ColorCatalog.ColorIndex colorIndex = ColorsAPI.RegisterColor(new Color32(21,99,58,255));//ColorCatalog.ColorIndex.Money;//CoreLight.instance.colorCatalogEntry.ColorIndex;
 

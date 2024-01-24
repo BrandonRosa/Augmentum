@@ -287,20 +287,21 @@ namespace BransItems.Modules.Pickups.Items.Tier1
             //On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
             //TeleporterInteraction.onTeleporterBeginChargingGlobal += TeleporterInteraction_onTeleporterBeginChargingGlobal;
             //CharacterBody.instancesList.
-            On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
+            //On.RoR2.CharacterBody.OnInventoryChanged += CharacterBody_OnInventoryChanged;
             On.RoR2.EquipmentSlot.OnEquipmentExecuted += EquipmentSlot_OnEquipmentExecuted;
         }
 
         private void EquipmentSlot_OnEquipmentExecuted(On.RoR2.EquipmentSlot.orig_OnEquipmentExecuted orig, EquipmentSlot equipSlot)
         {
-            
+
             orig(equipSlot);
-            
+            /*
             if (equipSlot.characterBody)
             {
                 CharacterBody self = equipSlot.characterBody;
                 if (MediumList.Count > 0)
                 {
+                    List<CharacterBody> removelater = new List<CharacterBody>();
                     foreach (CharacterBody body in MediumList.Keys)
                     {
                         if (body != null)
@@ -318,7 +319,31 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                             }
                         }
                         else
-                            MediumList.Remove(body);
+                            removelater.Add(body);
+                    }
+
+                    foreach (CharacterBody body in removelater)
+                        MediumList.Remove(body);
+                }
+            }
+            */
+            if (equipSlot.characterBody)
+            {
+                CharacterBody self = equipSlot.characterBody;
+                List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
+                for (int i = 0; i < masterList.Count; i++)
+                {
+                    //If the player isnt dead
+                    if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+                    {
+                        //if the player has a body and an inventory AND they have the item
+                        if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && self== masterList[i].body)
+                        {
+                            DropMedium(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
+                            GiveMini(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
+                            BreakItem(masterList[i].body);
+                            break;
+                        }
                     }
                 }
             }

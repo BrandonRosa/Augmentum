@@ -68,6 +68,8 @@ namespace BransItems.Modules.ItemTiers
 
         public GameObject dropletDisplayPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
 
+        public virtual Texture backgroundTexture { get; }
+
         public virtual bool canRestack { get; } = true;
 
         public virtual bool canScrap { get; } = false;
@@ -95,6 +97,8 @@ namespace BransItems.Modules.ItemTiers
             itemTierDef.colorIndex = colorIndex; //ColorCatalog.ColorIndex.Money;
             itemTierDef.darkColorIndex = darkColorIndex;  //ColorCatalog.ColorIndex.Teleporter;
             itemTierDef.tier= ItemTier.AssignedAtRuntime;
+            if (backgroundTexture)
+                itemTierDef.bgIconTexture = backgroundTexture;
             
             //BransItems.ModLogger.LogWarning(itemTierDef.tier.ToString());
             //BransItems.ModLogger.LogWarning("Correct:"+ ItemTier.AssignedAtRuntime.ToString());

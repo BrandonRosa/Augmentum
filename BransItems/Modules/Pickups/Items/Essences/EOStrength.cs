@@ -17,7 +17,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Strength";
         public override string ItemLangTokenName => "ESSENCE_OF_STRENGTH";
         public override string ItemPickupDesc => "Slightly increase damage.";
-        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{DamageGain}</style> <style=cStack>(+{DamageGain})</style> damage buff.";
+        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{DamageGain}</style> <style=cStack>(+{DamageGain})</style> <style=cIsDamage>damage</style> buff.";
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
