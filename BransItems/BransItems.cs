@@ -68,7 +68,7 @@ namespace BransItems
         public List<ItemBase> Items = new List<ItemBase>();
         public List<EquipmentBase> Equipments = new List<EquipmentBase>();
         public List<ItemTierBase> ItemTiers = new List<ItemTierBase>();
-        //public List<EliteEquipmentBase> EliteEquipments = new List<EliteEquipmentBase>();
+        public List<EliteEquipmentBase> EliteEquipments = new List<EliteEquipmentBase>();
        // public List<InteractableBase> Interactables = new List<InteractableBase>();
        // public List<SurvivorBase> Survivors = new List<SurvivorBase>();
 
@@ -83,7 +83,7 @@ namespace BransItems
         public static Dictionary<ItemBase, bool> ItemStatusDictionary = new Dictionary<ItemBase, bool>();
         public static Dictionary<EquipmentBase, bool> EquipmentStatusDictionary = new Dictionary<EquipmentBase, bool>();
         public static Dictionary<BuffBase, bool> BuffStatusDictionary = new Dictionary<BuffBase, bool>();
-        // public static Dictionary<EliteEquipmentBase, bool> EliteEquipmentStatusDictionary = new Dictionary<EliteEquipmentBase, bool>();
+        public static Dictionary<EliteEquipmentBase, bool> EliteEquipmentStatusDictionary = new Dictionary<EliteEquipmentBase, bool>();
         //public static Dictionary<InteractableBase, bool> InteractableStatusDictionary = new Dictionary<InteractableBase, bool>();
         // public static Dictionary<SurvivorBase, bool> SurvivorStatusDictionary = new Dictionary<SurvivorBase, bool>();
 
@@ -195,7 +195,7 @@ namespace BransItems
                 }
 
                 //IL.RoR2.ShopTerminalBehavior.GenerateNewPickupServer_bool += ItemBase.BlacklistFromPrinter;
-                //On.RoR2.Items.ContagiousItemManager.Init += ItemBase.RegisterVoidPairings;
+                On.RoR2.Items.ContagiousItemManager.Init += ItemBase.RegisterVoidPairings;
             }
             var disableEquipment = Config.Bind<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in BransItems?");
             if (!disableEquipment.Value)
@@ -217,9 +217,24 @@ namespace BransItems
                 }
             }
 
-            
+            //Equipment Initialization
+            var EliteEquipmentTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(EliteEquipmentBase)));
 
-            
+            ModLogger.LogInfo("-------------ELITE EQUIPMENT---------------------");
+
+            foreach (var eliteEquipmentType in EliteEquipmentTypes)
+            {
+                EliteEquipmentBase eliteEquipment = (EliteEquipmentBase)System.Activator.CreateInstance(eliteEquipmentType);
+                if (ValidateEliteEquipment(eliteEquipment, EliteEquipments))
+                {
+                    eliteEquipment.Init(Config);
+
+                    ModLogger.LogInfo("Elite Equipment: " + eliteEquipment.EliteEquipmentName + " Initialized!");
+                }
+            }
+
+
+
         }
 
         public bool ValidateItem(ItemBase item, List<ItemBase> itemList)
@@ -270,6 +285,20 @@ namespace BransItems
             if (enabled)
             {
                 equipmentList.Add(equipment);
+                return true;
+            }
+            return false;
+        }
+
+        public bool ValidateEliteEquipment(EliteEquipmentBase eliteEquipment, List<EliteEquipmentBase> eliteEquipmentList)
+        {
+            var enabled = Config.Bind<bool>("Equipment: " + eliteEquipment.EliteEquipmentName, "Enable Elite Equipment?", true, "Should this elite equipment appear in runs? If disabled, the associated elite will not appear in runs either.").Value;
+
+            EliteEquipmentStatusDictionary.Add(eliteEquipment, enabled);
+
+            if (enabled)
+            {
+                eliteEquipmentList.Add(eliteEquipment);
                 return true;
             }
             return false;

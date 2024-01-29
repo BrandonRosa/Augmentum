@@ -65,7 +65,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         public void CreateConfig(ConfigFile config)
         {
-            FractionCap = config.Bind<float>("Item: " + ItemName, "Plateau value", .6f, "What value shoud Saftey Blanket plateu to?").Value;
+            FractionCap = config.Bind<float>("Item: " + ItemName, "Plateau value", .75f, "What value shoud Saftey Blanket plateu to?").Value;
             InitialIFrames = config.Bind<float>("Item: " + ItemName, "Initial Invincibility Time", 1f, "How much additional invincibility time should Safety Blanket add?").Value;
             AdditionalIFrames = config.Bind<float>("Item: " + ItemName, "Added Invincibility Time", .1f, "How much invincibility time should Safety Blanket add?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
@@ -313,10 +313,10 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         {
             orig(self);
             if (self)
-                if (self.inventory != null)
+                if (self.inventory != null && self.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex)>0)
                 {
                     int blanketCount = self.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
-                    float oneshot = (.6f - .05f) * (1f - (float)Math.Exp(-(blanketCount - 1f) / (25f)));
+                    float oneshot = (.75f - .15f) * (1f - (float)Math.Exp(-(blanketCount - 1f) / (20f)))+.15f-self.oneShotProtectionFraction;
                     self.oneShotProtectionFraction = Mathf.Max(0f, oneshot + self.oneShotProtectionFraction - (1f - 1f / self.cursePenalty));
                 }
         }

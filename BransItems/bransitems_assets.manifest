@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3409935892
+CRC: 746159506
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 159b8a20648ee5870157ca4075dbd616
+    Hash: b4f6d80d1ff052ea2302b35850375d18
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -44,9 +44,11 @@ Assets:
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/diffuse.png
 - Assets/Textrures/Icons/TierBackground/BgHighlander.png
+- Assets/Textrures/Icons/Buff/Status_AffixAdaptive.png
 - Assets/Textrures/Icons/Temporary/crystal5/source/5a43a134a3fb4f44af38bb586ccd45e7.fbx.fbx
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/bloodburstclam.mat
 - Assets/Textrures/Icons/Temporary/crystal6/source/crystal.fbx
+- Assets/Textrures/Ramps/texRampAdaptive.png
 - Assets/Textrures/Icons/Temporary/QuadModels/lootedbloodburstclam.prefab
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_emissive.jpeg
 - Assets/Textrures/Icons/Temporary/crystal2/textures/normal.png
@@ -56,6 +58,7 @@ Assets:
 - Assets/Textrures/Icons/TierBackground/BgCore.png
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_roughness.jpeg
 - Assets/Textrures/Icons/Temporary/crystal/Materials/TEX_crystal.mat
+- Assets/Textrures/Ramps/texRampAdaptive3.png
 - Assets/Textrures/Icons/Temporary/crystal3/Materials/crystal_dif.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/faltrect.blend
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallionconsumed.png
@@ -65,7 +68,9 @@ Assets:
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.bmp
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/discoveryMedallion.prefab
+- Assets/Textrures/Icons/Buff/HealingRingsReady.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/airtotem.mat
+- Assets/Textrures/Ramps/texRampAdaptive4.png
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem3.prefab
 - Assets/Textrures/Icons/Temporary/crystal2/Materials/lowpoly1_DefaultMaterial_Diffuse1.mat
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_normal.png
@@ -74,12 +79,15 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal6/source/crystal6.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem.bmp
 - Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.png
+- Assets/Textrures/Icons/Item/HealingBands/BarrierBand.png
 - Assets/Textrures/Icons/Temporary/crystal2/source/Crystal2.prefab
 - Assets/Textrures/Icons/Temporary/crystal6/source/TempCrystal6.png
+- Assets/Textrures/Ramps/texRampAdaptive2.png
 - Assets/Textrures/Icons/Temporary/QuadModels/lootedbloodburstclam.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/ground ao texture.jpeg
 - Assets/Textrures/Icons/Temporary/crystal3/source/TempCrystal3.png
 - Assets/Textrures/Icons/Temporary/crystal2/source/gem.fbx
+- Assets/Textrures/Icons/Buff/HealingRingsCooldown.png
 - Assets/Textrures/Icons/Temporary/crystal5/source/TempCrystal5.png
 - Assets/Textrures/Icons/Temporary/crystal4/Materials/default_albedo.mat
 - Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.prefab
@@ -101,6 +109,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal4/source/TempCrystal4.png
 - Assets/Textrures/Icons/Temporary/crystal6/textures/internal_ground_ao_texture.jpeg
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png
+- Assets/Textrures/Icons/Item/HealingBands/HealingBand.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/lxmtnsto.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallion.png
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallion.bmp

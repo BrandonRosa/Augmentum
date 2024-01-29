@@ -63,7 +63,7 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of essence items dropped", 2, "How many essence items should drop from this item?").Value;
+            DropCount = config.Bind<int>("Item: " + ItemName, "Number of essence items dropped", 1, "How many essence items should drop from this item?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -345,9 +345,10 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
                         //if the player has a body and an inventory AND they have the item
                         if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && activator.gameObject== masterList[i].body.gameObject)
                         {
-                            DropMini(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
+                            int itemCount = masterList[i].body.inventory.GetItemCount(ItemDef);
+                            DropMini(masterList[i].body, itemCount*DropCount);
                             //GiveTiny(body, MiniList[body]);
-                            BreakItem(masterList[i].body);
+                            BreakItem(masterList[i].body,itemCount);
                             break;
                         }
                     }
@@ -355,135 +356,16 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
             }
         }
 
-        private bool PurchaseInteraction_CanBeAffordedByInteractor(On.RoR2.PurchaseInteraction.orig_CanBeAffordedByInteractor orig, PurchaseInteraction self, Interactor activator)
-        {
-            bool ans = orig(self, activator);
-            ModLogger.LogWarning("Interaction:" + self.name.Substring(0,self.name.Length-7)); //To remove "(Clone)"
-            ModLogger.LogWarning("Activator:" + activator.name);
-            if (ans && whiteList.Contains(self.name.Substring(0, self.name.Length - 7)))
-            {
-                if(MiniList.Count>0)
-                {
-                    foreach (CharacterBody body in MiniList.Keys)
-                    {
-                        if (body && body.isActiveAndEnabled)
-                        {
-                            if (activator.gameObject == body.gameObject)
-                            {
-                                DropMini(body, MiniList[body]);
-                                //GiveTiny(body, MiniList[body]);
-                                BreakItem(body);
-                                MiniList.Remove(body);
-                                break;
-                            }
-                        }
-                    }
-                }
-                
-            }
-            return ans;
-        }
-        /*
-        private void ChestBehavior_ItemDrop(On.RoR2.ChestBehavior.orig_ItemDrop orig, ChestBehavior self)
-        {
-            orig(self);
-
-            if (self.playerControllerId.)
-            {
-                CharacterBody self = equipSlot.characterBody;
-                if (TinyList.Count > 0)
-                {
-                    foreach (CharacterBody body in TinyList.Keys)
-                    {
-                        if (body.isActiveAndEnabled)
-                        {
-                            if (self == body)
-                            {
-                                DropSmall(body, TinyList[body]);
-                                GiveTiny(body, TinyList[body]);
-                                BreakItem(body);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        private void EquipmentSlot_OnEquipmentExecuted(On.RoR2.EquipmentSlot.orig_OnEquipmentExecuted orig, EquipmentSlot equipSlot)
-        {
-
-            orig(equipSlot);
-
-            if (equipSlot.characterBody)
-            {
-                CharacterBody self = equipSlot.characterBody;
-                if (MiniList.Count > 0)
-                {
-                    foreach (CharacterBody body in MiniList.Keys)
-                    {
-                        if (body.isActiveAndEnabled)
-                        {
-                            if (self == body)
-                            {
-                                DropMini(body, MiniList[body]);
-                                GiveTiny(body, MiniList[body]);
-                                BreakItem(body);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        */
-        private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
-        {
-            orig(self);
-            //If Self exists
-            if (self)
-            {
-                //Check to see if the character has atleast 1 SmallMatroyshka
-                int currentCount = self.inventory.GetItemCount(ItemDef.itemIndex);
-                if (currentCount > 0)
-                {
-                    //Check to see if its in the dictionary if not add it to the dictionary
-                    int prevCount = 0;
-                    if (MiniList.TryGetValue(self, out prevCount))
-                    {
-                        //If it is, see if the number of smallMatroyshka has changed.
-                        if (prevCount != currentCount)
-                            MiniList[self] = currentCount;
-                    }
-                    else
-                        MiniList.Add(self, currentCount);
-                }
-            }
-        }
-
-        private void TeleporterInteraction_onTeleporterBeginChargingGlobal(TeleporterInteraction obj)
-        {
-            if (MiniList.Count > 0)
-            {
-                foreach (CharacterBody body in MiniList.Keys)
-                {
-                    if (body.isActiveAndEnabled)
-                    {
-                        DropMini(body, MiniList[body]);
-                        //GiveTiny(body, TinyList[body]);
-                        BreakItem(body);
-                    }
-                }
-            }
-        }
 
         private void DropMini(CharacterBody body, int count)
         {
             //Get Count of LootedBloodburst clams
             int MegaShellCount = body.inventory.GetItemCount(MegaMatroyshkaShells.instance.ItemDef.itemIndex);
             int DiscoveryMedallionCount = body.inventory.GetItemCount(DiscoveryMedallionConsumed.instance.ItemDef.itemIndex);
+            int BloodBurstClamCount = body.inventory.GetItemCount(LootedBloodburstClam.instance.ItemDef.itemIndex);
             int WishOptions = 1 + MegaShellCount * MegaMatroyshka.AdditionalChoices + DiscoveryMedallionCount * DiscoveryMedallion.AdditionalChoices;
             bool isWish = MegaShellCount > 0;
+            count += BloodBurstClamCount;
 
             float dropUpVelocityStrength = 25f;
             float dropForwardVelocityStrength = 5f;
@@ -527,9 +409,9 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
             }
         }
 
-        private void BreakItem(CharacterBody self)
+        private void BreakItem(CharacterBody self, int count)
         {
-            self.inventory.RemoveItem(MiniMatroyshka.instance.ItemDef.itemIndex);
+            self.inventory.RemoveItem(MiniMatroyshka.instance.ItemDef.itemIndex,count);
 
         }
     }

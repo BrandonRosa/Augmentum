@@ -96,12 +96,7 @@ namespace BransItems.Modules.Pickups
 
         protected void CreateEquipment()
         {
-            EliteBuffDef = ScriptableObject.CreateInstance<BuffDef>();
-            EliteBuffDef.name = EliteAffixToken;
-            EliteBuffDef.isDebuff = false;
-            EliteBuffDef.buffColor = EliteBuffColor;
-            EliteBuffDef.canStack = false;
-            EliteBuffDef.iconSprite = EliteBuffIcon;
+            
 
             EliteEquipmentDef = ScriptableObject.CreateInstance<EquipmentDef>();
             EliteEquipmentDef.name = "BRANS_ELITE_EQUIPMENT_" + EliteAffixToken;
@@ -136,6 +131,17 @@ namespace BransItems.Modules.Pickups
                 On.RoR2.CharacterBody.FixedUpdate += OverlayManager;
             }
         }
+
+        protected void CreateAffixBuffDef()
+        {
+            EliteBuffDef = ScriptableObject.CreateInstance<BuffDef>();
+            EliteBuffDef.name = EliteAffixToken;
+            EliteBuffDef.isDebuff = false;
+            EliteBuffDef.buffColor = EliteBuffColor;
+            EliteBuffDef.canStack = false;
+            EliteBuffDef.iconSprite = EliteBuffIcon;
+        }
+
         private void DefaultTexture()
         {
             //Based off of Spikestrip code.
@@ -148,7 +154,7 @@ namespace BransItems.Modules.Pickups
                 renderer.material = material;
             }
         }
-        private void OverlayManager(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self)
+        public virtual void OverlayManager(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self)
         {
             if (self && self.modelLocator && self.modelLocator.modelTransform && self.HasBuff(EliteBuffDef) && !self.GetComponent<EliteOverlayManager>())
             {

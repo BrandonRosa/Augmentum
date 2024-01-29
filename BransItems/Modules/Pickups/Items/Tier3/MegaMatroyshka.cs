@@ -351,9 +351,10 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                             //if the player has a body and an inventory AND they have the item
                             if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && masterList[i].body==self)
                             {
-                                DropMega(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
-                                GiveMassive(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
-                                BreakItem(masterList[i].body);
+                                int count = masterList[i].body.inventory.GetItemCount(ItemDef);
+                                DropMega(masterList[i].body, count);
+                                GiveMassive(masterList[i].body, count);
+                                BreakItem(masterList[i].body, count);
                                 break;
                             }
                         }
@@ -449,9 +450,9 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             }
         }
 
-        private void BreakItem(CharacterBody self)
+        private void BreakItem(CharacterBody self, int count)
         {
-            self.inventory.RemoveItem(MegaMatroyshka.instance.ItemDef.itemIndex);
+            self.inventory.RemoveItem(MegaMatroyshka.instance.ItemDef.itemIndex,count);
 
         }
     }

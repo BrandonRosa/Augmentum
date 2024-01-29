@@ -24,7 +24,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         public override string ItemName => "Medium Matroyshka";
         public override string ItemLangTokenName => "MEDIUM_MATROYSHKA";
         public override string ItemPickupDesc => "The next time you use an equipment, crack open for a mini surprise.";
-        public override string ItemFullDescription => $"The next time you use an equipment, crack open for <style=cIsDamage>{DropCount}%</style> white items. Gain Mini Matroyshka.";
+        public override string ItemFullDescription => $"The next time you use an equipment, crack open for <style=cIsDamage>{DropCount}</style> white items. Gain Mini Matroyshka.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
@@ -339,9 +339,10 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                         //if the player has a body and an inventory AND they have the item
                         if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && self== masterList[i].body)
                         {
-                            DropMedium(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
-                            GiveMini(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
-                            BreakItem(masterList[i].body);
+                            int count = masterList[i].body.inventory.GetItemCount(ItemDef);
+                            DropMedium(masterList[i].body, count*DropCount);
+                            GiveMini(masterList[i].body, count);
+                            BreakItem(masterList[i].body, count);
                             break;
                         }
                     }
@@ -373,21 +374,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
             }
         }
 
-        private void TeleporterInteraction_onTeleporterBeginChargingGlobal(TeleporterInteraction obj)
-        {
-            if(MediumList.Count>0)
-            {
-                foreach (CharacterBody body in MediumList.Keys)
-                {
-                    if (body.isActiveAndEnabled)
-                    {
-                        DropMedium(body, MediumList[body]);
-                        GiveMini(body, MediumList[body]);
-                        BreakItem(body);
-                    }
-                }
-            }
-        }
+
 
         private void GiveMini(CharacterBody body, int count)
         {
@@ -450,9 +437,9 @@ namespace BransItems.Modules.Pickups.Items.Tier1
             }
         }
 
-        private void BreakItem(CharacterBody self)
+        private void BreakItem(CharacterBody self, int count)
         {
-            self.inventory.RemoveItem(MediumMatroyshka.instance.ItemDef.itemIndex);
+            self.inventory.RemoveItem(MediumMatroyshka.instance.ItemDef.itemIndex, count);
             
         }
     }

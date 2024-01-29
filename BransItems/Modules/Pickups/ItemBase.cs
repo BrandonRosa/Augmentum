@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using On.RoR2.Items;
+using System.Linq;
+using HarmonyLib;
 
 namespace BransItems.Modules.Pickups
 {
@@ -41,8 +44,9 @@ namespace BransItems.Modules.Pickups
         public bool AIBlacklisted { get; internal set; }
         public bool PrinterBlacklisted { get; internal set; }
 
+		public virtual string[] CorruptsItem { get; set; } = null;
 
-        public ItemDef ItemDef;
+		public ItemDef ItemDef;
 
 		public abstract void Init(ConfigFile config);
 
@@ -79,7 +83,9 @@ namespace BransItems.Modules.Pickups
 			ItemAPI.Add(new CustomItem(ItemDef, itemDisplayRuleDict));
 		}
 
-		public abstract void Hooks();
+        
+
+        public abstract void Hooks();
 
 		public int GetCount(CharacterBody body)
 		{
@@ -94,5 +100,49 @@ namespace BransItems.Modules.Pickups
 
 			return master.inventory.GetItemCount(ItemDef);
 		}
+
+		internal static void RegisterVoidPairings(ContagiousItemManager.orig_Init orig)
+		{
+			var voidTiers = new ItemTier[]{
+				ItemTier.VoidBoss,
+				ItemTier.VoidTier1,
+				ItemTier.VoidTier2,
+				ItemTier.VoidTier3};
+
+			foreach (KeyValuePair<ItemBase, bool> itemPair in BransItems.ItemStatusDictionary)
+			{
+				if (itemPair.Value == true)
+				{
+					var item = itemPair.Key;
+
+					if (item.ItemDef && voidTiers.Any(x => item.ItemDef.tier == x))
+					{
+						for (int i = 0; i < item.CorruptsItem.Count(); i++)
+						{
+							var itemToCorrupt = ItemCatalog.itemDefs.Where(x => x.nameToken == item.CorruptsItem[i]).FirstOrDefault();
+							if (!itemToCorrupt)
+							{
+								BransItems.ModLogger.LogError($"Tried to add {item.ItemName} in a Void item tier but no relationship was set for what it corrupts or could not be found. Aborting!");
+								continue;
+							}
+
+							var pair = new ItemDef.Pair[]
+							{
+							new ItemDef.Pair
+							{
+								itemDef1 = itemToCorrupt,
+								itemDef2 = item.ItemDef,
+							}
+							};
+
+							ItemCatalog.itemRelationships[DLC1Content.ItemRelationshipTypes.ContagiousItem] = ItemCatalog.itemRelationships[DLC1Content.ItemRelationshipTypes.ContagiousItem].AddRangeToArray(pair);
+						}
+					}
+				}
+			}
+			orig();
+		}
 	}
+	
+
 }

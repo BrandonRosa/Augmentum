@@ -42,7 +42,7 @@ namespace BransItems.Modules.StandaloneBuffs
                 if (self.body && self.body.GetBuffCount(BuffDef) > 0)
                 {
                     self.itemCounts.armorPlate += self.body.GetBuffCount(BuffDef);
-                    ModLogger.LogWarning("Blocked" + self.body.GetBuffCount(BuffDef)+"    CanStack"+instance.CanStack);
+                    //ModLogger.LogWarning("Blocked" + self.body.GetBuffCount(BuffDef)+"    CanStack"+instance.CanStack);
                     orig(self, damageInfo);
                     usedOrig = true;
                     self.itemCounts.armorPlate -= self.body.GetBuffCount(BuffDef);

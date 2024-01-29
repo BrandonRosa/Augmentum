@@ -59,7 +59,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DamageGain = config.Bind<float>("Item: " + ItemName, "Base crit damage given to character", 15f, "How much base crit damage should Augmented Contact grant?").Value;
+            DamageGain = config.Bind<float>("Item: " + ItemName, "Base crit damage given to character", 20f, "How much base crit damage should Augmented Contact grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 

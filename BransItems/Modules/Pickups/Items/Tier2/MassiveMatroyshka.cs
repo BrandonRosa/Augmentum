@@ -292,33 +292,6 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             //On.RoR2.EquipmentSlot.OnEquipmentExecuted += EquipmentSlot_OnEquipmentExecuted;
         }
 
-        private void EquipmentSlot_OnEquipmentExecuted(On.RoR2.EquipmentSlot.orig_OnEquipmentExecuted orig, EquipmentSlot equipSlot)
-        {
-
-            orig(equipSlot);
-
-            if (equipSlot.characterBody)
-            {
-                CharacterBody self = equipSlot.characterBody;
-                if (MassiveList.Count > 0)
-                {
-                    foreach (CharacterBody body in MassiveList.Keys)
-                    {
-                        if (body.isActiveAndEnabled)
-                        {
-                            if (self == body)
-                            {
-                                DropMassive(body, MassiveList[body]);
-                                GiveMedium(body, MassiveList[body]);
-                                BreakItem(body);
-                                MassiveList.Remove(body);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
         {
@@ -381,9 +354,10 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                     //if the player has a body and an inventory AND they have the item
                     if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0)
                     {
-                        DropMassive(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
-                        GiveMedium(masterList[i].body, masterList[i].body.inventory.GetItemCount(ItemDef));
-                        BreakItem(masterList[i].body);
+                        int count = masterList[i].body.inventory.GetItemCount(ItemDef);
+                        DropMassive(masterList[i].body, count);
+                        GiveMedium(masterList[i].body, count);
+                        BreakItem(masterList[i].body,count);
                     }
                 }
             }
@@ -450,9 +424,9 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             }
         }
 
-        private void BreakItem(CharacterBody self)
+        private void BreakItem(CharacterBody self, int count)
         {
-            self.inventory.RemoveItem(MassiveMatroyshka.instance.ItemDef.itemIndex);
+            self.inventory.RemoveItem(MassiveMatroyshka.instance.ItemDef.itemIndex,count);
 
         }
     }

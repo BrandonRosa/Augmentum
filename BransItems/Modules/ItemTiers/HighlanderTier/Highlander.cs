@@ -34,13 +34,21 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         public static float CompatShrineChance = .20f;
 
-        public static float BarrelChance = .02f;
+        public static bool CombatShrineScalePlayers = true;
+
+        public static float BarrelChance = .025f;
+
+        public static bool BarrelScalePlayers = true;
 
         public static float EliteDeathChance = .01f;
 
-        public static float ChanceShrineFail = .02f;
+        public static bool EliteScalePlayers = true;
 
-        public static float ChanceShrineSuceed = .01f; 
+        public static float ChanceShrineFail = .025f;
+
+        public static float ChanceShrineSuceed = .01f;
+
+        public static bool ChanceShrineScalePlayers = true;
 
         public override Texture backgroundTexture => MainAssets.LoadAsset<Texture>("Assets/Textrures/Icons/TierBackground/BgHighlander.png");
 
@@ -88,9 +96,11 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
             orig(self, activator);
             bool success = purchaseCount < self.successfulPurchaseCount;
 
+            float playerScale =(ChanceShrineScalePlayers? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
+
             if(success)
             {
-                if (RoR2Application.rng.RangeFloat(0f, 1f) <= ChanceShrineSuceed)
+                if (RoR2Application.rng.RangeFloat(0f, 1f) <= ChanceShrineSuceed*playerScale)
                 {
                     DropItem(self.gameObject.transform, 8.5f);
                 }
@@ -109,7 +119,8 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
             orig(self, damageReport);
             if(damageReport.victimBody.isElite)
             {
-                if (RoR2Application.rng.RangeFloat(0f, 1f) <= EliteDeathChance)
+                float playerScale = (EliteScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
+                if (RoR2Application.rng.RangeFloat(0f, 1f) <= EliteDeathChance*playerScale)
                 {
                     DropItem(damageReport.victimBody.transform, 5.5f);
                 }
@@ -119,7 +130,8 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         private void BarrelInteraction_CoinDrop(On.RoR2.BarrelInteraction.orig_CoinDrop orig, BarrelInteraction self)
         {
             orig(self);
-            if (RoR2Application.rng.RangeFloat(0f, 1f) <= BarrelChance)
+            float playerScale = (BarrelScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
+            if (RoR2Application.rng.RangeFloat(0f, 1f) <= BarrelChance*playerScale)
             {
                 DropItem(self.gameObject.transform, 5.5f);
             }
@@ -128,7 +140,8 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         private void ShrineCombatBehavior_OnDefeatedServer(On.RoR2.ShrineCombatBehavior.orig_OnDefeatedServer orig, ShrineCombatBehavior self)
         {
             orig(self);
-            if (RoR2Application.rng.RangeFloat(0f, 1f) <= CompatShrineChance)
+            float playerScale = (CombatShrineScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
+            if (RoR2Application.rng.RangeFloat(0f, 1f) <= CompatShrineChance*playerScale)
             {
                 DropItem(self.gameObject.transform, 8.5f);
             }

@@ -68,7 +68,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
 		public void CreateConfig(ConfigFile config)
 		{
-			DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 1.5f, "How much base damage should Essense of Strength grant?").Value;
+			DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 1.25f, "How much base damage should Essense of Strength grant?").Value;
 			//AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
 		}
 

@@ -28,6 +28,8 @@ namespace BransItems.Modules.StandaloneBuffs
         public virtual bool IsDebuff { get;} = false;
 
         public virtual bool IsCooldown { get; } = true;
+
+        public virtual bool IsHidden { get; } = false;
         public virtual Sprite BuffIcon { get; } = Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
 
         public BuffDef BuffDef;
@@ -44,6 +46,7 @@ namespace BransItems.Modules.StandaloneBuffs
             BuffDef.isDebuff = IsDebuff;
             BuffDef.iconSprite = BuffIcon;
             BuffDef.isCooldown = IsCooldown;
+            BuffDef.isHidden = IsHidden;
 
             ContentAddition.AddBuffDef(BuffDef);
         }

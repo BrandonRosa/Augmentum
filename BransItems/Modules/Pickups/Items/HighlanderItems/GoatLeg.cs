@@ -69,7 +69,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            MovementGain = config.Bind<float>("Item: " + ItemName, "Move Speed given to character", 20, "How much movement speed should Essense of Velocity grant?").Value;
+            MovementGain = config.Bind<float>("Item: " + ItemName, "Move Speed given to character", 25, "How much movement speed should Goat Leg grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
