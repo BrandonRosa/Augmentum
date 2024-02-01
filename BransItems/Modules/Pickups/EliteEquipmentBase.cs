@@ -48,6 +48,8 @@ namespace BransItems.Modules.Pickups
         public virtual bool IsLunar { get; } = false;
 
         public abstract GameObject EliteEquipmentModel { get; }
+
+        public virtual GameObject EliteBodyModel { get; } = null;
         public abstract Sprite EliteEquipmentIcon { get; }
 
         public EquipmentDef EliteEquipmentDef;
@@ -114,6 +116,7 @@ namespace BransItems.Modules.Pickups
             EliteEquipmentDef.isBoss = IsBoss;
             EliteEquipmentDef.isLunar = IsLunar;
             EliteEquipmentDef.passiveBuffDef = EliteBuffDef;
+            
 
             DefaultTexture();
 

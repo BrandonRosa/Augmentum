@@ -45,19 +45,94 @@ namespace BransItems.Modules.ItemTiers.CoreTier
         {
             colorIndex = Colors.TempCoreLight;//ColorsAPI.RegisterColor(Color.gray);
             darkColorIndex = Colors.TempCoreDark;//ColorsAPI.RegisterColor(Color.gray);
-            
-            //colorIndex = CoreLight.instance.colorIndex;//CoreLight.instance.colorCatalogEntry.ColorIndex;//new Color(.08f, .39f, .23f));//(new Color32(21, 99, 58, 255)));
-            //darkColorIndex = CoreDark.instance.colorIndex; //new Color(0f,.49f,.24f));//(new Color32(1, 126, 62, 255)));
-            BransItems.ModLogger.LogWarning("ArraySize:" + (ColorCatalog.indexToHexString.Length));
-            BransItems.ModLogger.LogWarning("LastElementHex:" + (ColorCatalog.indexToHexString[ColorCatalog.indexToHexString.Length-1]));
-            CreateTier();
-            itemTierDef.highlightPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
-            itemTierDef.dropletDisplayPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
-            //BransItems.ModLogger.LogWarning(itemTierDef.tier.ToString());
-            //BransItems.ModLogger.LogWarning("Correct:" + ItemTier.AssignedAtRuntime.ToString());
-            //BransItems.ModLogger.LogWarning("MyTierName:" + itemTierDef.name);
-            //BransItems.ModLogger.LogWarning("MyTierCanScrap:" + itemTierDef.canScrap);
 
+            CreateDropletPrefab();
+            CreateVFXPrefab();
+
+            CreateTier();
+
+        }
+
+        private void CreateDropletPrefab()
+        {
+            GameObject Temp = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/Tier2Orb.prefab").WaitForCompletion().InstantiateClone("CoreOrb", false);
+            //GameObject child1 =Temp.transform.GetChild(0).gameObject;
+            Color colorLight = ColorCatalog.GetColor(colorIndex);
+            Color colorDark = ColorCatalog.GetColor(darkColorIndex);
+
+            Gradient gradient = new Gradient();
+
+            // Blend color from red at 0% to blue at 100%
+            var colors = new GradientColorKey[2];
+            colors[0] = new GradientColorKey(colorDark, 0.0f);
+            colors[1] = new GradientColorKey(colorDark, 1.0f);
+            //colors[0] = new GradientColorKey(Color.red, 0.0f);
+            //colors[1] = new GradientColorKey(Color.red, 1.0f);
+
+            // Blend alpha from opaque at 0% to transparent at 100%
+            var alphas = new GradientAlphaKey[2];
+            alphas[0] = new GradientAlphaKey(1.0f, 0.0f);
+            alphas[1] = new GradientAlphaKey(0.0f, 1.0f);
+
+            gradient.SetKeys(colors, alphas);
+
+            Temp.transform.GetChild(0).gameObject.GetComponent<TrailRenderer>().startColor = colorLight;
+            Temp.transform.GetChild(0).gameObject.GetComponent<TrailRenderer>().set_startColor_Injected(ref colorLight);
+            Temp.transform.GetChild(0).gameObject.GetComponent<TrailRenderer>().SetColorGradient(gradient);
+
+            //Temp.transform.GetChild(0).GetChild(2).GetComponent<Light>().color = colorLight;
+            //Temp.transform.GetChild(0).GetChild(2).GetComponent<Light>().set_color_Injected(ref colorLight);
+            Light[] lights = Temp.GetComponentsInChildren<Light>();
+            foreach(Light thisLight in lights)
+            {
+                thisLight.color = colorLight;
+            }
+
+            ParticleSystem[] array = Temp.GetComponentsInChildren<ParticleSystem>();
+            foreach (ParticleSystem obj in array)
+            {
+                //((Component)obj).gameObject.SetActive(true);
+                ParticleSystem.MainModule main = obj.main;
+                ParticleSystem.ColorOverLifetimeModule COL = obj.colorOverLifetime;
+                main.startColor = new ParticleSystem.MinMaxGradient(colorLight);
+                COL.color = colorLight;
+            }
+            //Temp.GetComponentInChildren<Light>().set_color_Injected(ref colorLight);
+            dropletDisplayPrefab = Temp;
+
+        }
+
+        private void CreateVFXPrefab()
+        {
+            Color colorLight = ColorCatalog.GetColor(colorIndex);
+            Color colorDark = ColorCatalog.GetColor(darkColorIndex);
+            //GameObject Temp = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/SetpiecePickup.prefab").WaitForCompletion();
+            GameObject Temp = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/GenericPickup.prefab").WaitForCompletion();
+            GameObject VFX = Temp.transform.GetChild(7).gameObject.InstantiateClone("CoreVFX", false);
+
+            //GameObject DistantGlow = VFX.transform.GetChild(0).transform.GetChild(0).gameObject; //Dark
+            //GameObject Swirls = VFX.transform.GetChild(0).transform.GetChild(1).gameObject; //Light
+            //GameObject PointLight = VFX.transform.GetChild(0).transform.GetChild(2).gameObject; //Light
+            //GameObject Glowies = VFX.transform.GetChild(0).transform.GetChild(3).gameObject; //Light
+
+            
+
+            ParticleSystem.MainModule NewColor = VFX.transform.GetChild(0).GetChild(0).gameObject.GetComponent<ParticleSystem>().main; //GlowA
+            NewColor.startColor = new ParticleSystem.MinMaxGradient(colorLight, colorDark);
+            
+
+            ParticleSystem.MainModule NewColor2 = VFX.transform.GetChild(0).GetChild(1).gameObject.GetComponent<ParticleSystem>().main; //Swirls
+            NewColor2.startColor = new ParticleSystem.MinMaxGradient(colorLight, colorDark);
+            
+
+            VFX.transform.GetChild(0).GetChild(2).gameObject.GetComponent<Light>().color = colorLight;
+            VFX.transform.GetChild(0).GetChild(2).gameObject.GetComponent<Light>().set_color_Injected(ref colorLight);
+
+            ParticleSystem.MainModule NewColor3 = VFX.transform.GetChild(0).GetChild(0).gameObject.GetComponent<ParticleSystem>().main;
+            NewColor3.startColor = new ParticleSystem.MinMaxGradient(colorLight, colorDark);
+            
+
+            PickupDisplayVFX = VFX;
         }
     }
 }

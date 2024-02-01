@@ -15,22 +15,12 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 {
     class GoatLeg : ItemBase<GoatLeg>
     {
-        public override string ItemName => "Goat Leg";
-        public override string ItemLangTokenName => "GOAT_LEG";
-        public override string ItemPickupDesc => "Slightly increase movement speed.";
+        public override string ItemName => "Horse Leg";
+        public override string ItemLangTokenName => "HORSE_LEG";
+        public override string ItemPickupDesc => "Increase movement speed.";
         public override string ItemFullDescription => $"Increase movemement speed by <style=cIsDamage>{MovementGain}</style> <style=cStack>(+{MovementGain})</style>.";
 
-        public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
-            "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
-            "A latent power resonated within its core, and that's when I discovered the Essence of Strength.\n\n" +
-            "As I incorporated the Essence into my gear, I felt an indescribable connection. It wasn't just a physical enhancement; it was as if the very essence of this hostile realm acknowledged my presence."
-            + "The melding was subtle, gradual, weaving its power into the fabric of my being. My combat instincts became sharper, and the sway of my weapon felt like an extension of my will.\n\n" +
-            "In the heat of battle, the Essence of Strength subtly altered the dance of combat. Strikes that once felt labored now flowed effortlessly." +
-            "My shots, once erratic, found their mark with newfound precision. It was as though the essence adapted to my every move, amplifying my capabilities in sync with the rhythm of the ongoing struggle.\n\n" +
-            "Yet, it's not just my physical form that feels the effects. There's a subtle shift within my mind—a resonance, an understanding. The chaotic landscape that was once an enigma now feels like a battlefield where I share a silent dialogue with the terrain itself." +
-            "The Essence whispers insights, guiding me through the ebb and flow of the relentless challenges we face.\n\n" +
-            "The Essence of Strength, this silent companion, leaves a lingering imprint. As my connection with it deepens, so does the disconcerting realization that the whispers in my mind are not just echoes of the alien realm but something more profound." +
-            "It's as if the very fabric of this reality has started to weave into the essence of my thoughts, entwining my being with a force beyond comprehension.";
+        public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
 

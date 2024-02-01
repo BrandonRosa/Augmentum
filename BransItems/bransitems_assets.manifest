@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 746159506
+CRC: 2005581920
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b4f6d80d1ff052ea2302b35850375d18
+    Hash: 3039b8b6884e859b671481c0f3376af0
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -39,6 +39,7 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
+- Assets/Models/Matroyshka/Mini.obj
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem.png
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_albedo.jpeg
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.png
@@ -48,62 +49,93 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal5/source/5a43a134a3fb4f44af38bb586ccd45e7.fbx.fbx
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/bloodburstclam.mat
 - Assets/Textrures/Icons/Temporary/crystal6/source/crystal.fbx
+- Assets/Models/Matroyshka/Matroy.obj
 - Assets/Textrures/Ramps/texRampAdaptive.png
+- Assets/Models/Matroyshka/MassiveIcon.png
+- Assets/Models/Prefavs/Elite/Gills/BothGills.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/lootedbloodburstclam.prefab
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_emissive.jpeg
 - Assets/Textrures/Icons/Temporary/crystal2/textures/normal.png
 - Assets/Textrures/Icons/Temporary/crystal4/model.dae
+- Assets/Models/CritContact/ContactIcon.png
 - Assets/Models/Meshes/EssenceOfStrength.blend
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_metallic.jpeg
+- Assets/Models/Matroyshka/MediumMap.png
 - Assets/Textrures/Icons/TierBackground/BgCore.png
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_roughness.jpeg
+- Assets/Models/Matroyshka/Massive.prefab
+- Assets/Models/Matroyshka/MediumIcon.png
 - Assets/Textrures/Icons/Temporary/crystal/Materials/TEX_crystal.mat
 - Assets/Textrures/Ramps/texRampAdaptive3.png
 - Assets/Textrures/Icons/Temporary/crystal3/Materials/crystal_dif.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/faltrect.blend
+- Assets/Models/CritContact/TransparentContact.png
+- Assets/Models/Matroyshka/Materials/MiniMap2.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallionconsumed.png
 - Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab
 - Assets/Textrures/Icons/Temporary/crystal3/textures/crystal_dif.png
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.bmp
+- Assets/Models/Prefavs/Item/Null Newt/VoidNewt.png
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.bmp
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab
+- Assets/Models/Matroyshka/Materials/MassiveMap.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/discoveryMedallion.prefab
 - Assets/Textrures/Icons/Buff/HealingRingsReady.png
+- Assets/Models/Matroyshka/ShellIcon.png
+- Assets/Models/Matroyshka/MegaIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/airtotem.mat
+- Assets/Models/Matroyshka/MiniMap2.png
 - Assets/Textrures/Ramps/texRampAdaptive4.png
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem3.prefab
+- Assets/Models/Matroyshka/Mega.prefab
 - Assets/Textrures/Icons/Temporary/crystal2/Materials/lowpoly1_DefaultMaterial_Diffuse1.mat
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_normal.png
 - Assets/Textrures/Materials/Item/Essence of Strength/EssenceofStrengthMaterial.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/lootedbloodburstclam.mat
+- Assets/Models/Prefavs/Item/Null Newt/VoidNewt2.png
+- Assets/Models/CritContact/Materials/ContactInside.mat
 - Assets/Textrures/Icons/Temporary/crystal6/source/crystal6.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem.bmp
 - Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.png
+- Assets/Models/Matroyshka/MiniIcon.png
 - Assets/Textrures/Icons/Item/HealingBands/BarrierBand.png
 - Assets/Textrures/Icons/Temporary/crystal2/source/Crystal2.prefab
 - Assets/Textrures/Icons/Temporary/crystal6/source/TempCrystal6.png
 - Assets/Textrures/Ramps/texRampAdaptive2.png
 - Assets/Textrures/Icons/Temporary/QuadModels/lootedbloodburstclam.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/ground ao texture.jpeg
+- Assets/Models/Matroyshka/MassiveMap.png
 - Assets/Textrures/Icons/Temporary/crystal3/source/TempCrystal3.png
+- Assets/Models/CritContact/Materials/TransparentContact.mat
 - Assets/Textrures/Icons/Temporary/crystal2/source/gem.fbx
 - Assets/Textrures/Icons/Buff/HealingRingsCooldown.png
 - Assets/Textrures/Icons/Temporary/crystal5/source/TempCrystal5.png
 - Assets/Textrures/Icons/Temporary/crystal4/Materials/default_albedo.mat
 - Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.prefab
+- Assets/Models/Matroyshka/Materials/MediumMap.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/lootedbloodburstclam2.png
+- Assets/Models/Matroyshka/Medium.prefab
 - Assets/Textrures/Icons/Temporary/crystal3/source/crystals.fbx
+- Assets/Models/Matroyshka/Materials/MegaMap.mat
+- Assets/Models/Matroyshka/MegaMap.png
 - Assets/Textrures/Icons/Temporary/crystal/textures/TEX_crystal.png
+- Assets/Models/CritContact/CritContact.blend
+- Assets/Models/Matroyshka/Mini2.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem2.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/4jud1kk6.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.prefab
+- Assets/Models/Prefavs/Elite/Gills/Materials/GillTexture.png
+- Assets/Models/Matroyshka/Mini.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/earthtotem.mat
+- Assets/Models/Prefavs/Elite/Gills/BothGills.blend
 - Assets/Textrures/Icons/Temporary/crystal6/Materials/internal_ground_ao_texture.mat
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_AO.jpeg
+- Assets/Textrures/Icons/Equipment/AdaptiveAffix/AdaptiveEquip.png
 - Assets/Textrures/Icons/Temporary/crystal5/source/crystal5.prefab
 - Assets/Textrures/Icons/Temporary/crystal2/textures/lowpoly1_DefaultMaterial_Diffuse1.png
 - Assets/Textrures/Icons/Temporary/crystal3/source/crystal3.prefab
 - Assets/Textrures/Icons/Temporary/crystal4/source/crystal4.prefab
+- Assets/Models/Prefavs/Elite/Gills/GillTexture.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/gloss.png
 - Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png
 - Assets/Textrures/Icons/Temporary/crystal4/source/TempCrystal4.png
@@ -112,9 +144,11 @@ Assets:
 - Assets/Textrures/Icons/Item/HealingBands/HealingBand.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/lxmtnsto.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallion.png
+- Assets/Models/CritContact/CritContact.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallion.bmp
 - Assets/Textrures/Icons/Temporary/crystal2/source/TempCrystal2.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/specular.png
+- Assets/Models/CritContact/ContactInside.png
 - Assets/Textrures/Icons/Temporary/crystal/source/6edf1d63445e4518a7abd1997fd0c9ae.obj
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem.prefab
 Dependencies: []

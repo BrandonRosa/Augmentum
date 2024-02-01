@@ -8,6 +8,8 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using static BransItems.BransItems;
+using static BransItems.Modules.Utils.ItemHelpers;
+
 
 namespace BransItems.Modules.Pickups.EliteEquipments
 {
@@ -25,19 +27,23 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public override string EliteModifier => "Adaptive";
 
-        public override GameObject EliteEquipmentModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
+        public override GameObject EliteEquipmentModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Elite/Gills/BothGills.prefab");//Assets/Textrures/Icons/Equipment/AdaptiveAffix/AdaptiveEquip.png
+
+        public override GameObject EliteBodyModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Elite/Gills/BothGills.prefab");
+
+        public static GameObject ItemBodyModelPrefab;
 
         //public override Material EliteMaterial { get; set; } = MainAssets.LoadAsset<Material>("AffixPureOverlay.mat");
 
-        public override Sprite EliteEquipmentIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
+        public override Sprite EliteEquipmentIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Equipment/AdaptiveAffix/AdaptiveEquip.png");
 
         public override Sprite EliteBuffIcon => AffixAdaptiveBuff.instance.BuffIcon;
 
-        public override float HealthMultiplier => 4f;
+        public override float HealthMultiplier => 5f;
 
         public override float DamageMultiplier => 2f;
 
-        public override float CostMultiplierOfElite => 3f;
+        public override float CostMultiplierOfElite => 4.5f;
 
         public static int PreHitArmorAdd;
 
@@ -53,21 +59,21 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public static float MoveSpeedInvisible=2f;
 
-        public static float AdaptiveCooldownTimer = 30f;
+        public static float AdaptiveCooldownTimer = 25f;
 
-        public static float AdaptiveBoostTimer = 10f;
+        public static float AdaptiveBoostTimer = 12f;
 
-        public static float StacksOfRepulsionArmorPerHealth=1f/400f;
+        public static float StacksOfRepulsionArmorPerHealth=1f/450f;
 
         public static float MinimumStacksofRepulsionArmor = 4f;
 
-        public static float DamageTakenModifierTimer = 5f;
+        public static float DamageTakenModifierTimer = 8f;
 
-        public static float InvisibleTimer = 3.5f;
+        public static float InvisibleTimer = 3.25f;
 
         public static int LacerationCount = 20;
 
-        public static float LacerationDuration = 5f;
+        public static float LacerationDuration = 7.5f;
 
         public static int MaxLaceration = 50;
 
@@ -79,7 +85,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
         /// <value>
         /// The Safegaurd Percent Should be in the range [0f, 1f]. The lower the vale the more protection.
         /// </value>
-        public static float SafegaurdPercent = .30f;
+        public static float SafegaurdPercent = .20f;
 
        // public override Color EliteBuffColor { get => base.EliteBuffColor; set => base.EliteBuffColor = value; }
 
@@ -121,8 +127,8 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         private void CreateConfig(ConfigFile config)
         {
-            CostMultiplierOfElite = config.Bind<float>("Elite: " + EliteModifier, "Cost Multiplier", 4f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more.").Value;
-            PreHitArmorAdd = config.Bind<int>("Elite: " + EliteModifier, "Amount of Armor", 100, "Armor added to elite before getting hit for the first time.").Value;
+            CostMultiplierOfElite = config.Bind<float>("Elite: " + EliteModifier, "Cost Multiplier", 4.5f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more.").Value;
+            PreHitArmorAdd = config.Bind<int>("Elite: " + EliteModifier, "Amount of Armor", 150, "Armor added to elite before getting hit for the first time.").Value;
             CooldownReductionPreHit= config.Bind<float>("Elite: " + EliteModifier, "Cooldown Reduction", 1f, "Cooldown reduction in seconds before getting hit.").Value;
             CooldownReductionAfterHit = config.Bind<float>("Elite: " + EliteModifier, "Cooldown Reduction", 1.5f, "Cooldown reduction in seconds during boost.").Value;
 
@@ -153,7 +159,343 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
-            return new ItemDisplayRuleDict();
+            ItemBodyModelPrefab = EliteBodyModel;
+            var itemDisplay = ItemBodyModelPrefab.AddComponent<RoR2.ItemDisplay>();
+            itemDisplay.rendererInfos = ItemDisplaySetup(ItemBodyModelPrefab, false);
+
+            ItemDisplayRuleDict rules = new ItemDisplayRuleDict();
+
+            string DefaultChildName = "Head";
+            Vector3 DefaultPos = new Vector3(0f, .20f, .025f);
+            Vector3 DefaultAngles = new Vector3(-90f, 0f, 90f);//was 270
+            Vector3 DefaultScale = new Vector3(.01f, .01f, .01f);
+            ItemDisplayRule DefaultRule = new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefab = ItemBodyModelPrefab,
+                childName = "Head",
+                localPos = DefaultPos,
+                localAngles = DefaultAngles,
+                localScale = DefaultScale
+            };
+
+            //Perfect
+            rules.Add("mdlCommandoDualies", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,0,-.01f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale
+                }
+            });
+
+            //Perfect
+            rules.Add("mdlHuntress", new ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,0,.005f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale
+                }
+            });
+
+            //z and y are swapped??
+            //Eh its fine
+            rules.Add("mdlToolbot", new ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                { 
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,3f,1.89f),
+                    localAngles = DefaultAngles+new Vector3(135f,0,0),
+                    localScale = DefaultScale*8f
+                }
+            });
+
+            //Not intended, looks cool tho
+            rules.Add("mdlEngi", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "HeadCenter",
+                    localPos = DefaultPos+new Vector3(0,-.5f,0),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale*1.5f
+                }
+            });
+
+            //It works
+            rules.Add("mdlEngiTurret", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,-.5f,0),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale*1.5f
+                }
+            });
+
+            //Close Enough
+            rules.Add("mdlMage", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,-.2f,-.04f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale*.8f
+                }
+            });
+            //Perfect
+            rules.Add("mdlMerc", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,-.05f,-.05f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale*.8f
+                }
+            });
+
+            //Meh but whatever
+            rules.Add("mdlTreebot", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "FlowerBase",
+                    localPos = DefaultPos+new Vector3(0,-.05f,-.05f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale*4f
+                }
+            });
+
+            //Perfect
+            rules.Add("mdlLoader", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,-.08f,-.08f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale
+                }
+            });
+
+            //First try
+            rules.Add("mdlCroco", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,0,-.01f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale*11f
+                }
+            });
+
+            //Good
+            rules.Add("mdlCaptain", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,-.1f,-.08f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale
+                }
+            });
+
+            //Good
+            rules.Add("mdlBandit2", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,-.1f,-.08f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale*.8f
+                }
+            });
+
+            //MONSTERS
+            //Not Bad
+            rules.Add("mdlLemurian", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,-1f,.1f),
+                    localAngles = DefaultAngles+new Vector3(180f,0,0),
+                    localScale = DefaultScale*11f
+                }
+            });
+
+            //Good Enough
+            rules.Add("mdlBeetle", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,.45f,-.1f),
+                    localAngles = DefaultAngles+new Vector3(180f,0,0),
+                    localScale = DefaultScale*4f
+                }
+            });
+
+            rules.Add("mdlWisp1Mouth", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,0f,-.15f),
+                    localAngles = DefaultAngles+new Vector3(0f,0,180f),
+                    localScale = DefaultScale*5f
+                }
+            });
+            //Didnt apprear
+            rules.Add("AcidLarva", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "mdlAcidLarvaBody",
+                    localPos = DefaultPos+new Vector3(0,0f,-.08f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale*11f
+                }
+            });
+            //good
+            rules.Add("mdlJellyfish", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Hull2",
+                    localPos = DefaultPos+new Vector3(0,0f,-.08f),
+                    localAngles = DefaultAngles+new Vector3(180f,0,0),
+                    localScale = DefaultScale*7f
+                }
+            });
+
+            //Meh
+            rules.Add("mdlFlyingVermin", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Body",
+                    localPos = DefaultPos+new Vector3(0,0f,-.08f),
+                    localAngles = DefaultAngles+new Vector3(165f,0,0),
+                    localScale = DefaultScale*5f
+                }
+            });
+
+            //Nothing
+            rules.Add("mdlVermin", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(100f,0f,-.08f),
+                    localAngles = DefaultAngles+new Vector3(180f,0,0),
+                    localScale = DefaultScale*4f
+                }
+            });
+            //GoodEnough
+            rules.Add("mdlHermitCrab", new RoR2.ItemDisplayRule[]
+           {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Base",
+                    localPos = DefaultPos+new Vector3(0,.5f,-.03f),
+                    localAngles = DefaultAngles+new Vector3(180f,0,0),
+                    localScale = DefaultScale*3f
+                }
+           });
+            //Perfect
+            rules.Add("mdlVulture", new RoR2.ItemDisplayRule[]
+           {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Head",
+                    localPos = DefaultPos+new Vector3(0,-1.05f,.1f),
+                    localAngles = DefaultAngles+new Vector3(180f,0,0),
+                    localScale = DefaultScale*11f
+                }
+           });
+            //Nothing
+            rules.Add("mdlMinorConstructEye", new RoR2.ItemDisplayRule[]
+            {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "ROOT",
+                    localPos = DefaultPos+new Vector3(0,-1f,.1f),
+                    localAngles = DefaultAngles+new Vector3(180f,0,0),
+                    localScale = DefaultScale*11f
+                }
+            });
+
+            rules.Add("mdlGolem", new RoR2.ItemDisplayRule[]
+           {
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = ItemBodyModelPrefab,
+                    childName = "Eye",
+                    localPos = DefaultPos+new Vector3(0,0,-.01f),
+                    localAngles = DefaultAngles,
+                    localScale = DefaultScale*11f
+                }
+           });
+
+            return rules;
         }
 
         public override void Hooks()
@@ -227,7 +569,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         private void GlobalEventManager_OnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
         {
-            if (victim)
+            if (victim && damageInfo!=null && self && damageInfo.attacker)
             {
                 CharacterBody body = victim.GetComponent<CharacterBody>();
                 CharacterBody attacker= damageInfo.attacker.GetComponent<CharacterBody>();
@@ -369,6 +711,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
                     overlay.destroyComponentOnEnd = true;
                     overlay.originalMaterial = AffixAdaptive.instance.EliteMaterial;
                     overlay.AddToCharacerModel(self.modelLocator.modelTransform.GetComponent<RoR2.CharacterModel>());
+                    //overlay.AddToCharacerModel(self.gameObject.GetComponent<RoR2.CharacterModel>());
 
                     AOT.hasOverlay = true;
                 }
@@ -466,7 +809,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public override bool IsCooldown => true;
 
-        public override bool IsHidden => false;
+        public override bool IsHidden => true;
 
         public override Sprite BuffIcon => base.BuffIcon;
 

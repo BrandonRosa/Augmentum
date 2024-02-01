@@ -86,7 +86,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public void CreateConfig(ConfigFile config)
         {
-            InitialPercent = config.Bind<float>("Item: " + ItemName, "Percent of total damage heal", .12f, "What percent of total damage should be healed from the first stack of this item?").Value;
+            InitialPercent = config.Bind<float>("Item: " + ItemName, "Percent of total damage heal", .15f, "What percent of total damage should be healed from the first stack of this item?").Value;
             AdditionalPercent = config.Bind<float>("Item: " + ItemName, "Percent of additional damage heal", .08f, "What percent of total damage should be healed from additional stacks of this item?").Value;
             InitialMaxHealing = config.Bind<float>("Item: " + ItemName, "Max percent of max health you can heal", .20f, "What is the maximum percent of your health you can heal from this item from the first stack?").Value;
             AdditionalMaxHealing = config.Bind<float>("Item: " + ItemName, "Additional percent of max health you can heal", .15f, "What is the maximum percent of your health you can heal from this item from additional stacks?").Value;

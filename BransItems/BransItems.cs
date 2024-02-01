@@ -103,6 +103,7 @@ namespace BransItems
                 MainAssets = AssetBundle.LoadFromStream(stream);
             }
             Modules.ColorCatalogEntry.Colors.Init();
+            Modules.Utils.ItemTierPickupVFXHelper.SystemInitializer();
             //var disableSurvivor = Config.ActiveBind<bool>("Survivor", "Disable All Survivors?", false, "Do you wish to disable every survivor in Aetherium?");
             /*
             if (true)
