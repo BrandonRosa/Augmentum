@@ -20,8 +20,8 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         //ADD SHARESUITE BLACKLIST
         public override string ItemName => "Bloodbust Clam";
         public override string ItemLangTokenName => "BLOODBURST_CLAM";
-        public override string ItemPickupDesc => "On pickup, crack open for 20 essences which boost stats. Future essence drops will come with 1 more.";
-        public override string ItemFullDescription => $"Drop 20 essences <style=cIsDamage>{DropCount}%</style>.Future essence drops will come with 1<style=cStack>(+{AdditionalDrops}%) more.";
+        public override string ItemPickupDesc => $"On pickup, crack open for {DropCount} essences which boost stats. Future essence drops will come with 1 more.";
+        public override string ItemFullDescription => $"Crack open for <style=cIsDamage>{DropCount}</style> "+BransItems.EssencesKeyword+". Future "+BransItems.EssenceKeyword+ $" drops will come with 1<style=cStack>(+{AdditionalDrops} per stack)</style> more.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." + 
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality."+

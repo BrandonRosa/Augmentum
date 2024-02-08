@@ -18,7 +18,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Augmented Contact";
         public override string ItemLangTokenName => "AUGMENTED_CONTACT";
         public override string ItemPickupDesc => "Slightly increase crit damage.";
-        public override string ItemFullDescription => $"Increase <style=cIsDamage>Critical Strike damage</style> by <style=cIsDamage>{DamageGain}</style><style=cStack>(+{DamageGain})</style>.";
+        public override string ItemFullDescription => $"Increase <style=cIsDamage>Critical Strike damage</style> by <style=cIsDamage>{DamageGain}</style>.";
 
         public override string ItemLore => "";
 

@@ -24,12 +24,10 @@ namespace BransItems.Modules.Pickups.Items.Tier2
     {
         public override string ItemName => "Charm of Desires";
         public override string ItemLangTokenName => "CHARM_OF_DESIRES";
-        public override string ItemPickupDesc => "At the start of each stage, wish for 1 of 2 essences.";
-        public override string ItemFullDescription => $"At the start of each stage, spawn in <style=cIsDamage>{DropCount}%</style><style=cStack>(+{AdditionalDrops})</style> wishes with 2 essences to pick from.";
+        public override string ItemPickupDesc => "At the start of each stage, wish for 1 of 2 Essences.";
+        public override string ItemFullDescription => $"At the start of <style=cIsUtility>each stage</style>, spawn in <style=cIsUtility>{DropCount}</style><style=cStack>(+{AdditionalDrops} per stack)</style> wishes with 1 of 2 "+BransItems.EssencesKeyword+" to pick from.";
 
-        public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
-            "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
-            "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier2;
 

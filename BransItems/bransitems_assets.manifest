@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1059003938
+CRC: 3009359591
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 48acf261989a1d484cdbd35e523d9443
+    Hash: 35cb6f832483a61f78a7a99e5bc3df2f
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -69,6 +69,7 @@ Assets:
 - Assets/Textrures/Ramps/texRampNullifier3.png
 - Assets/Models/CurvedHorn/HornIcon.png
 - Assets/Models/Matroyshka/MediumMap.png
+- Assets/Models/AdaptiveArmor/everytexture.com-stock-metal-texture-00011-normal-1024.jpg
 - Assets/Textrures/Icons/TierBackground/BgCore.png
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_roughness.jpeg
 - Assets/Models/Matroyshka/Massive.prefab
@@ -117,6 +118,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/QuadModels/lootedbloodburstclam.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/ground ao texture.jpeg
 - Assets/Models/Matroyshka/MassiveMap.png
+- Assets/Models/AdaptiveArmor/Materials/ArmorTexture.mat
 - Assets/Textrures/Icons/Temporary/crystal3/source/TempCrystal3.png
 - Assets/Models/GlassVeil/GlassVeilIcon.png
 - Assets/Models/CurvedHorn/HornIcon2.png
@@ -145,6 +147,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/earthtotem.mat
 - Assets/Textrures/Ramps/texNovaRingDiffuse.png
 - Assets/Textrures/Icons/Item/NovaBand/NovaBand.png
+- Assets/Models/AdaptiveArmor/AArmor.prefab
 - Assets/Models/Prefavs/Elite/Gills/BothGills.blend
 - Assets/Textrures/Icons/Temporary/crystal6/Materials/internal_ground_ao_texture.mat
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_AO.jpeg
@@ -154,6 +157,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal2/textures/lowpoly1_DefaultMaterial_Diffuse1.png
 - Assets/Models/CurvedHorn/HornItem.prefab
 - Assets/Models/Prefavs/Item/HorseLeg/HorseLeg.blend
+- Assets/Models/AdaptiveArmor/ArmorTexture2.png
 - Assets/Textrures/Icons/Temporary/crystal3/source/crystal3.prefab
 - Assets/Textrures/Icons/Temporary/crystal4/source/crystal4.prefab
 - Assets/Models/Prefavs/Elite/Gills/GillTexture.png
@@ -162,6 +166,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal4/source/TempCrystal4.png
 - Assets/Textrures/Icons/Temporary/crystal6/textures/internal_ground_ao_texture.jpeg
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png
+- Assets/Models/AdaptiveArmor/AAIcon.png
 - Assets/Models/Prefavs/Item/HorseLeg/Materials/HorseLeg.mat
 - Assets/Textrures/Icons/Item/HealingBands/HealingBand.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/lxmtnsto.mat

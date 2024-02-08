@@ -18,7 +18,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Curved Horn";
         public override string ItemLangTokenName => "CURVED_HORN";
         public override string ItemPickupDesc => "Slightly increase damage.";
-        public override string ItemFullDescription => $"Increase your <style=cIsDamage>damage by {DamageGain}</style><style=cStack>(+{DamageGain})</style>.";
+        public override string ItemFullDescription => $"Increase your <style=cIsDamage>damage by {DamageGain}</style>.";
 
         public override string ItemLore => "";
 
