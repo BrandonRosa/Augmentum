@@ -20,9 +20,7 @@ namespace BransItems.Modules.Pickups.Items.NoTier
         public override string ItemPickupDesc => "Future essence drops will come with 1 more.";
         public override string ItemFullDescription => $"Future essence drops will come with 1<style=cStack>(+{BloodburstClam.AdditionalDrops})</style) more.";
 
-        public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
-            "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
-            "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.NoTier;
 

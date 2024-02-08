@@ -406,7 +406,7 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
                         prefabOverride = potentialPrefab,
                         position = body.transform.position,
                         rotation = Quaternion.identity,
-                        pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier1)
+                        pickupIndex = drops[0]
                     },
                             dropTransform.position + Vector3.up * 1.5f, val);
                 }

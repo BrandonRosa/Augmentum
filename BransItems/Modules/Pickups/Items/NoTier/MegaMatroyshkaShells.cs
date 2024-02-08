@@ -18,7 +18,7 @@ namespace BransItems.Modules.Pickups.Items.NoTier
         public override string ItemName => "Mega Matroyshka Shells";
         public override string ItemLangTokenName => "MEGA_MATROYSHKA_CONSUMED";
         public override string ItemPickupDesc => "Future Matroyshka drops become wishes.";
-        public override string ItemFullDescription => $"Future Matroyshka drops become wishes with 2<style=cStack>(+{MegaMatroyshka.AdditionalChoices})</style) more.";
+        public override string ItemFullDescription => $"Future Matroyshka drops become wishes with {MegaMatroyshka.AdditionalChoices}<style=cStack>(+{MegaMatroyshka.AdditionalChoices})</style> more choices.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +

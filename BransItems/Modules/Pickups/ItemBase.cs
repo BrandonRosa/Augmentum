@@ -26,6 +26,14 @@ namespace BransItems.Modules.Pickups
 	public abstract class ItemBase
     {
 		public abstract string ItemName { get; }
+
+		public string ConfigItemName 
+		{ 
+			get
+            {
+				return ItemName.Replace("\'", "");
+            }
+        }
 		public abstract string ItemLangTokenName { get; }
 		public abstract string ItemPickupDesc { get; }
 		public abstract string ItemFullDescription { get; }

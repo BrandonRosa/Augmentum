@@ -25,7 +25,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         public override string ItemName => "Mega Matroyshka";
         public override string ItemLangTokenName => "MEGA_MATROYSHKA";
         public override string ItemPickupDesc => "The next you kill an elite, crack open for a massive surprise.";
-        public override string ItemFullDescription => $"The next time a you kill an elite , crack open for <style=cIsDamage>{DropCount}%</style> red items. Gain Massive Matroyshka. Future Matroyshka drops become wishes with 2<style=cStack>(+{AdditionalChoices})</style> choices.";
+        public override string ItemFullDescription => $"The next time a you kill an elite crack open for <style=cIsDamage>{DropCount}</style> red items. Gain Massive Matroyshka. Future Matroyshka drops become wishes with 2<style=cStack>(+{AdditionalChoices})</style> choices.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +

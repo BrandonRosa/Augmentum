@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2005581920
+CRC: 1059003938
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 3039b8b6884e859b671481c0f3376af0
+    Hash: 48acf261989a1d484cdbd35e523d9443
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -41,6 +41,8 @@ SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/Models/Matroyshka/Mini.obj
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem.png
+- Assets/Models/GlassVeil/GhostIcon.png
+- Assets/Models/Meshes/P3SMesh.obj
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_albedo.jpeg
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/diffuse.png
@@ -49,8 +51,11 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal5/source/5a43a134a3fb4f44af38bb586ccd45e7.fbx.fbx
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/bloodburstclam.mat
 - Assets/Textrures/Icons/Temporary/crystal6/source/crystal.fbx
+- Assets/Textrures/Icons/Item/PrototypeScanner/PrototypeScanner.png
 - Assets/Models/Matroyshka/Matroy.obj
+- Assets/Models/CurvedHorn/Materials/HornTexture.mat
 - Assets/Textrures/Ramps/texRampAdaptive.png
+- Assets/Models/Meshes/NovaBand2.blend
 - Assets/Models/Matroyshka/MassiveIcon.png
 - Assets/Models/Prefavs/Elite/Gills/BothGills.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/lootedbloodburstclam.prefab
@@ -59,7 +64,10 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal4/model.dae
 - Assets/Models/CritContact/ContactIcon.png
 - Assets/Models/Meshes/EssenceOfStrength.blend
+- Assets/Models/Prefavs/Item/HorseLeg/HorseLeg.prefab
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_metallic.jpeg
+- Assets/Textrures/Ramps/texRampNullifier3.png
+- Assets/Models/CurvedHorn/HornIcon.png
 - Assets/Models/Matroyshka/MediumMap.png
 - Assets/Textrures/Icons/TierBackground/BgCore.png
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_roughness.jpeg
@@ -84,9 +92,12 @@ Assets:
 - Assets/Models/Matroyshka/ShellIcon.png
 - Assets/Models/Matroyshka/MegaIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/airtotem.mat
+- Assets/Models/SafetyBlanket/SafetyBlanket.prefab
 - Assets/Models/Matroyshka/MiniMap2.png
+- Assets/Models/Prefavs/Item/HorseLeg/HorseLegIcon.png
 - Assets/Textrures/Ramps/texRampAdaptive4.png
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem3.prefab
+- Assets/Models/GlassVeil/GlassVeilTexture.png
 - Assets/Models/Matroyshka/Mega.prefab
 - Assets/Textrures/Icons/Temporary/crystal2/Materials/lowpoly1_DefaultMaterial_Diffuse1.mat
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_normal.png
@@ -94,6 +105,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/lootedbloodburstclam.mat
 - Assets/Models/Prefavs/Item/Null Newt/VoidNewt2.png
 - Assets/Models/CritContact/Materials/ContactInside.mat
+- Assets/Models/CurvedHorn/LowResHorn_normal.png
 - Assets/Textrures/Icons/Temporary/crystal6/source/crystal6.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem.bmp
 - Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.png
@@ -106,6 +118,8 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal2/textures/ground ao texture.jpeg
 - Assets/Models/Matroyshka/MassiveMap.png
 - Assets/Textrures/Icons/Temporary/crystal3/source/TempCrystal3.png
+- Assets/Models/GlassVeil/GlassVeilIcon.png
+- Assets/Models/CurvedHorn/HornIcon2.png
 - Assets/Models/CritContact/Materials/TransparentContact.mat
 - Assets/Textrures/Icons/Temporary/crystal2/source/gem.fbx
 - Assets/Textrures/Icons/Buff/HealingRingsCooldown.png
@@ -117,9 +131,11 @@ Assets:
 - Assets/Models/Matroyshka/Medium.prefab
 - Assets/Textrures/Icons/Temporary/crystal3/source/crystals.fbx
 - Assets/Models/Matroyshka/Materials/MegaMap.mat
+- Assets/Models/GlassVeil/GlassVeilModel.prefab
 - Assets/Models/Matroyshka/MegaMap.png
 - Assets/Textrures/Icons/Temporary/crystal/textures/TEX_crystal.png
 - Assets/Models/CritContact/CritContact.blend
+- Assets/Models/Prefavs/Item/HorseLeg/HorseLeg.png
 - Assets/Models/Matroyshka/Mini2.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem2.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/4jud1kk6.mat
@@ -127,12 +143,17 @@ Assets:
 - Assets/Models/Prefavs/Elite/Gills/Materials/GillTexture.png
 - Assets/Models/Matroyshka/Mini.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/earthtotem.mat
+- Assets/Textrures/Ramps/texNovaRingDiffuse.png
+- Assets/Textrures/Icons/Item/NovaBand/NovaBand.png
 - Assets/Models/Prefavs/Elite/Gills/BothGills.blend
 - Assets/Textrures/Icons/Temporary/crystal6/Materials/internal_ground_ao_texture.mat
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_AO.jpeg
+- Assets/Models/Meshes/P3SMesh.prefab
 - Assets/Textrures/Icons/Equipment/AdaptiveAffix/AdaptiveEquip.png
 - Assets/Textrures/Icons/Temporary/crystal5/source/crystal5.prefab
 - Assets/Textrures/Icons/Temporary/crystal2/textures/lowpoly1_DefaultMaterial_Diffuse1.png
+- Assets/Models/CurvedHorn/HornItem.prefab
+- Assets/Models/Prefavs/Item/HorseLeg/HorseLeg.blend
 - Assets/Textrures/Icons/Temporary/crystal3/source/crystal3.prefab
 - Assets/Textrures/Icons/Temporary/crystal4/source/crystal4.prefab
 - Assets/Models/Prefavs/Elite/Gills/GillTexture.png
@@ -141,14 +162,21 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal4/source/TempCrystal4.png
 - Assets/Textrures/Icons/Temporary/crystal6/textures/internal_ground_ao_texture.jpeg
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png
+- Assets/Models/Prefavs/Item/HorseLeg/Materials/HorseLeg.mat
 - Assets/Textrures/Icons/Item/HealingBands/HealingBand.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/lxmtnsto.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallion.png
+- Assets/Textrures/Ramps/texRampNullifierOffset3.png
 - Assets/Models/CritContact/CritContact.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallion.bmp
 - Assets/Textrures/Icons/Temporary/crystal2/source/TempCrystal2.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/specular.png
+- Assets/Models/Meshes/NovaBand.blend
+- Assets/Models/CurvedHorn/HornTexture.png
 - Assets/Models/CritContact/ContactInside.png
+- Assets/Textrures/Ramps/texRampShielding2.png
+- Assets/Textrures/Ramps/texRampShieldOffset2.png
 - Assets/Textrures/Icons/Temporary/crystal/source/6edf1d63445e4518a7abd1997fd0c9ae.obj
+- Assets/Models/SafetyBlanket/SafetyBlanketIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem.prefab
 Dependencies: []

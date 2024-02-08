@@ -76,7 +76,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             itemDisplay.rendererInfos = ItemDisplaySetup(ItemBodyModelPrefab, true);
 
             ItemDisplayRuleDict rules = new ItemDisplayRuleDict();
-
+            /*
             rules.Add("mdlCommandoDualies", new RoR2.ItemDisplayRule[]
             {
                 new ItemDisplayRule
@@ -280,7 +280,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                     localAngles = new Vector3(0F, 323.6887F, 355.1232F),
                     localScale = new Vector3(0.000551F, 0.000551F, 0.000551F)
                 }
-            });
+            });*/
             return rules;
         }
 
@@ -358,7 +358,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                     prefabOverride = potentialPrefab,
                     position = transform.position,
                     rotation = Quaternion.identity,
-                    pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier1)
+                    pickupIndex =drops[0]
                 },
                         transform.position + Vector3.up * 1.5f, val);
                 val = val2 * val;

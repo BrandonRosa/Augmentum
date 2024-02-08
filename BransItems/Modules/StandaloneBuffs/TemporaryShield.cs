@@ -8,6 +8,7 @@ using static BransItems.BransItems;
 using static BransItems.Modules.Utils.ItemHelpers;
 using RoR2;
 using R2API;
+using UnityEngine.AddressableAssets;
 
 namespace BransItems.Modules.StandaloneBuffs
 {
@@ -15,9 +16,9 @@ namespace BransItems.Modules.StandaloneBuffs
     {
         public override string BuffName => "Temporary Shield";
 
-        public override Color Color => new Color32(255, 215, 0, 255);
+        public override Color Color => new Color32(68,94,182,255);
 
-        //public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("DoubleGoldDoubleXPBuffIcon.png");
+        public override Sprite BuffIcon => Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/texBuffGenericShield.tif").WaitForCompletion();
         public override bool CanStack => true;
         public override bool IsDebuff => false;
 

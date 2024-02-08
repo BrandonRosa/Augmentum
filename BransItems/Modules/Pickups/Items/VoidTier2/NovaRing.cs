@@ -30,14 +30,14 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             //$"<style=cIsHealing>{InitialRange}m</style> <style=cStack>(+{AdditionalRange}m per stack)</style> " +
             $"<style=cIsHealing>shielding nova</style>" +
             $" which gives <style=cIsHealing>{InitialPercent*100}%</style> <style=cStack>(+{AdditionalPercent*100}% per stack)</style> TOTAL damage as <style=cIsHealing>temporary shield</style> up to <style=cIsHealing>{InitialMaxHealing*100}%</style> <style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max health. " +
-            $"Give {(AllyBonus-1f)*100}% more shield per Ally in range. Recharges every <style=cIsUtility>20</style> seconds. <style=cIsVoid>Corrupts all {HealRing.instance.ItemName.Replace(" Band","")} and {BarrierRing.instance.ItemName.Replace(" Band", "")} Bands.</style> "; //Lasts <style=cIsHealing>{TempShieldDuration}</style> seconds. 
+            $"Give {(AllyBonus)*100}% more shield per Ally in range. Recharges every <style=cIsUtility>20</style> seconds. <style=cIsVoid>Corrupts all {HealRing.instance.ItemName.Replace(" Band","")} and {BarrierRing.instance.ItemName.Replace(" Band", "")} Bands.</style> "; //Lasts <style=cIsHealing>{TempShieldDuration}</style> seconds. 
 
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.VoidTier2;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png");
+        public override GameObject ItemModel => SetupModel();
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Item/NovaBand/NovaBand.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -68,9 +68,97 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         {
             CreateConfig(config);
             CreateLang();
+
+            
+            SetupEffectPrefab();
             //CreateBuff();
             CreateItem();
             Hooks();
+        }
+
+        private void SetupEffectPrefab()
+        {
+            GameObject temp= Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/EliteEarth/AffixEarthHealExplosion.prefab").WaitForCompletion().InstantiateClone("ShieldExplosion"); //"RoR2/Base/Common/ColorRamps/texRampHuntressSoft2.png"
+            Texture2D shieldMat = Addressables.LoadAssetAsync<Texture2D>("RoR2/Base/Common/ColorRamps/texRampLightning2.png").WaitForCompletion();// RoR2/Base/Common/ColorRamps/texRampHuntressSoft2.png
+            float playbackspeed = .3f;
+            Color shieldColor = new Color32(68,94,182,255);
+            Color shieldColorLight = new Color32(104, 125, 217, 255);
+
+            ParticleSystem particleSystem1 = temp.transform.GetChild(0).GetComponent<ParticleSystem>();
+            ParticleSystem.MainModule MainChild1 = particleSystem1.main;
+            MainChild1.simulationSpeed = playbackspeed;
+            ParticleSystem.ColorOverLifetimeModule COLM1 = particleSystem1.colorOverLifetime;
+            COLM1.color = shieldColor;
+
+            ParticleSystem particleSystem2 = temp.transform.GetChild(1).GetComponent<ParticleSystem>();
+            particleSystem2.startColor = shieldColor;
+            ParticleSystem.MainModule MainChild2 = particleSystem2.main;
+            MainChild2.simulationSpeed = playbackspeed;
+            ParticleSystem.ColorOverLifetimeModule COLM2 = particleSystem2.colorOverLifetime;
+            COLM2.color = shieldColor;
+
+            ParticleSystem particleSystem3 = temp.transform.GetChild(2).GetComponent<ParticleSystem>();
+            particleSystem3.startColor = shieldColor;
+            ParticleSystem.MainModule MainChild3 = particleSystem3.main;
+            MainChild3.simulationSpeed = playbackspeed;
+            ParticleSystem.ColorOverLifetimeModule COLM3 = particleSystem3.colorOverLifetime;
+            COLM3.color = shieldColor;
+            ParticleSystemRenderer particleSystemRenderer3 = temp.transform.GetChild(2).GetComponent<ParticleSystemRenderer>();
+            particleSystemRenderer3.GetMaterial().SetTexture("_RemapTex", shieldMat);
+
+            temp.transform.GetChild(3).GetComponent<Light>().color=shieldColorLight;
+
+            ParticleSystem particleSystem5 = temp.transform.GetChild(4).GetComponent<ParticleSystem>();
+            particleSystem5.startColor = shieldColor;
+            ParticleSystem.MainModule MainChild5 = particleSystem5.main;
+            MainChild5.simulationSpeed = playbackspeed;
+            ParticleSystem.ColorOverLifetimeModule COLM5 = particleSystem2.colorOverLifetime;
+            COLM5.color = shieldColor;
+            ParticleSystemRenderer particleSystemRenderer5 = temp.transform.GetChild(4).GetComponent<ParticleSystemRenderer>();
+            particleSystemRenderer5.GetMaterial().SetTexture("_RemapTex", shieldMat);
+
+            ParticleSystem particleSystem6 = temp.transform.GetChild(5).GetComponent<ParticleSystem>();
+            particleSystem6.startColor = shieldColor;
+            ParticleSystem.MainModule MainChild6 = particleSystem6.main;
+            MainChild6.simulationSpeed = playbackspeed;
+            ParticleSystem.ColorOverLifetimeModule COLM6 = particleSystem6.colorOverLifetime;
+            COLM6.color = shieldColor;
+
+            ParticleSystem particleSystem7 = temp.transform.GetChild(6).GetComponent<ParticleSystem>();
+            particleSystem7.startColor = shieldColor;
+            ParticleSystem.MainModule MainChild7 = particleSystem7.main;
+            MainChild7.simulationSpeed = playbackspeed;
+            ParticleSystem.ColorOverLifetimeModule COLM7 = particleSystem6.colorOverLifetime;
+            COLM7.color = shieldColor;
+
+            effectPrefab = temp;
+
+            ContentAddition.AddEffect(effectPrefab);
+
+        }
+
+        private GameObject SetupModel()
+        {
+            //GameObject TempItemModel = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ElementalRings/PickupIceRing.prefab").WaitForCompletion().InstantiateClone("NovaRing", false); SWAP WITH BOTTOM TO LICK SICK AS FUCK
+            GameObject TempItemModel = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/ElementalRingVoid/PickupVoidRing.prefab").WaitForCompletion().InstantiateClone("NovaRing", false);
+            GameObject NewModel= MainAssets.LoadAsset<GameObject>("Assets/Models/Meshes/NovaBand.blend");
+            Texture2D shieldMat = MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Ramps/texRampNullifier3.png");
+            Texture2D shieldMatOffset = MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Ramps/texRampNullifierOffset3.png");//Assets/Textrures/Ramps/texNovaRingDiffuse.png
+            Texture2D MainTex = MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Ramps/texNovaRingDiffuse.png");
+
+            MeshFilter Model = TempItemModel.GetComponentInChildren<MeshFilter>();
+            Model.mesh = NewModel.GetComponentInChildren<MeshFilter>().mesh;
+
+            Material material = TempItemModel.GetComponentInChildren<MeshRenderer>().material;
+
+            //Material Stuff
+            material.SetColor("_EmissionColor", new Color32(0, 70, 255,255));
+            material.SetColor("_MainColor", new Color32(0, 100, 255, 255));
+            material.SetTexture("_FresnelRamp", shieldMatOffset);
+            material.SetTexture("_PrintRamp", shieldMat); //_MainTex
+            material.SetTexture("_MainTex", MainTex);
+
+            return TempItemModel;
         }
 
         public void CreateConfig(ConfigFile config)
@@ -79,7 +167,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             AdditionalPercent = config.Bind<float>("Item: " + ItemName, "Percent of additional damage converted to shield", .05f, "What percent of total damage should be healed from additional stacks of this item?").Value;
             InitialMaxHealing = config.Bind<float>("Item: " + ItemName, "Max percent of max health you can gain in shield", .20f, "What is the maximum percent of your health you can heal from this item from the first stack?").Value;
             AdditionalMaxHealing = config.Bind<float>("Item: " + ItemName, "Additional percent of max health you can heal", .10f, "What is the maximum percent of your health you can heal from this item from additional stacks?").Value;
-            AllyBonus = config.Bind<float>("Item: " + ItemName, "Bonus Percent of shield from allies", 1.4f, "What is the bonus shield gained from giving shields to allies?").Value;
+            AllyBonus = config.Bind<float>("Item: " + ItemName, "Bonus Percent of shield from allies", .4f, "What is the bonus shield gained from giving shields to allies?").Value;
             InitialRange = config.Bind<float>("Item: " + ItemName, "Range of nova on first stack", 15f, "What is the initial range of the nova from the first stack of this item?").Value;
             AdditionalRange = config.Bind<float>("Item: " + ItemName, "Range of nova on additional stacks", 4f, "What is the additional range of the nova from additional stacks of this item?").Value;
             TempShieldDuration= config.Bind<float>("Item: " + ItemName, "Duration in seconds", 15f, "What is the duration of the temporary shields?").Value;
@@ -376,14 +464,16 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                     list.Add(item);
                 }
             }
-            int totalShield = (int)(shieldAmount * (float)Math.Pow((double)AllyBonus, (double)list.Count-(double)1));
+            int totalShield = (int)(shieldAmount * (1+AllyBonus*(list.Count-1f)));
             foreach (CharacterBody item2 in list)
             {
                
                 for (int i = 0; i < totalShield; i++)
                     item2.AddTimedBuff(TemporaryShield.instance.BuffDef, TempShieldDuration);
             }
+            effectPrefab.transform.localScale = Vector3.one*sphereSearch.radius;
             EffectManager.SimpleEffect(effectPrefab, victim.transform.position, Quaternion.identity, transmit: true);
+            //effectPrefab.transform.localScale = Vector3.one * 12;
         }
 
         private void ShieldNovaPreCalculation(float damageCalculation, float healthCalculation, GameObject victim, int itemCount, TeamIndex spawnerTeam)
@@ -405,7 +495,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                     list.Add(item);
                 }
             }
-            int totalShieldPercent = (int)(float)Math.Pow((double)AllyBonus, (double)list.Count-(double)1);
+            int totalShieldPercent = (int)(1 + AllyBonus * (list.Count - 1f));
             float totalShield;
             totalShield = Math.Min(damageCalculation*totalShieldPercent, healthCalculation );
             foreach (CharacterBody item2 in list)

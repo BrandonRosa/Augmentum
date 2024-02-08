@@ -24,16 +24,14 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         public override string ItemName => "Safety Blanket";
         public override string ItemLangTokenName => "SAFETY_BLANKET";
         public override string ItemPickupDesc => "Slightly increase your one shot protection fraction and invincibility time.";
-        public override string ItemFullDescription => $"Increase your oneshot protection. Not more than <style=cIsDamage>{FractionCap*100}%</style> of your health. Increase your invincibility frames by <style=cIsDamage>{InitialIFrames}</style><style=cStack>(+{AdditionalIFrames} per stack)</style> seconds.";
+        public override string ItemFullDescription => $"Increase your <style=cIsHealing>oneshot protection</style> by <style=cIsHealing>5%</style><style=cStack>(+2.5% per stack)</style> of your health. No more than <style=cIsHealing>{FractionCap*100}%</style>. Increase your <style=cIsHealing>invincibility frames</style> by <style=cIsHealing>{InitialIFrames}</style><style=cStack>(+{AdditionalIFrames} per stack)</style> seconds.";
 
-        public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
-            "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
-            "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier1;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/SafetyBlanket/SafetyBlanket.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/SafetyBlanket/SafetyBlanketIcon.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -67,7 +65,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         {
             FractionCap = config.Bind<float>("Item: " + ItemName, "Plateau value", .75f, "What value shoud Saftey Blanket plateu to?").Value;
             InitialIFrames = config.Bind<float>("Item: " + ItemName, "Initial Invincibility Time", 1f, "How much additional invincibility time should Safety Blanket add?").Value;
-            AdditionalIFrames = config.Bind<float>("Item: " + ItemName, "Added Invincibility Time", .1f, "How much invincibility time should Safety Blanket add?").Value;
+            AdditionalIFrames = config.Bind<float>("Item: " + ItemName, "Added Invincibility Time", .25f, "How much invincibility time should Safety Blanket add?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -306,7 +304,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                 return;
             int blanketCount = self.body.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
             if(blanketCount>0)
-                self.ospTimer+=InitialIFrames*blanketCount;
+                self.ospTimer+=InitialIFrames+AdditionalIFrames*(blanketCount-1);
         }
 
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
@@ -316,7 +314,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                 if (self.inventory != null && self.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex)>0)
                 {
                     int blanketCount = self.inventory.GetItemCount(SafetyBlanket.instance.ItemDef.itemIndex);
-                    float oneshot = (.75f - .15f) * (1f - (float)Math.Exp(-(blanketCount - 1f) / (20f)))+.15f-self.oneShotProtectionFraction;
+                    float oneshot = (.75f - .15f) * (1f - (float)Math.Exp(-(blanketCount - 1f) / (13f)))+.15f-self.oneShotProtectionFraction;
                     self.oneShotProtectionFraction = Mathf.Max(0f, oneshot + self.oneShotProtectionFraction - (1f - 1f / self.cursePenalty));
                 }
         }

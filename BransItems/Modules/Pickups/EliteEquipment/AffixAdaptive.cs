@@ -65,7 +65,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public static float StacksOfRepulsionArmorPerHealth=1f/450f;
 
-        public static float MinimumStacksofRepulsionArmor = 4f;
+        public static float MinimumStacksofRepulsionArmor = 2f;
 
         public static float DamageTakenModifierTimer = 8f;
 
@@ -489,9 +489,9 @@ namespace BransItems.Modules.Pickups.EliteEquipments
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = ItemBodyModelPrefab,
                     childName = "Eye",
-                    localPos = DefaultPos+new Vector3(0,0,-.01f),
-                    localAngles = DefaultAngles,
-                    localScale = DefaultScale*11f
+                    localPos = DefaultPos+new Vector3(0,-.05f,-.15f),
+                    localAngles = DefaultAngles+new Vector3(-10f,0,0),
+                    localScale = DefaultScale*3f
                 }
            });
 

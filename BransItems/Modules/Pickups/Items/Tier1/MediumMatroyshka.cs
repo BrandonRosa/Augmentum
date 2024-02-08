@@ -23,12 +23,10 @@ namespace BransItems.Modules.Pickups.Items.Tier1
     {
         public override string ItemName => "Medium Matroyshka";
         public override string ItemLangTokenName => "MEDIUM_MATROYSHKA";
-        public override string ItemPickupDesc => "The next time you use an equipment, crack open for a mini surprise.";
-        public override string ItemFullDescription => $"The next time you use an equipment, crack open for <style=cIsDamage>{DropCount}</style> white items. Gain Mini Matroyshka.";
+        public override string ItemPickupDesc => "The next time you use an equipment, crack open for an item and a " + BransItems.CoreColorString + "mini</color> surprise.";
+        public override string ItemFullDescription => $"The next time you use an equipment, crack open for <style=cIsDamage>{DropCount}</style> white items. Gain "+BransItems.CoreColorString+"Mini Matroyshka</color>.";
 
-        public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
-            "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
-            "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier1;
 

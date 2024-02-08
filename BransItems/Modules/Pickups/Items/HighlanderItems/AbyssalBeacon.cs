@@ -20,7 +20,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Abyssal Beacon";
         public override string ItemLangTokenName => "ABYSSAL_BEACON";
         public override string ItemPickupDesc => "After completing a teleporter event, create a null portal. Destroy this if you travel through it.";
-        public override string ItemFullDescription => $"After completing a teleporter event, create a null portal. Destroy this if you travel through it.";
+        public override string ItemFullDescription => $"After completing a <style=cIsUtility>teleporter event</style>, create a <style=cIsVoid>null portal</style>. <style=cIsUtility>Destroy this</style> if you travel through it.";
 
         public override string ItemLore => "";
 

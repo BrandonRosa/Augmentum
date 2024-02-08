@@ -22,11 +22,11 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 {
     class BarrierRing : ItemBase<BarrierRing>
     {
-        public override string ItemName => "Barrier Band";
+        public override string ItemName => "Brindel's Band";
         public override string ItemLangTokenName => "BARRIER_BAND";
         public override string ItemPickupDesc => "High damage hits also give barrier to you. Recharges over time.";
         public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also grant a <style=cIsHealing>temporary barrier</style> for <style=cIsHealing>{InitialPercent*100}%</style><style=cStack>(+{AdditionalPercent*100}% per stack)</style> TOTAL damage as " +
-            $"<style=cIsHealing>barrier</style> up to <style=cIsHealing>{InitialMaxHealing*100}%</style><style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max combined health. Recharges every <style=cIsUtility>10</style> seconds.";
+            $"<style=cIsHealing>barrier</style> up to <style=cIsHealing>{InitialMaxHealing*100}%</style><style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max combined health. Recharges every <style=cIsUtility>{HealRing.HealingRingsCooldownTime}</style> seconds.";
 
         public override string ItemLore => "";
 
@@ -62,10 +62,11 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public void CreateConfig(ConfigFile config)
         {
-            InitialPercent = config.Bind<float>("Item: " + ItemName, "Percent of total damage heal", .20f, "What percent of total damage should be healed from the first stack of this item?").Value;
-            AdditionalPercent = config.Bind<float>("Item: " + ItemName, "Percent of additional damage heal", .07f, "What percent of total damage should be healed from additional stacks of this item?").Value;
-            InitialMaxHealing = config.Bind<float>("Item: " + ItemName, "Max percent of max health you can heal", .25f, "What is the maximum percent of your health you can heal from this item from the first stack?").Value;
-            AdditionalMaxHealing = config.Bind<float>("Item: " + ItemName, "Additional percent of max health you can heal", .125f, "What is the maximum percent of your health you can heal from this item from additional stacks?").Value;
+            string ConfigItemName = ItemName.Replace("\'", "");
+            InitialPercent = config.Bind<float>("Item: " + ConfigItemName, "Percent of total damage heal", .20f, "What percent of total damage should be healed from the first stack of this item?").Value;
+            AdditionalPercent = config.Bind<float>("Item: " + ConfigItemName, "Percent of additional damage heal", .07f, "What percent of total damage should be healed from additional stacks of this item?").Value;
+            InitialMaxHealing = config.Bind<float>("Item: " + ConfigItemName, "Max percent of max health you can heal", .25f, "What is the maximum percent of your health you can heal from this item from the first stack?").Value;
+            AdditionalMaxHealing = config.Bind<float>("Item: " + ConfigItemName, "Additional percent of max health you can heal", .125f, "What is the maximum percent of your health you can heal from this item from additional stacks?").Value;
 
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
@@ -345,7 +346,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             if (triggered && component2.HasBuff(HealingRingsReady.instance.BuffDef))
             {
                 component2.RemoveBuff(HealingRingsReady.instance.BuffDef);
-                for (int k = 1; (float)k <= 20f; k++)
+                for (int k = 1; (float)k <= HealRing.HealingRingsCooldownTime; k++)
                 {
                     component2.AddTimedBuff(HealingRingsCooldown.instance.BuffDef, k);
                 }

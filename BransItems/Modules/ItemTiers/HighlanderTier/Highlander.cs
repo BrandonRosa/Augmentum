@@ -250,6 +250,7 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         {
             //BransItems.ModLogger.LogWarning("Indexed Pickup" + itemIndex.ToString());
             //BransItems.ModLogger.LogWarning("All Highlander" + Highlander.instance.ItemsWithThisTier.Count);
+            orig(self, itemIndex); //JUST ADDED, adjust if it breaks stuff
             if (ItemCatalog.GetItemDef(itemIndex)._itemTierDef==itemTierDef)
             {
                 int count = self.inventory.GetTotalItemCountOfTier(itemTierDef.tier);

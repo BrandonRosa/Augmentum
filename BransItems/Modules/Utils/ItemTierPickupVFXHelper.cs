@@ -14,7 +14,7 @@ namespace BransItems.Modules.Utils
         [SystemInitializer(new Type[] { typeof(ItemTierCatalog), typeof(ItemTierBase) })]
         public static void SystemInitializer()
         {
-            //On.RoR2.PickupDisplay.DestroyModel += PickupDisplay_DestroyModel;
+            On.RoR2.PickupDisplay.DestroyModel += PickupDisplay_DestroyModel;
             On.RoR2.PickupDisplay.RebuildModel += PickupDisplay_RebuildModel;
         }
 
