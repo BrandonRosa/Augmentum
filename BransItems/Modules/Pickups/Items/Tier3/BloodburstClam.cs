@@ -20,8 +20,8 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         //ADD SHARESUITE BLACKLIST
         public override string ItemName => "Bloodbust Clam";
         public override string ItemLangTokenName => "BLOODBURST_CLAM";
-        public override string ItemPickupDesc => "On pickup, crack open for 20 essences which boost stats. Future essence drops will come with 1 more.";
-        public override string ItemFullDescription => $"Drop 20 essences <style=cIsDamage>{DropCount}%</style>.Future essence drops will come with 1<style=cStack>(+{AdditionalDrops}%) more.";
+        public override string ItemPickupDesc => $"On pickup, crack open for {DropCount} essences which boost stats. Future essence drops will come with 1 more.";
+        public override string ItemFullDescription => $"Crack open for <style=cIsDamage>{DropCount}</style> "+BransItems.EssencesKeyword+". Future "+BransItems.EssenceKeyword+ $" drops will come with 1<style=cStack>(+{AdditionalDrops} per stack)</style> more.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." + 
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality."+
@@ -29,7 +29,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override ItemTier Tier => ItemTier.Tier3;
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/BloodBustClam/BBClam.prefab");
         public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png");
 
         public static GameObject ItemBodyModelPrefab;
@@ -57,7 +57,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of essences dropped", 20, "How many essences should drop from this item?").Value;
+            DropCount = config.Bind<int>("Item: " + ItemName, "Number of essences dropped", 15, "How many essences should drop from this item?").Value;
             AdditionalDrops = config.Bind<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }

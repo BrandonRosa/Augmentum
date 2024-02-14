@@ -26,16 +26,16 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public override string ItemName => "Adaptive Armor";
         public override string ItemLangTokenName => "ADAPTIVE_ARMOR";
         public override string ItemPickupDesc => "After being hit twice in a short amount of time, receive a huge flat damage reduction from all attacks.";
-        public override string ItemFullDescription => $"After being hit twice in <style=cIsDamage>{DamageWindow}</style> seconds. Gain <style=cIsDamage>{InitialFortify}</style><style=cStack>(+{AdditionalFortify})</style> Fortify for <style=cIsDamage>{InitialFortifyTime}</style><style=cStack>(+{AdditionalFortifyTime})</style> seconds. Each stack of Fortify reduces all incoming damage by 5, but not below 1. Refreshes <style=cIsDamage>{CooldownTime}</style> seconds after triggering.";
+        public override string ItemFullDescription => $"After taking damage twice in <style=cIsDamage>{DamageWindow}</style> seconds " +
+            //$"gain <style=cIsDamage>{InitialFortify}</style><style=cStack>(+{AdditionalFortify})</style> Fortify for <style=cIsDamage>{InitialFortifyTime}</style><style=cStack>(+{AdditionalFortifyTime})</style> seconds. Each stack of Fortify reduces all incoming damage by 5, but not below 1. Refreshes <style=cIsDamage>{CooldownTime}</style> seconds after triggering.";
+            $"reduce all <style=cIsDamage>incoming damage</style> by <style=cIsDamage>{5f* InitialFortify}</style><style=cStack>(+{AdditionalFortify*5f} per stack)</style> for <style=cIsDamage>{InitialFortifyTime}</style><style=cStack>(+{AdditionalFortifyTime} per stack)</style> seconds. Cannot be reduced below <style=cIsDamage>1</style>. Recharges after <style=cIsDamage>{CooldownTime}</style> seconds.";
 
-        public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
-            "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
-            "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier2;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/AdaptiveArmor/AArmor.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/AdaptiveArmor/AAIcon.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -345,9 +345,9 @@ namespace BransItems.Modules.Pickups.Items.Tier2
     {
         public override string BuffName => "Adaptive Armor Cooldown";
 
-        public override Color Color => new Color32(60, 60, 60, 255);
+        public override Color Color => new Color32(250, 250, 250, 255);
 
-        //public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("DoubleGoldDoubleXPBuffIcon.png");
+        public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/AdaptiveArmor/AACooldownIcon.png");
         public virtual bool CanStack => true;
         public virtual bool IsDebuff => true;
 
@@ -384,7 +384,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public override Color Color => new Color32(250,250,250, 255);
 
-        //public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("DoubleGoldDoubleXPBuffIcon.png");
+       public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/AdaptiveArmor/AAReadyIcon.png");
         public virtual bool CanStack => false;
         public virtual bool IsDebuff => false;
 

@@ -17,7 +17,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Strength";
         public override string ItemLangTokenName => "ESSENCE_OF_STRENGTH";
         public override string ItemPickupDesc => "Slightly increase damage.";
-        public override string ItemFullDescription => $"Gain a flat <style=cIsDamage>{DamageGain}</style> <style=cStack>(+{DamageGain})</style> <style=cIsDamage>damage</style> buff.";
+        public override string ItemFullDescription => $"Increase <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain}</style> <style=cStack>(+{DamageGain} per stack)</style>.";
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
@@ -68,7 +68,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
 		public void CreateConfig(ConfigFile config)
 		{
-			DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 1.5f, "How much base damage should Essense of Strength grant?").Value;
+			DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 1.25f, "How much base damage should Essense of Strength grant?").Value;
 			//AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
 		}
 

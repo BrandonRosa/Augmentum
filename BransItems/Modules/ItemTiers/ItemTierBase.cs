@@ -52,7 +52,7 @@ namespace BransItems.Modules.ItemTiers
         /// <summary>
         /// The pickup display for this ItemTierDef, note that this is not the droplet VFX, but the VFX that appears when the item's pickup is in the world.
         /// </summary>
-        //public abstract GameObject PickupDisplayVFX { get; }
+        public GameObject PickupDisplayVFX = null;
 
         /// <summary>
         /// A list of all the items that have this Tier
@@ -90,13 +90,14 @@ namespace BransItems.Modules.ItemTiers
             itemTierDef.canScrap = canScrap;
             itemTierDef.isDroppable = isDroppable;
             //itemTierDef.highlightPrefab = highlightPrefab;//Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
-            itemTierDef.dropletDisplayPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
+            itemTierDef.dropletDisplayPrefab = dropletDisplayPrefab;//Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
             //TierName = "Core";
             ItemsWithThisTier = new List<ItemIndex>();
             itemTierDef.name = TierName;
             itemTierDef.colorIndex = colorIndex; //ColorCatalog.ColorIndex.Money;
             itemTierDef.darkColorIndex = darkColorIndex;  //ColorCatalog.ColorIndex.Teleporter;
             itemTierDef.tier= ItemTier.AssignedAtRuntime;
+
             if (backgroundTexture)
                 itemTierDef.bgIconTexture = backgroundTexture;
             
@@ -109,6 +110,23 @@ namespace BransItems.Modules.ItemTiers
                // BransItems.ModLogger.LogWarning("NAME DIDNT SAVE");
             //ItemTierDef.bgIconTexture.
             ContentAddition.AddItemTierDef(itemTierDef);
+        }
+
+        public static bool IsBransCustomTier(ItemTierDef itemTierDef, out ItemTierBase itemTierBase)
+        {
+            itemTierBase = null;
+            bool ans = false;
+            if (itemTierDef == CoreTier.Core.instance.itemTierDef)
+            {
+                itemTierBase = CoreTier.Core.instance;
+                ans = true;
+            }
+            if (itemTierDef == HighlanderTier.Highlander.instance.itemTierDef)
+            {
+                itemTierBase = HighlanderTier.Highlander.instance;
+                ans = true;
+            }
+            return ans;
         }
 
         

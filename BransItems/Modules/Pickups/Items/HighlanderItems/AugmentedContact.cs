@@ -18,7 +18,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Augmented Contact";
         public override string ItemLangTokenName => "AUGMENTED_CONTACT";
         public override string ItemPickupDesc => "Slightly increase crit damage.";
-        public override string ItemFullDescription => $"Increase <style=cIsDamage>Critical Strike damage</style> by <style=cIsDamage>{DamageGain}</style><style=cStack>(+{DamageGain})</style>.";
+        public override string ItemFullDescription => $"Increase <style=cIsDamage>Critical Strike damage</style> by <style=cIsDamage>{DamageGain}</style>.";
 
         public override string ItemLore => "";
 
@@ -29,8 +29,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
         //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal4/source/crystal4.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal4/source/TempCrystal4.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/CritContact/CritContact.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/CritContact/ContactIcon.png");
 
         //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
         //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
@@ -59,7 +59,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DamageGain = config.Bind<float>("Item: " + ItemName, "Base crit damage given to character", 15f, "How much base crit damage should Augmented Contact grant?").Value;
+            DamageGain = config.Bind<float>("Item: " + ItemName, "Base crit damage given to character", 20f, "How much base crit damage should Augmented Contact grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 

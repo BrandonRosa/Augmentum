@@ -16,6 +16,10 @@ using BransItems.Modules.ItemTiers.HighlanderTier;
 using BransItems.Modules.Utils;
 using BransItems.Modules.StandaloneBuffs;
 using BransItems.Modules.ColorCatalogEntry;
+using BransItems.Modules.Pickups.Equipments;
+using BransItems.Modules.Compatability;
+using BransItems.Modules.Pickups.Items.Essences;
+using BransItems.Modules.Pickups.Items.HighlanderItems;
 
 namespace BransItems
 {
@@ -68,7 +72,7 @@ namespace BransItems
         public List<ItemBase> Items = new List<ItemBase>();
         public List<EquipmentBase> Equipments = new List<EquipmentBase>();
         public List<ItemTierBase> ItemTiers = new List<ItemTierBase>();
-        //public List<EliteEquipmentBase> EliteEquipments = new List<EliteEquipmentBase>();
+        public List<EliteEquipmentBase> EliteEquipments = new List<EliteEquipmentBase>();
        // public List<InteractableBase> Interactables = new List<InteractableBase>();
        // public List<SurvivorBase> Survivors = new List<SurvivorBase>();
 
@@ -83,13 +87,16 @@ namespace BransItems
         public static Dictionary<ItemBase, bool> ItemStatusDictionary = new Dictionary<ItemBase, bool>();
         public static Dictionary<EquipmentBase, bool> EquipmentStatusDictionary = new Dictionary<EquipmentBase, bool>();
         public static Dictionary<BuffBase, bool> BuffStatusDictionary = new Dictionary<BuffBase, bool>();
-        // public static Dictionary<EliteEquipmentBase, bool> EliteEquipmentStatusDictionary = new Dictionary<EliteEquipmentBase, bool>();
+        public static Dictionary<EliteEquipmentBase, bool> EliteEquipmentStatusDictionary = new Dictionary<EliteEquipmentBase, bool>();
         //public static Dictionary<InteractableBase, bool> InteractableStatusDictionary = new Dictionary<InteractableBase, bool>();
         // public static Dictionary<SurvivorBase, bool> SurvivorStatusDictionary = new Dictionary<SurvivorBase, bool>();
 
         //public static ColorCatalog.ColorIndex TempCoreLight = ColorsAPI.RegisterColor(Color.cyan);//new Color32(21, 99, 58, 255));//ColorCatalogUtils.RegisterColor(new Color32(21, 99, 58, 255));
         //public static ColorCatalog.ColorIndex TempCoreDark = ColorsAPI.RegisterColor(Color.cyan); //new Color32(1, 126, 62, 255)); //ColorCatalogUtils.RegisterColor(new Color32(1, 126, 62, 255));
         public static string EssenceKeyword => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">Essence</color>";
+        public static string EssencesKeyword => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">Essences</color>";
+
+        public static string CoreColorString => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">";
         public void Awake()
         {
             ModLogger = this.Logger;
@@ -103,6 +110,7 @@ namespace BransItems
                 MainAssets = AssetBundle.LoadFromStream(stream);
             }
             Modules.ColorCatalogEntry.Colors.Init();
+            Modules.Utils.ItemTierPickupVFXHelper.SystemInitializer();
             //var disableSurvivor = Config.ActiveBind<bool>("Survivor", "Disable All Survivors?", false, "Do you wish to disable every survivor in Aetherium?");
             /*
             if (true)
@@ -195,7 +203,7 @@ namespace BransItems
                 }
 
                 //IL.RoR2.ShopTerminalBehavior.GenerateNewPickupServer_bool += ItemBase.BlacklistFromPrinter;
-                //On.RoR2.Items.ContagiousItemManager.Init += ItemBase.RegisterVoidPairings;
+                On.RoR2.Items.ContagiousItemManager.Init += ItemBase.RegisterVoidPairings;
             }
             var disableEquipment = Config.Bind<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in BransItems?");
             if (!disableEquipment.Value)
@@ -217,17 +225,75 @@ namespace BransItems
                 }
             }
 
-            
+            //Equipment Initialization
+            var EliteEquipmentTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(EliteEquipmentBase)));
 
-            
+            ModLogger.LogInfo("-------------ELITE EQUIPMENT---------------------");
+
+            foreach (var eliteEquipmentType in EliteEquipmentTypes)
+            {
+                EliteEquipmentBase eliteEquipment = (EliteEquipmentBase)System.Activator.CreateInstance(eliteEquipmentType);
+                if (ValidateEliteEquipment(eliteEquipment, EliteEquipments))
+                {
+                    eliteEquipment.Init(Config);
+
+                    ModLogger.LogInfo("Elite Equipment: " + eliteEquipment.EliteEquipmentName + " Initialized!");
+                }
+            }
+
+            //Compatability
+            ModLogger.LogInfo("-------------COMPATIBILITY---------------------");
+            ValidateModCompatability();
+
+
+        }
+
+        private void ValidateModCompatability()
+        {
+            string defaultShareSuiteBlacklist= "ITEM_MINI_MATROYSHKA,ITEM_ABYSSAL_BEACON,ITEM_AUGMENTED_CONTACT,ITEM_CURVED_HORN,ITEM_GOAT_LEG,ITEM_MEDIUM_MATROYSHKA,ITEM_CHARM_OF_DESIRES,ITEM_MASSIVE_MATROYSHKA,ITEM_BLOODBURST_CLAM,ITEM_DISCOVERY_MEDALLION,ITEM_MEGA_MATROYSHKA";
+
+
+            var enabledShareSuite = Config.Bind<bool>("Mod Compatability: " + "ShareSuite", "Enable Compatability Patches?", true, "Attempt to patch ShareSuite (if installed) to work with this mod?").Value;
+            var ShareSuiteBlackList= Config.Bind<string>("Mod Compatability: " + "ShareSuite", "ShareSuite Blacklist", defaultShareSuiteBlacklist, "Add items to ShareSuite blacklist?").Value;
+            if (ModCompatability.ShareSuiteCompat.IsShareSuiteInstalled && enabledShareSuite)
+            {
+                ModLogger.LogInfo("ModCompatability: " + "ShareSuite Recognized!");
+
+                ModCompatability.ShareSuiteCompat.AddTierToShareSuite();
+                ModLogger.LogInfo("ModCompatability: " + "ShareSuite CoreTier added to Whitelist!");
+
+                ModCompatability.ShareSuiteCompat.AddBransItemsBlacklist(ShareSuiteBlackList);
+                ModLogger.LogInfo("ModCompatability: " + "ShareSuite Blacklist added to Whitelist!");
+            }
+
+            var enabledHIV = Config.Bind<bool>("Mod Compatability: " + "HighItemVizability", "Enable Compatability Patches?", true, "Attempt to patch HighItemVizability (if installed) to work with this mod?").Value;
+            if (ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled && enabledHIV)
+            {
+                ModLogger.LogInfo("ModCompatability: " + "HighItemVizability Recognized!");
+            }
+
+            var enabledProperSave = Config.Bind<bool>("Mod Compatability: " + "ProperSave", "Enable Compatability Patches?", true, "Attempt to add Propersave compatability (if installed)?").Value;
+            if (ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled && enabledProperSave)
+            {
+                ModLogger.LogInfo("ModCompatability: " + "ProperSave Recognized!");
+                ModCompatability.ProperSaveCompat.AddProperSaveFunctionality = true;
+            }
+
+            bool IfAnyLoaded = enabledShareSuite || enabledHIV || enabledProperSave;
+            if(IfAnyLoaded)
+            {
+                ModCompatability.FinishedLoading();
+            }
+
+
         }
 
         public bool ValidateItem(ItemBase item, List<ItemBase> itemList)
         {
-            var enabled = Config.Bind<bool>("Item: " + item.ItemName, "Enable Item?", true, "Should this item appear in runs?").Value;
-            var aiBlacklist = Config.Bind<bool>("Item: " + item.ItemName, "Blacklist Item from AI Use?", false, "Should the AI not be able to obtain this item?").Value;
-            var printerBlacklist = Config.Bind<bool>("Item: " + item.ItemName, "Blacklist Item from Printers?", false, "Should the printers be able to print this item?").Value;
-            var requireUnlock = Config.Bind<bool>("Item: " + item.ItemName, "Require Unlock", true, "Should we require this item to be unlocked before it appears in runs? (Will only affect items with associated unlockables.)").Value;
+            var enabled = Config.Bind<bool>("Item: " + item.ConfigItemName, "Enable Item?", true, "Should this item appear in runs?").Value;
+            var aiBlacklist = Config.Bind<bool>("Item: " + item.ConfigItemName, "Blacklist Item from AI Use?", false, "Should the AI not be able to obtain this item?").Value;
+            var printerBlacklist = Config.Bind<bool>("Item: " + item.ConfigItemName, "Blacklist Item from Printers?", false, "Should the printers be able to print this item?").Value;
+            var requireUnlock = Config.Bind<bool>("Item: " + item.ConfigItemName, "Require Unlock", true, "Should we require this item to be unlocked before it appears in runs? (Will only affect items with associated unlockables.)").Value;
 
             ItemStatusDictionary.Add(item, enabled);
 
@@ -275,6 +341,20 @@ namespace BransItems
             return false;
         }
 
+        public bool ValidateEliteEquipment(EliteEquipmentBase eliteEquipment, List<EliteEquipmentBase> eliteEquipmentList)
+        {
+            var enabled = Config.Bind<bool>("Equipment: " + eliteEquipment.EliteEquipmentName, "Enable Elite Equipment?", true, "Should this elite equipment appear in runs? If disabled, the associated elite will not appear in runs either.").Value;
+
+            EliteEquipmentStatusDictionary.Add(eliteEquipment, enabled);
+
+            if (enabled)
+            {
+                eliteEquipmentList.Add(eliteEquipment);
+                return true;
+            }
+            return false;
+        }
+
         private void GlobalEventManager_onCharacterDeathGlobal(DamageReport report)
         {
             /*
@@ -302,11 +382,11 @@ namespace BransItems
             }
             */
         }
-
+        //SHARE SUITE ITEM LIST:ITEM_MINI_MATROYSHKA,ITEM_ABYSSAL_BEACON,ITEM_AUGMENTED_CONTACT,ITEM_CURVED_HORN,ITEM_GOAT_LEG,ITEM_MEDIUM_MATROYSHKA,ITEM_CHARM_OF_DESIRES,ITEM_MASSIVE_MATROYSHKA,ITEM_BLOODBURST_CLAM,ITEM_DISCOVERY_MEDALLION,ITEM_MEGA_MATROYSHKA
         //The Update() method is run on every frame of the game.
         private void Update()
         {
-            /*
+            
             //This if statement checks if the player has currently pressed F2.
             if (Input.GetKeyDown(KeyCode.F2))
             {
@@ -315,10 +395,25 @@ namespace BransItems
 
                 //And then drop our defined item in front of the player.
 
-                Log.Info($"Player pressed F2. Spawning our custom item at coordinates {transform.position}");
-                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(myItemDef.itemIndex), transform.position, transform.forward * 20f);
+                //Log.Info($"Player pressed F2. Spawning our custom item at coordinates {transform.position}");
+                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(AirTotem.instance.EquipmentDef.equipmentIndex), transform.position, transform.forward * 20f);
+                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(EarthTotem.instance.EquipmentDef.equipmentIndex), transform.position, transform.forward * -20f);
             }
-            */
+
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                //Get the player body to use a position:
+                var transform = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
+
+                //And then drop our defined item in front of the player.
+
+                //Log.Info($"Player pressed F2. Spawning our custom item at coordinates {transform.position}");
+                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(EOAcuity.instance.ItemDef.itemIndex), transform.position, transform.forward * 20f);
+                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(AbyssalBeacon.instance.ItemDef.itemIndex), transform.position, transform.forward * -20f);
+                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(Modules.Pickups.Items.Tier1.MediumMatroyshka.instance.ItemDef.itemIndex), transform.position, transform.right * 20f);
+                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(Modules.Pickups.Items.Tier2.CharmOfDesires.instance.ItemDef.itemIndex), transform.position, transform.right * -20f);
+            }
+
         }
     }
 }

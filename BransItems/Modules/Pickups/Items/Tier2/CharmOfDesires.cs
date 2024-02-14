@@ -24,17 +24,15 @@ namespace BransItems.Modules.Pickups.Items.Tier2
     {
         public override string ItemName => "Charm of Desires";
         public override string ItemLangTokenName => "CHARM_OF_DESIRES";
-        public override string ItemPickupDesc => "At the start of each stage, wish for 1 of 2 essences.";
-        public override string ItemFullDescription => $"At the start of each stage, spawn in <style=cIsDamage>{DropCount}%</style><style=cStack>(+{AdditionalDrops})</style> wishes with 2 essences to pick from.";
+        public override string ItemPickupDesc => "At the start of each stage, wish for 1 of 2 Essences.";
+        public override string ItemFullDescription => $"At the start of <style=cIsUtility>each stage</style>, spawn in <style=cIsUtility>{DropCount}</style><style=cStack>(+{AdditionalDrops} per stack)</style> wishes with 1 of 2 "+BransItems.EssencesKeyword+" to pick from.";
 
-        public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
-            "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
-            "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier2;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/CharmOfDesires/Charm.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/CharmOfDesires/DesireCharm.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -76,7 +74,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             itemDisplay.rendererInfos = ItemDisplaySetup(ItemBodyModelPrefab, true);
 
             ItemDisplayRuleDict rules = new ItemDisplayRuleDict();
-
+            /*
             rules.Add("mdlCommandoDualies", new RoR2.ItemDisplayRule[]
             {
                 new ItemDisplayRule
@@ -280,7 +278,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                     localAngles = new Vector3(0F, 323.6887F, 355.1232F),
                     localScale = new Vector3(0.000551F, 0.000551F, 0.000551F)
                 }
-            });
+            });*/
             return rules;
         }
 
@@ -358,7 +356,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                     prefabOverride = potentialPrefab,
                     position = transform.position,
                     rotation = Quaternion.identity,
-                    pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier1)
+                    pickupIndex =drops[0]
                 },
                         transform.position + Vector3.up * 1.5f, val);
                 val = val2 * val;

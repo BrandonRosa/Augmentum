@@ -34,13 +34,21 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         public static float CompatShrineChance = .20f;
 
-        public static float BarrelChance = .02f;
+        public static bool CombatShrineScalePlayers = true;
+
+        public static float BarrelChance = .025f;
+
+        public static bool BarrelScalePlayers = true;
 
         public static float EliteDeathChance = .01f;
 
-        public static float ChanceShrineFail = .02f;
+        public static bool EliteScalePlayers = true;
 
-        public static float ChanceShrineSuceed = .01f; 
+        public static float ChanceShrineFail = .025f;
+
+        public static float ChanceShrineSuceed = .01f;
+
+        public static bool ChanceShrineScalePlayers = true;
 
         public override Texture backgroundTexture => MainAssets.LoadAsset<Texture>("Assets/Textrures/Icons/TierBackground/BgHighlander.png");
 
@@ -57,19 +65,105 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
             colorIndex = Colors.TempHighlandLight;//ColorsAPI.RegisterColor(Color.gray);
             darkColorIndex = Colors.TempHighlandDark;//ColorsAPI.RegisterColor(Color.gray);
             itemTierDef.pickupRules = ItemTierDef.PickupRules.ConfirmAll;
-            //colorIndex = CoreLight.instance.colorIndex;//CoreLight.instance.colorCatalogEntry.ColorIndex;//new Color(.08f, .39f, .23f));//(new Color32(21, 99, 58, 255)));
-            //darkColorIndex = CoreDark.instance.colorIndex; //new Color(0f,.49f,.24f));//(new Color32(1, 126, 62, 255)));
-            BransItems.ModLogger.LogWarning("ArraySize:" + (ColorCatalog.indexToHexString.Length));
-            BransItems.ModLogger.LogWarning("LastElementHex:" + (ColorCatalog.indexToHexString[ColorCatalog.indexToHexString.Length - 1]));
+
+            CreateDropletPrefab();
+            CreateVFXPrefab();
             CreateTier();
-            itemTierDef.highlightPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
-            itemTierDef.dropletDisplayPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
+            //itemTierDef.highlightPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
+            //itemTierDef.dropletDisplayPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
             SetHooks();
             //BransItems.ModLogger.LogWarning(itemTierDef.tier.ToString());
             //BransItems.ModLogger.LogWarning("Correct:" + ItemTier.AssignedAtRuntime.ToString());
             //BransItems.ModLogger.LogWarning("MyTierName:" + itemTierDef.name);
             //BransItems.ModLogger.LogWarning("MyTierCanScrap:" + itemTierDef.canScrap);
 
+        }
+        private void CreateDropletPrefab()
+        {
+            GameObject Temp = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/LunarOrb.prefab").WaitForCompletion().InstantiateClone("HighlanderOrb", true);
+            //GameObject child1 =Temp.transform.GetChild(0).gameObject;
+            Color colorLight = ColorCatalog.GetColor(colorIndex);
+            Color colorDark = ColorCatalog.GetColor(darkColorIndex);
+
+            Gradient gradient = new Gradient();
+
+            // Blend color from red at 0% to blue at 100%
+            var colors = new GradientColorKey[2];
+            colors[0] = new GradientColorKey(colorDark, 0.0f);
+            colors[1] = new GradientColorKey(colorDark, 1.0f);
+            //colors[0] = new GradientColorKey(Color.red, 0.0f);
+            //colors[1] = new GradientColorKey(Color.red, 1.0f);
+
+            // Blend alpha from opaque at 0% to transparent at 100%
+            var alphas = new GradientAlphaKey[2];
+            alphas[0] = new GradientAlphaKey(1.0f, 0.0f);
+            alphas[1] = new GradientAlphaKey(0.0f, 1.0f);
+
+            gradient.SetKeys(colors, alphas);
+
+            Temp.transform.GetChild(0).gameObject.GetComponent<TrailRenderer>().startColor = colorLight;
+            Temp.transform.GetChild(0).gameObject.GetComponent<TrailRenderer>().set_startColor_Injected(ref colorLight);
+            Temp.transform.GetChild(0).gameObject.GetComponent<TrailRenderer>().SetColorGradient(gradient);
+
+            //Temp.transform.GetChild(0).GetChild(2).GetComponent<Light>().color = colorLight;
+            //Temp.transform.GetChild(0).GetChild(2).GetComponent<Light>().set_color_Injected(ref colorLight);
+            Light[] lights = Temp.GetComponentsInChildren<Light>();
+            foreach (Light thisLight in lights)
+            {
+                thisLight.color = colorLight;
+            }
+
+            ParticleSystem[] array = Temp.GetComponentsInChildren<ParticleSystem>();
+            foreach (ParticleSystem obj in array)
+            {
+                //((Component)obj).gameObject.SetActive(true);
+                ParticleSystem.MainModule main = obj.main;
+                ParticleSystem.ColorOverLifetimeModule COL = obj.colorOverLifetime;
+                main.startColor = new ParticleSystem.MinMaxGradient(colorLight);
+                COL.color = colorLight;
+            }
+            //Temp.GetComponentInChildren<Light>().set_color_Injected(ref colorLight);
+            dropletDisplayPrefab = Temp;
+
+        }
+
+        private void CreateVFXPrefab()
+        {
+            Color colorLight = ColorCatalog.GetColor(colorIndex);
+            Color colorDark = ColorCatalog.GetColor(darkColorIndex);
+            //GameObject Temp = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/SetpiecePickup.prefab").WaitForCompletion();
+            GameObject Temp = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/GenericPickup.prefab").WaitForCompletion();
+            GameObject VFX = Temp.transform.GetChild(11).gameObject.InstantiateClone("HighlanderVFX", false);
+
+            //GameObject DistantGlow = VFX.transform.GetChild(0).transform.GetChild(0).gameObject; //Dark
+            //GameObject Swirls = VFX.transform.GetChild(0).transform.GetChild(1).gameObject; //Light
+            //GameObject PointLight = VFX.transform.GetChild(0).transform.GetChild(2).gameObject; //Light
+            //GameObject Glowies = VFX.transform.GetChild(0).transform.GetChild(3).gameObject; //Light
+
+
+
+            ParticleSystem.MainModule NewColor = VFX.transform.GetChild(0).GetChild(0).gameObject.GetComponent<ParticleSystem>().main; //Distant soft
+            NewColor.startColor = new ParticleSystem.MinMaxGradient(colorLight, colorDark);
+
+
+            ParticleSystem.MainModule NewColor2 = VFX.transform.GetChild(0).GetChild(1).gameObject.GetComponent<ParticleSystem>().main; //Swirls
+            NewColor2.startColor = new ParticleSystem.MinMaxGradient(colorLight, colorDark);
+
+
+            VFX.transform.GetChild(0).GetChild(2).gameObject.GetComponent<Light>().color = colorLight;
+            VFX.transform.GetChild(0).GetChild(2).gameObject.GetComponent<Light>().set_color_Injected(ref colorLight);
+
+            ParticleSystem.MainModule NewColor3 = VFX.transform.GetChild(0).GetChild(1).gameObject.GetComponent<ParticleSystem>().main; //Glowies
+            NewColor3.startColor = new ParticleSystem.MinMaxGradient(colorLight, colorDark);
+
+            ParticleSystem.MainModule NewColor4 = VFX.transform.GetChild(1).GetChild(0).gameObject.GetComponent<ParticleSystem>().main; //Flash
+            NewColor4.startColor = new ParticleSystem.MinMaxGradient(colorLight, colorDark);
+
+            ParticleSystem.MainModule NewColor5 = VFX.transform.GetChild(1).GetChild(1).gameObject.GetComponent<ParticleSystem>().main;//Rings
+            NewColor5.startColor = new ParticleSystem.MinMaxGradient(colorLight, colorDark);
+
+
+            PickupDisplayVFX = VFX;
         }
 
         public void SetHooks()
@@ -88,9 +182,11 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
             orig(self, activator);
             bool success = purchaseCount < self.successfulPurchaseCount;
 
+            float playerScale =(ChanceShrineScalePlayers? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
+
             if(success)
             {
-                if (RoR2Application.rng.RangeFloat(0f, 1f) <= ChanceShrineSuceed)
+                if (RoR2Application.rng.RangeFloat(0f, 1f) <= ChanceShrineSuceed*playerScale)
                 {
                     DropItem(self.gameObject.transform, 8.5f);
                 }
@@ -109,7 +205,8 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
             orig(self, damageReport);
             if(damageReport.victimBody.isElite)
             {
-                if (RoR2Application.rng.RangeFloat(0f, 1f) <= EliteDeathChance)
+                float playerScale = (EliteScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
+                if (RoR2Application.rng.RangeFloat(0f, 1f) <= EliteDeathChance*playerScale)
                 {
                     DropItem(damageReport.victimBody.transform, 5.5f);
                 }
@@ -119,7 +216,8 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         private void BarrelInteraction_CoinDrop(On.RoR2.BarrelInteraction.orig_CoinDrop orig, BarrelInteraction self)
         {
             orig(self);
-            if (RoR2Application.rng.RangeFloat(0f, 1f) <= BarrelChance)
+            float playerScale = (BarrelScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
+            if (RoR2Application.rng.RangeFloat(0f, 1f) <= BarrelChance*playerScale)
             {
                 DropItem(self.gameObject.transform, 5.5f);
             }
@@ -128,7 +226,8 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         private void ShrineCombatBehavior_OnDefeatedServer(On.RoR2.ShrineCombatBehavior.orig_OnDefeatedServer orig, ShrineCombatBehavior self)
         {
             orig(self);
-            if (RoR2Application.rng.RangeFloat(0f, 1f) <= CompatShrineChance)
+            float playerScale = (CombatShrineScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
+            if (RoR2Application.rng.RangeFloat(0f, 1f) <= CompatShrineChance*playerScale)
             {
                 DropItem(self.gameObject.transform, 8.5f);
             }
@@ -151,6 +250,7 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         {
             //BransItems.ModLogger.LogWarning("Indexed Pickup" + itemIndex.ToString());
             //BransItems.ModLogger.LogWarning("All Highlander" + Highlander.instance.ItemsWithThisTier.Count);
+            orig(self, itemIndex); //JUST ADDED, adjust if it breaks stuff
             if (ItemCatalog.GetItemDef(itemIndex)._itemTierDef==itemTierDef)
             {
                 int count = self.inventory.GetTotalItemCountOfTier(itemTierDef.tier);

@@ -16,7 +16,7 @@ namespace BransItems.Modules.Utils
         /// <param name="obj">The GameObject/Prefab that you wish to set up RendererInfos for.</param>
         /// <param name="debugmode">Do we attempt to attach a material shader controller instance to meshes in this?</param>
         /// <returns>Returns an array full of RendererInfos for GameObject.</returns>
-        public static CharacterModel.RendererInfo[] ItemDisplaySetup(GameObject obj, bool debugmode = false)
+        public static CharacterModel.RendererInfo[] ItemDisplaySetup(GameObject obj,bool IgnoreOverlays=false, bool debugmode = false)
         {
 
             List<Renderer> AllRenderers = new List<Renderer>();

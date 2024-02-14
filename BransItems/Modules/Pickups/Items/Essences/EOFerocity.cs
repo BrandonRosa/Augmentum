@@ -16,7 +16,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Ferocity";
         public override string ItemLangTokenName => "ESSENCE_OF_FEROCITY";
         public override string ItemPickupDesc => "Slightly increase <style=cIsDamage>attack speed</style>.";
-        public override string ItemFullDescription => $"Increase <style=cIsDamage>attack speed</style> by <style=cIsDamage>{AttackSpeedGain}%</style><style=cStack>(+{AttackSpeedGain}%)</style>.";
+        public override string ItemFullDescription => $"Increase <style=cIsDamage>attack speed</style> by <style=cIsDamage>{AttackSpeedGain}%</style><style=cStack>(+{AttackSpeedGain}% per stack)</style>.";
 
         public override string ItemLore => $"Ever since my partner got their hands on that stone, it's like they've become a whirlwind of action. Their attacks hit harder, and it's almost dizzying watching them go." +
             $" There's this newfound intensity, like a beast unleashed. It's not just about speed; it's about ferocity. The enemies don't stand a chance, and I find myself struggling just to keep up." +
@@ -55,7 +55,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            AttackSpeedGain = config.Bind<float>("Item: " + ItemName, "Attack speed given to character", 8, "How much attack speed should Essense of Ferocity grant?").Value;
+            AttackSpeedGain = config.Bind<float>("Item: " + ItemName, "Attack speed given to character", 7f, "How much attack speed should Essense of Ferocity grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 

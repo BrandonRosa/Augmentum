@@ -23,11 +23,9 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         public override string ItemName => "Discovery Medallion";
         public override string ItemLangTokenName => "DISCOVERY_MEDALLION";
         public override string ItemPickupDesc => "On pickup, wish for a Red tier item. Future wishes will come with more choices.";
-        public override string ItemFullDescription => $"On pickup, wish for 1 of <style=cIsDamage>{Choices}%</style> Red tier items. Future wishes will come with 1<style=cStack>(+{AdditionalChoices}) more choice.";
+        public override string ItemFullDescription => $"On pickup, wish for 1 of {Choices} <style=cIsHealth>red items</style>. Future wishes will come with 1<style=cStack>(+{AdditionalChoices} per stack)</style> more choice.";
 
-        public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." +
-            "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality." +
-            "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier3;
 
