@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using BransItems.Modules.StandaloneBuffs;
+using BransItems.Modules.Utils;
 using R2API;
 using RoR2;
 using System;
@@ -31,6 +32,11 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public override GameObject EliteBodyModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Elite/Gills/BothGills.prefab");
 
+        public GameObject InvisibleEffect;
+        public GameObject TrailEffect;
+
+        public Texture2D RemapTexture = MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Ramps/texRampAdaptive4.png");
+
         public static GameObject ItemBodyModelPrefab;
 
         //public override Material EliteMaterial { get; set; } = MainAssets.LoadAsset<Material>("AffixPureOverlay.mat");
@@ -45,11 +51,11 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public override float CostMultiplierOfElite => 4.5f;
 
-        public static int PreHitArmorAdd;
+        public static int PreHitArmorAdd=150;
 
-        public static float CooldownReductionPreHit;
+        public static float CooldownReductionPreHit=1f;
 
-        public static float CooldownReductionAfterHit;
+        public static float CooldownReductionAfterHit=1.5f;
 
         public static float AttackSpeedPreHit=.15f;
 
@@ -97,6 +103,8 @@ namespace BransItems.Modules.Pickups.EliteEquipments
             EliteBuffDef = AffixAdaptiveBuff.instance.BuffDef;
             EliteBuffColor = new Color32(255, 190, 200,255);
             MakeMaterial();
+            MakeInvisEffect();
+            MakeTrailEffect();
             CreateConfig(config);
             CreateLang();
             //CreateAffixBuffDef();
@@ -104,7 +112,60 @@ namespace BransItems.Modules.Pickups.EliteEquipments
             CreateEliteTiers();
             CreateElite();
             Hooks();
-            EliteRamp.AddRamp(EliteDef, MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Ramps/texRampAdaptive4.png"));
+            EliteRamp.AddRamp(EliteDef,RemapTexture); //MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Ramps/texRampAdaptive4.png"));
+        }
+
+        private void MakeInvisEffect()
+        {
+            GameObject temp= Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2KillEffect.prefab").WaitForCompletion().InstantiateClone("InvisStart"); //Assets/Textrures/Icons/Buff/AdaptiveIconBWMap.png
+            Texture2D texture = MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Icons/Buff/AdaptiveIconBWMap.png");
+            ParticleSystem[] systems= temp.GetComponentsInChildren<ParticleSystem>();
+            ParticleSystemRenderer[] renders = temp.GetComponentsInChildren<ParticleSystemRenderer>();
+
+            EffectHelpers.SetParticleSystemColorOverTime(ref systems[0], EliteBuffColor);
+            renders[0].GetMaterial().SetTexture("_RemapTex", RemapTexture);
+
+            EffectHelpers.SetParticleSystemColorOverTime(ref systems[1], EliteBuffColor);
+            renders[1].GetMaterial().SetTexture("_RemapTex", RemapTexture);
+
+            EffectHelpers.SetParticleSystemColorOverTime(ref systems[2], EliteBuffColor);
+            renders[2].GetMaterial().SetTexture("_RemapTex", RemapTexture);
+
+            EffectHelpers.SetParticleSystemColorOverTime(ref systems[3], EliteBuffColor);
+            renders[3].GetMaterial().SetTexture("_RemapTex", RemapTexture);
+
+            EffectHelpers.SetParticleSystemColorOverTime(ref systems[4], EliteBuffColor);
+            renders[4].GetMaterial().SetTexture("_RemapTex", RemapTexture);
+            renders[4].GetMaterial().SetTexture("_MainTex", texture);
+            renders[4].GetMaterial().SetColor("_EmissionColor", EliteBuffColor);
+
+            temp.GetComponentInChildren<Light>().color = EliteBuffColor;
+
+            InvisibleEffect = temp;
+            ContentAddition.AddEffect(InvisibleEffect);
+        }
+
+        private void MakeTrailEffect()
+        {
+            GameObject pinkTrail= Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/FireTrail.prefab").WaitForCompletion().InstantiateClone("PinkTrail");//RoR2/Base/Common/FireTrailSegment.prefab
+            GameObject pinkTrailSegment = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/FireTrailSegment.prefab").WaitForCompletion().InstantiateClone("PinkTrailSegment");
+
+            ParticleSystem PS = pinkTrailSegment.GetComponent<ParticleSystem>();
+            EffectHelpers.SetParticleSystemColorOverTime(ref PS,EliteBuffColor);
+            //EffectHelpers.SetParticleSystemLightColor(ref PS, EliteBuffColor);
+            ParticleSystemRenderer PSR= pinkTrailSegment.GetComponent<ParticleSystemRenderer>();
+            PSR.GetMaterial().SetTexture("_RemapTex", RemapTexture);
+
+
+            DamageTrail DT = pinkTrail.GetComponent<DamageTrail>();
+            DT.damageUpdateInterval = 10f;
+            DT.pointUpdateInterval = .5f;
+            DT.damagePerSecond = 0;
+            DT.pointLifetime = .3f;
+            DT.segmentPrefab = pinkTrailSegment;
+
+            TrailEffect = pinkTrail;
+            ContentAddition.AddEffect(TrailEffect);
         }
 
         private void MakeMaterial()
@@ -127,16 +188,8 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         private void CreateConfig(ConfigFile config)
         {
-            CostMultiplierOfElite = config.Bind<float>("Elite: " + EliteModifier, "Cost Multiplier", 4.5f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more.").Value;
-            PreHitArmorAdd = config.Bind<int>("Elite: " + EliteModifier, "Amount of Armor", 150, "Armor added to elite before getting hit for the first time.").Value;
-            CooldownReductionPreHit= config.Bind<float>("Elite: " + EliteModifier, "Cooldown Reduction", 1f, "Cooldown reduction in seconds before getting hit.").Value;
-            CooldownReductionAfterHit = config.Bind<float>("Elite: " + EliteModifier, "Cooldown Reduction", 1.5f, "Cooldown reduction in seconds during boost.").Value;
+            CostMultiplierOfElite = config.Bind<float>("Elite: " + EliteModifier, "Cost Multiplier", 5f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more.").Value;
 
-            //purifiedEffect = Plugin.assetBundle.LoadAsset<GameObject>("PureEffect.prefab");
-            //ContentAddition.AddEffect(purifiedEffect);
-
-            //nullifiedEffect = Plugin.assetBundle.LoadAsset<GameObject>("NullEffect.prefab");
-            //ContentAddition.AddEffect(nullifiedEffect);
         }
 
         private void CreateEliteTiers()
@@ -636,6 +689,10 @@ namespace BransItems.Modules.Pickups.EliteEquipments
                 for (int i = 0; i < AffixAdaptive.AdaptiveCooldownTimer; i++)
                     self.body.AddTimedBuff(AdaptiveCooldown.instance.BuffDef, i);
 
+                EffectManager.SimpleEffect(AffixAdaptive.instance.InvisibleEffect, self.body.transform.position, Quaternion.identity, transmit: true);
+
+                
+
                 //for (int i = 0; i < 80; i++)
                 //    self.body.RemoveBuff(Safegaurd.instance.BuffDef);
 
@@ -687,6 +744,11 @@ namespace BransItems.Modules.Pickups.EliteEquipments
                     AOT.hasOverlay = false;
                     self.modelLocator.modelTransform.gameObject.GetComponent<RoR2.TemporaryOverlay>().duration = 0;
                 }
+                if(AOT.PinkTrail!=null)
+                {
+                    GameObject.Destroy(((Component)AOT.PinkTrail));
+                    AOT.PinkTrail = null;
+                }
             }
 
             orig(self, buffType);
@@ -714,6 +776,13 @@ namespace BransItems.Modules.Pickups.EliteEquipments
                     //overlay.AddToCharacerModel(self.gameObject.GetComponent<RoR2.CharacterModel>());
 
                     AOT.hasOverlay = true;
+                }
+                if (AOT.PinkTrail == null)
+                {
+                    AOT.PinkTrail = GameObject.Instantiate<GameObject>(AffixAdaptive.instance.TrailEffect,self.transform).GetComponent<DamageTrail>();
+                    ((Component) AOT.PinkTrail).transform.position = self.footPosition;
+                    AOT.PinkTrail.owner = self.gameObject;
+                    AOT.PinkTrail.radius *= self.radius;
                 }
 
             }
@@ -792,6 +861,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
         public class AdaptiveOverlayTracker : MonoBehaviour
         {
             public bool hasOverlay = false;
+            public DamageTrail PinkTrail=null;
 
         }
 

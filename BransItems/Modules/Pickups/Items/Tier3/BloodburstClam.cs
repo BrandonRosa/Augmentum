@@ -29,7 +29,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override ItemTier Tier => ItemTier.Tier3;
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/BloodBustClam/BBClam.prefab");
         public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png");
 
         public static GameObject ItemBodyModelPrefab;

@@ -23,8 +23,8 @@ namespace BransItems.Modules.Pickups.Items.Tier1
     {
         public override string ItemName => "Medium Matroyshka";
         public override string ItemLangTokenName => "MEDIUM_MATROYSHKA";
-        public override string ItemPickupDesc => "The next time you use an equipment, crack open for an item and a " + BransItems.CoreColorString + "mini surprise</color> .";
-        public override string ItemFullDescription => $"The next time you use an <style=cIsUtility>equipment</style>, crack open for an item. Gain "+BransItems.CoreColorString+"Mini Matroyshka</color>.";
+        public override string ItemPickupDesc => "The next time you use an equipment, crack open for a white item and a " + BransItems.CoreColorString + "mini surprise</color> .";
+        public override string ItemFullDescription => $"On next <style=cIsUtility>equipment use</style>, cracks open for a white item. Gain "+BransItems.CoreColorString+"Mini Matroyshka</color>.";
 
         public override string ItemLore => "";
 

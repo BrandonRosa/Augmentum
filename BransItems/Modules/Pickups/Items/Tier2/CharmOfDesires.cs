@@ -31,8 +31,8 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public override ItemTier Tier => ItemTier.Tier2;
 
-        //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab");
-        //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/CharmOfDesires/Charm.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/CharmOfDesires/DesireCharm.png");
 
         public static GameObject ItemBodyModelPrefab;
 

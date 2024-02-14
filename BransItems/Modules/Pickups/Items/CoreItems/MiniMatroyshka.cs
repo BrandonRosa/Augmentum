@@ -24,7 +24,7 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
         public override string ItemName => "Mini Matroyshka";
         public override string ItemLangTokenName => "MINI_MATROYSHKA";
         public override string ItemPickupDesc => "The next time you open a chest, crack open for an " + BransItems.EssenceKeyword + ".";
-        public override string ItemFullDescription => $"The next time you open a <style=cisUtility>chest</style>, crack open for an "+BransItems.EssenceKeyword+". \n<style=cMono>There is nothing left.</style>";
+        public override string ItemFullDescription => $"On next <style=cisUtility>chest purchase</style>, cracks open for an "+BransItems.EssenceKeyword+". \n<style=cMono>There is nothing left.</style>";
 
         public override string ItemLore => "";
 

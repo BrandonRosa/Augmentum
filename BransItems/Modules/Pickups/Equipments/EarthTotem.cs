@@ -16,6 +16,8 @@ using static RoR2.EquipmentSlot;
 using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
 using R2API.Networking.Interfaces;
 using UnityEngine.Networking;
+using BransItems.Modules.Compatability;
+using System.Runtime.Serialization;
 
 namespace BransItems.Modules.Pickups.Equipments
 {
@@ -215,9 +217,116 @@ namespace BransItems.Modules.Pickups.Equipments
             //On.RoR2.EquipmentSlot.Update += UpdateTargets;
             On.RoR2.EquipmentSlot.FixedUpdate += FixedUpdate;
             On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets;
-            //RecalculateStatsAPI.
+            ModCompatability.FinishedLoadingCompatability += () =>
+            {
+                ProperSave.SaveFile.OnGatherSaveData += SaveFile_OnGatherSaveData;
+                ProperSave.Loading.OnLoadingEnded += Loading_OnLoadingStarted;
+            };
         }
 
+        private void Loading_OnLoadingStarted(ProperSave.SaveFile obj)
+        {
+            string ETTDictKey = "BransExpansion_EarthTotemTrackers";
+            BransItems.ModLogger.LogWarning("Flag1");
+            /*
+            List<string> earthTotemTrackers = obj.GetModdedData<List<string>>(ETTDictKey);
+            BransItems.ModLogger.LogWarning("Flag2");
+            foreach (string ETTS in earthTotemTrackers)
+            {
+                string[] values=ETTS.Split(',');
+                int id = int.Parse(values[0]);
+                int absorbedCount = int.Parse(values[1]);
+                BransItems.ModLogger.LogWarning("Flag3 "+id+" "+absorbedCount);
+                List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
+                for (int i = 2; i < values.Length; i++)
+                    equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(values[i])));
+
+                EarthTotemTracker temp=((GameObject)CharacterMaster.FindObjectFromInstanceID(id)).gameObject.AddComponent<EarthTotemTracker>();
+                BransItems.ModLogger.LogWarning("Flag4");
+                temp.EquipDefList = equipmentDefs;
+                temp.EarthTotemAbsorbedCount = absorbedCount;
+                temp.id = id;
+                
+            }
+            */
+            List<EarthTotemTrackerSaveStructure> ETTSStructures = obj.GetModdedData<List<EarthTotemTrackerSaveStructure>>(ETTDictKey);
+            BransItems.ModLogger.LogWarning("Flag2");
+            foreach (EarthTotemTrackerSaveStructure ETTS in ETTSStructures)
+            {
+                NetworkUserId NUID = ETTS.userID.Load();
+                CharacterMaster master = NetworkUser.readOnlyInstancesList.FirstOrDefault(Nuser=> Nuser.id.Equals(NUID)).master;//RoR2.Run.instance.GetUserMaster(ETTS.userID.Load());
+                int absorbedCount = ETTS.EarthTotemsAbsorbed;
+                BransItems.ModLogger.LogWarning("Flag3 " + absorbedCount);
+                List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
+                foreach(string equip in ETTS.EquipList)
+                    equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(equip)));
+
+                EarthTotemTracker temp = master.gameObject.AddComponent<EarthTotemTracker>();
+                BransItems.ModLogger.LogWarning("Flag4");
+                temp.EquipDefList = equipmentDefs;
+                temp.EarthTotemAbsorbedCount = absorbedCount;
+
+
+            }
+        }
+
+        private void SaveFile_OnGatherSaveData(Dictionary<string, object> obj)
+        {
+            //string will be : BransExpansion_EarthTotemTrackers
+            //object will be string with this:
+            //Identifier for the player
+            //Number of absorbed earthTotems
+            //Number of absorbed equipments
+            //List of equipment names
+            //^^ all that in each line
+            //At the end of the string write ENDOFLOADINGEARTHTOTEM
+
+            string ETTDictKey = "BransExpansion_EarthTotemTrackers";
+            
+            //List<CharacterMaster> MastersWithEquipment = CharacterMaster.instancesList.Where(master => master.GetComponent<EarthTotemTracker>() != null).ToList();
+            List<EarthTotemTracker> earthTotemTrackers = CharacterMaster.instancesList
+            .Select(master => master.GetComponent<EarthTotemTracker>())
+            .Where(tracker => tracker != null)
+            .ToList();
+
+            //List<string> ETTEntries = new List<string>();
+            List<EarthTotemTrackerSaveStructure> ETTSSList = new List<EarthTotemTrackerSaveStructure>();
+            foreach(EarthTotemTracker ETT in earthTotemTrackers)
+            {
+                /*
+                string ID = ETT.Master.playerCharacterMasterController.networkUser+",";
+                string ETTAbsorbed = ETT.EarthTotemAbsorbedCount+"";
+                string ETTEquipList = "";
+                foreach (EquipmentDef ED in ETT.EquipDefList)
+                    ETTEquipList += ","+ED.nameToken;
+
+
+                ETTEntries.Add(ID + ETTAbsorbed + ETTEquipList);
+                */
+                List<string> ETTEquipList = new List<string>();
+                foreach (EquipmentDef ED in ETT.EquipDefList)
+                    ETTEquipList.Add(ED.name);
+
+                ETTSSList.Add(new EarthTotemTrackerSaveStructure
+                {
+                    userID =  new ProperSave.Data.UserIDData(ETT.Master.playerCharacterMasterController.networkUser.id),
+                    EarthTotemsAbsorbed=ETT.EarthTotemAbsorbedCount,
+                    EquipList=ETTEquipList
+                });
+            }
+
+            obj.Add(ETTDictKey, ETTSSList);
+        }
+
+        public struct EarthTotemTrackerSaveStructure
+        {
+            [DataMember(Name = "UserID")]
+            public ProperSave.Data.UserIDData userID;
+            [DataMember(Name = "EarthTotemsAbsorbed")]
+            public int EarthTotemsAbsorbed;
+            [DataMember(Name = "AbsorbList")]
+            public List<string> EquipList;
+        }
 
         public static float CalcAdditionalCooldownComplex(float numOfAbsorb, float highestCooldown)
         {
@@ -368,13 +477,25 @@ namespace BransItems.Modules.Pickups.Equipments
 
     public class EarthTotemTracker : MonoBehaviour
     {
+        [DataMember(Name ="EquipList")]
         public List<EquipmentDef> EquipDefList;
-        public float FireFrequency;
-        public float TimeUntilNextFire;
-        public bool Firing;
-        public int EquipDefFireIndex;
-        public float HighestCooldown;
+        [DataMember(Name = "EarthAbsorbedCount")]
         public int EarthTotemAbsorbedCount;
+
+        [IgnoreDataMember]
+        public CharacterMaster Master => this.gameObject.GetComponent<CharacterMaster>();
+        [IgnoreDataMember]
+        public float FireFrequency;
+        [IgnoreDataMember]
+        public float TimeUntilNextFire;
+        [IgnoreDataMember]
+        public bool Firing;
+        [IgnoreDataMember]
+        public int EquipDefFireIndex;
+        [IgnoreDataMember]
+        public float HighestCooldown;
+
+        
         //public Transform groundTarget;
 
         //[System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]

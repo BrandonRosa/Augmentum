@@ -24,8 +24,8 @@ namespace BransItems.Modules.Pickups.Items.Tier2
     {
         public override string ItemName => "Massive Matroyshka";
         public override string ItemLangTokenName => "MASSIVE_MATROYSHKA";
-        public override string ItemPickupDesc => "The next time a teleporter is activated, crack open for an <style=cIsHealing>item</style> and a medium surprise.";
-        public override string ItemFullDescription => $"The next time a <style=cIsUtility>teleporter</style> is <style=cIsUtility>activated</style>, crack open for an <style=cIsHealing>item</style>. Gain Medium Matroyshka.";
+        public override string ItemPickupDesc => "The next time a teleporter is activated, crack open for a <style=cIsHealing>green item</style> and a medium surprise.";
+        public override string ItemFullDescription => $"On next <style=cIsUtility>teleporter activation</style>, cracks open for a <style=cIsHealing>green item</style>. Gain Medium Matroyshka.";
 
         public override string ItemLore => "";
 

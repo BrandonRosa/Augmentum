@@ -18,6 +18,7 @@ using BransItems.Modules.Pickups.Items.CoreItems;
 using BransItems.Modules.Pickups.Items.Tier1;
 using BransItems.Modules.Pickups.Items.Tier3;
 using BransItems.Modules.StandaloneBuffs;
+using RoR2.ExpansionManagement;
 
 namespace BransItems.Modules.Pickups.Items.Tier2
 {
@@ -69,7 +70,8 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             CreateConfig(config);
             CreateLang();
 
-            
+            //ItemDef.requiredExpansion = Addressables.LoadAssetAsync<ExpansionDef>("RoR2/DLC1/Common/DLC1.asset").WaitForCompletion();
+
             SetupEffectPrefab();
             //CreateBuff();
             CreateItem();
@@ -511,9 +513,9 @@ namespace BransItems.Modules.Pickups.Items.Tier2
     {
         public override string BuffName => "Nova Ring Cooldown";
 
-        public override Color Color => new Color32(255, 255, 255, 255);
+        public override Color Color => new Color32(245, 245, 245, 255);
 
-        public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Buff/HealingRingsCooldown.png");
+        public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Buff/NovaBandCooldown.png");
         public override bool CanStack => true;
         public override bool IsDebuff => true;
 
@@ -548,9 +550,9 @@ namespace BransItems.Modules.Pickups.Items.Tier2
     {
         public override string BuffName => "Nova Ring Ready";
 
-        public override Color Color => new Color32(255, 255, 255, 255);
+        public override Color Color => new Color32(245, 245, 245, 255);
 
-        public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Buff/HealingRingsReady.png");
+        public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Buff/NovaBandReady.png");
         public override bool CanStack => false;
         public override bool IsDebuff => false;
 

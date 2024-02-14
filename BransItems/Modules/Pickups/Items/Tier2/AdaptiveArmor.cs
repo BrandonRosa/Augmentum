@@ -345,9 +345,9 @@ namespace BransItems.Modules.Pickups.Items.Tier2
     {
         public override string BuffName => "Adaptive Armor Cooldown";
 
-        public override Color Color => new Color32(60, 60, 60, 255);
+        public override Color Color => new Color32(250, 250, 250, 255);
 
-        //public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("DoubleGoldDoubleXPBuffIcon.png");
+        public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/AdaptiveArmor/AACooldownIcon.png");
         public virtual bool CanStack => true;
         public virtual bool IsDebuff => true;
 
@@ -384,7 +384,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public override Color Color => new Color32(250,250,250, 255);
 
-        //public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("DoubleGoldDoubleXPBuffIcon.png");
+       public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/AdaptiveArmor/AAReadyIcon.png");
         public virtual bool CanStack => false;
         public virtual bool IsDebuff => false;
 

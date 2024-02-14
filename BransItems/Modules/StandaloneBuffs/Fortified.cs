@@ -14,9 +14,9 @@ namespace BransItems.Modules.StandaloneBuffs
     {
         public override string BuffName => "Fortified";
 
-        public override Color Color => new Color32(255, 215, 0, 255);
+        public override Color Color => new Color32(245, 245, 245, 255);
 
-        //public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("DoubleGoldDoubleXPBuffIcon.png");
+        public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Buff/Fortified.png");
         public override bool CanStack => true;
         public override bool IsDebuff => false;
 

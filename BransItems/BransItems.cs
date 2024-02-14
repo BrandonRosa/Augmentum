@@ -17,6 +17,9 @@ using BransItems.Modules.Utils;
 using BransItems.Modules.StandaloneBuffs;
 using BransItems.Modules.ColorCatalogEntry;
 using BransItems.Modules.Pickups.Equipments;
+using BransItems.Modules.Compatability;
+using BransItems.Modules.Pickups.Items.Essences;
+using BransItems.Modules.Pickups.Items.HighlanderItems;
 
 namespace BransItems
 {
@@ -238,6 +241,49 @@ namespace BransItems
                 }
             }
 
+            //Compatability
+            ModLogger.LogInfo("-------------COMPATIBILITY---------------------");
+            ValidateModCompatability();
+
+
+        }
+
+        private void ValidateModCompatability()
+        {
+            string defaultShareSuiteBlacklist= "ITEM_MINI_MATROYSHKA,ITEM_ABYSSAL_BEACON,ITEM_AUGMENTED_CONTACT,ITEM_CURVED_HORN,ITEM_GOAT_LEG,ITEM_MEDIUM_MATROYSHKA,ITEM_CHARM_OF_DESIRES,ITEM_MASSIVE_MATROYSHKA,ITEM_BLOODBURST_CLAM,ITEM_DISCOVERY_MEDALLION,ITEM_MEGA_MATROYSHKA";
+
+
+            var enabledShareSuite = Config.Bind<bool>("Mod Compatability: " + "ShareSuite", "Enable Compatability Patches?", true, "Attempt to patch ShareSuite (if installed) to work with this mod?").Value;
+            var ShareSuiteBlackList= Config.Bind<string>("Mod Compatability: " + "ShareSuite", "ShareSuite Blacklist", defaultShareSuiteBlacklist, "Add items to ShareSuite blacklist?").Value;
+            if (ModCompatability.ShareSuiteCompat.IsShareSuiteInstalled && enabledShareSuite)
+            {
+                ModLogger.LogInfo("ModCompatability: " + "ShareSuite Recognized!");
+
+                ModCompatability.ShareSuiteCompat.AddTierToShareSuite();
+                ModLogger.LogInfo("ModCompatability: " + "ShareSuite CoreTier added to Whitelist!");
+
+                ModCompatability.ShareSuiteCompat.AddBransItemsBlacklist(ShareSuiteBlackList);
+                ModLogger.LogInfo("ModCompatability: " + "ShareSuite Blacklist added to Whitelist!");
+            }
+
+            var enabledHIV = Config.Bind<bool>("Mod Compatability: " + "HighItemVizability", "Enable Compatability Patches?", true, "Attempt to patch HighItemVizability (if installed) to work with this mod?").Value;
+            if (ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled && enabledHIV)
+            {
+                ModLogger.LogInfo("ModCompatability: " + "HighItemVizability Recognized!");
+            }
+
+            var enabledProperSave = Config.Bind<bool>("Mod Compatability: " + "ProperSave", "Enable Compatability Patches?", true, "Attempt to add Propersave compatability (if installed)?").Value;
+            if (ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled && enabledProperSave)
+            {
+                ModLogger.LogInfo("ModCompatability: " + "ProperSave Recognized!");
+                ModCompatability.ProperSaveCompat.AddProperSaveFunctionality = true;
+            }
+
+            bool IfAnyLoaded = enabledShareSuite || enabledHIV || enabledProperSave;
+            if(IfAnyLoaded)
+            {
+                ModCompatability.FinishedLoading();
+            }
 
 
         }
@@ -336,7 +382,7 @@ namespace BransItems
             }
             */
         }
-
+        //SHARE SUITE ITEM LIST:ITEM_MINI_MATROYSHKA,ITEM_ABYSSAL_BEACON,ITEM_AUGMENTED_CONTACT,ITEM_CURVED_HORN,ITEM_GOAT_LEG,ITEM_MEDIUM_MATROYSHKA,ITEM_CHARM_OF_DESIRES,ITEM_MASSIVE_MATROYSHKA,ITEM_BLOODBURST_CLAM,ITEM_DISCOVERY_MEDALLION,ITEM_MEGA_MATROYSHKA
         //The Update() method is run on every frame of the game.
         private void Update()
         {
@@ -353,7 +399,21 @@ namespace BransItems
                 PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(AirTotem.instance.EquipmentDef.equipmentIndex), transform.position, transform.forward * 20f);
                 PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(EarthTotem.instance.EquipmentDef.equipmentIndex), transform.position, transform.forward * -20f);
             }
-            
+
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                //Get the player body to use a position:
+                var transform = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
+
+                //And then drop our defined item in front of the player.
+
+                //Log.Info($"Player pressed F2. Spawning our custom item at coordinates {transform.position}");
+                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(EOAcuity.instance.ItemDef.itemIndex), transform.position, transform.forward * 20f);
+                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(AbyssalBeacon.instance.ItemDef.itemIndex), transform.position, transform.forward * -20f);
+                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(Modules.Pickups.Items.Tier1.MediumMatroyshka.instance.ItemDef.itemIndex), transform.position, transform.right * 20f);
+                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(Modules.Pickups.Items.Tier2.CharmOfDesires.instance.ItemDef.itemIndex), transform.position, transform.right * -20f);
+            }
+
         }
     }
 }

@@ -24,7 +24,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         public override string ItemName => "Prototype 3D Printer";
         public override string ItemLangTokenName => "PRINTER_PROTOTYPE";
         public override string ItemPickupDesc => "Become a copy of a white item in your inventory";
-        public override string ItemFullDescription => $"On pickup, become a copy of a white item in your inventory";
+        public override string ItemFullDescription => $"On pickup, becomes a copy of a white item in your inventory";
 
         public override string ItemLore => $"\"Hey boss, I have news about the prototype.\"" + "\n" +
             $"\"What is it? Did the output object not print correctly?\"" + "\n" +
