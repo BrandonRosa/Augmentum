@@ -121,7 +121,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ReadmeAssets\" />
+    <Folder Include="ReadmeAssets\Items\" />
   </ItemGroup>
 
 </Project>
