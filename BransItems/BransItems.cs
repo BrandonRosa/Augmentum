@@ -52,9 +52,9 @@ namespace BransItems
     {
         //The Plugin GUID should be a unique ID for this plugin, which is human readable (as it is used in places like the config).
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
-        public const string ModGuid = "com.BrandonRosa.BransItems"; //Our Package Name
-        public const string ModName = "BransItems";
-        public const string ModVer = "0.6.0";
+        public const string ModGuid = "com.BrandonRosa.Augmentum"; //Our Package Name
+        public const string ModName = "Augmentum";
+        public const string ModVer = "0.13.0";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;

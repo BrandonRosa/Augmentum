@@ -16,7 +16,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Velocity";
         public override string ItemLangTokenName => "ESSENCE_OF_VELOCITY";
         public override string ItemPickupDesc => "Slightly increase movement speed.";
-        public override string ItemFullDescription => $"Increase <style=cIsUtility>movement speed</style> by <style=cIsUtility>{MoveSpeedGain}%</style><style=cStack>(+{MoveSpeedGain}% per stack)</style>.";
+        public override string ItemFullDescription => $"Increase <style=cIsUtility>movement speed</style> by <style=cIsUtility>{MoveSpeedGain}%</style><style=cStack> (+{MoveSpeedGain}% per stack)</style>.";
 
         public override string ItemLore => "Entry number 17:\n\n Fast Faster Yet Faster The Speed Keeps Growing. \nThe Velocities Surging Swifter. \nSpedometer Reads Near-Relativistic. \nThis Next Experiment Seems Very Very Interesting ... \nWhat Do You Two Think?";
 
@@ -24,8 +24,8 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal6/source/crystal6.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal6/source/TempCrystal6.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal6/source/Velocity.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal6/source/VelocityIcon.png");
 
         public static GameObject ItemBodyModelPrefab;
 

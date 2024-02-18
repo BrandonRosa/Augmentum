@@ -17,8 +17,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
     {
         public override string ItemName => "Curved Horn";
         public override string ItemLangTokenName => "CURVED_HORN";
-        public override string ItemPickupDesc => "Slightly increase damage.";
-        public override string ItemFullDescription => $"Increase your <style=cIsDamage>damage by {DamageGain}</style>.";
+        public override string ItemPickupDesc => "Increases damage.";
+        public override string ItemFullDescription => $"Increase your <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain*100}%</style>.";
 
         public override string ItemLore => "";
 
@@ -59,7 +59,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 3f, "How much base damage should Curved Horn grant?").Value;
+            DamageGain = config.Bind<float>("Item: " + ItemName, "Damage percent given to character", .30f, "How much percent damage should Curved Horn grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -82,7 +82,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
-            args.baseDamageAdd += DamageGain * GetCount(sender);
+            //args.baseDamageAdd += DamageGain * GetCount(sender);
+            args.damageMultAdd += DamageGain * GetCount(sender);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace BransItems.Modules.StandaloneBuffs
 
         public override Sprite BuffIcon => Addressables.LoadAssetAsync<Sprite>("RoR2/Base/ArmorReductionOnHit/texBuffPulverizeIcon.tif").WaitForCompletion();
         public override bool CanStack => true;
-        public override bool IsDebuff => false;
+        public override bool IsDebuff => true;
 
         public override bool IsCooldown => false;
 

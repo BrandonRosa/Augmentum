@@ -22,15 +22,15 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         //ADD IN SHARESUITE BLACKLIST
         public override string ItemName => "Discovery Medallion";
         public override string ItemLangTokenName => "DISCOVERY_MEDALLION";
-        public override string ItemPickupDesc => "On pickup, wish for a Red tier item. Future wishes will come with more choices.";
-        public override string ItemFullDescription => $"On pickup, wish for 1 of {Choices} <style=cIsHealth>red items</style>. Future wishes will come with 1<style=cStack>(+{AdditionalChoices} per stack)</style> more choice.";
+        public override string ItemPickupDesc => "On pickup, discover a Red tier item. Future discoveries come with more choices.";
+        public override string ItemFullDescription => $"On pickup, discover a <style=cIsHealth>red item</style>. Future discoveries come with 1 <style=cStack>(+{AdditionalChoices} per stack)</style> more choice.";
 
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier3;
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/discoveryMedallion.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallion.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/DiscoveryMedallion/HearthstoneMedallion.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/DiscoveryMedallion/DiscoveryMedallionIcon.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -41,7 +41,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.Utility };
 
 
-        public static int Choices;
+        public static int Choices=2;
 
         public static int AdditionalChoices;
 
@@ -59,9 +59,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            Choices = config.Bind<int>("Item: " + ItemName, "Number of choices to choose from", 2, "How many choices should Discovery Medallion give?").Value;
-            AdditionalChoices = config.Bind<int>("Item: " + ItemName, "Extra choices in future wishes", 1, "How many extra wishes should DiscoveryMedallion give?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            AdditionalChoices = config.Bind<int>("Item: " + ItemName, "Extra choices in future wishes", 1, "How many extra options should DiscoveryMedallion give?").Value;
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

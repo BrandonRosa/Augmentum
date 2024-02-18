@@ -16,7 +16,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Ferocity";
         public override string ItemLangTokenName => "ESSENCE_OF_FEROCITY";
         public override string ItemPickupDesc => "Slightly increase <style=cIsDamage>attack speed</style>.";
-        public override string ItemFullDescription => $"Increase <style=cIsDamage>attack speed</style> by <style=cIsDamage>{AttackSpeedGain}%</style><style=cStack>(+{AttackSpeedGain}% per stack)</style>.";
+        public override string ItemFullDescription => $"Increase <style=cIsDamage>attack speed</style> by <style=cIsDamage>{AttackSpeedGain}% </style><style=cStack>(+{AttackSpeedGain}% per stack)</style>.";
 
         public override string ItemLore => $"Ever since my partner got their hands on that stone, it's like they've become a whirlwind of action. Their attacks hit harder, and it's almost dizzying watching them go." +
             $" There's this newfound intensity, like a beast unleashed. It's not just about speed; it's about ferocity. The enemies don't stand a chance, and I find myself struggling just to keep up." +
@@ -28,7 +28,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
         public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal2/source/Crystal2.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal2/source/TempCrystal2.png");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal2/source/FerocityIcon.png");
 
 
         public static GameObject ItemBodyModelPrefab;

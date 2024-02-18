@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using static BransItems.BransItems;
 using static BransItems.Modules.Utils.ItemHelpers;
 
@@ -16,7 +17,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Totality";
         public override string ItemLangTokenName => "ESSENCE_OF_TOTALITY";
         public override string ItemPickupDesc => "Slightly increase all stats.";
-        public override string ItemFullDescription => $"Gain: \n<style=cIsDamage>{AttackSpeedGain}%</style><style=cStack>(+{AttackSpeedGain}% per stack)</style> <style=cIsDamage>attack speed</style>, \n<style=cIsUtility>{MoveSpeedGain}%</style><style=cStack>(+{MoveSpeedGain}% per stack)</style> <style=cIsUtility>movement speed</style>, \n<style=cIsDamage>{CritChanceGain}%</style><style=cStack>(+{CritChanceGain}% per stack)</style> <style=cIsDamage>Critical Strike</style> chance, \n<style=cIsDamage>{DamageGain}</style><style=cStack>(+{DamageGain} per stack)</style> <style=cIsDamage>damage</style>, \nand <style=cIsHealing>{HealthGain}%</style><style=cStack>(+{HealthGain} per stack)</style> <style=cIsHealing>health</style>.";
+        public override string ItemFullDescription => $"Gain: \n<style=cIsDamage>{AttackSpeedGain}%</style><style=cStack> (+{AttackSpeedGain}% per stack)</style> <style=cIsDamage>attack speed</style>, \n<style=cIsUtility>{MoveSpeedGain}%</style><style=cStack> (+{MoveSpeedGain}% per stack)</style> <style=cIsUtility>movement speed</style>, \n<style=cIsDamage>{CritChanceGain}%</style><style=cStack> (+{CritChanceGain}% per stack)</style> <style=cIsDamage>Critical Strike</style> chance, \n<style=cIsDamage>{DamageGain}</style><style=cStack> (+{DamageGain} per stack)</style> <style=cIsDamage>damage</style>, \nand <style=cIsHealing>{HealthGain}%</style><style=cStack> (+{HealthGain} per stack)</style> <style=cIsHealing>health</style>.";
 
         public override string ItemLore => $"Excerpt from the folk tale \"The Radiant Luminance:\"\n\n" +
             $"\"In the twilight of ancient realms, a tale unfolds of the rarest gem, a stone coveted by noble souls of valor. Legends speak of the Radiant Luminance, an ethereal jewel that bestowed boundless strength upon those deemed worthy. " +
@@ -28,8 +29,8 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal5/source/crystal5.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal5/source/TempCrystal5.png");
+        public override GameObject ItemModel => SetModel();
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal5/source/TotalityIcon2.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -68,7 +69,15 @@ namespace BransItems.Modules.Pickups.Items.Essences
             DamageGain = config.Bind<float>("Item: " + ItemName, "Damage given to character", 1, "How much damage should Essence of Totality grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
+        private GameObject SetModel()//RoR2/Base/ShinyPearl/matShinyPearl.mat
+        {
+            GameObject temp = MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal5/source/crystal5.prefab");//("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
+            Material pearlMat = Addressables.LoadAssetAsync<Material>("RoR2/Base/ShinyPearl/matShinyPearl.mat").WaitForCompletion();
 
+            temp.GetComponentInChildren<MeshRenderer>().SetMaterial(pearlMat);
+
+            return temp;
+        }
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
             ItemBodyModelPrefab = ItemModel;

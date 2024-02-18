@@ -25,8 +25,8 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public override string ItemName => "Brindel's Band";
         public override string ItemLangTokenName => "BARRIER_BAND";
         public override string ItemPickupDesc => "High damage hits also give barrier to you. Recharges over time.";
-        public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also grant a <style=cIsHealing>temporary barrier</style> for <style=cIsHealing>{InitialPercent*100}%</style><style=cStack>(+{AdditionalPercent*100}% per stack)</style> TOTAL damage as " +
-            $"<style=cIsHealing>barrier</style> up to <style=cIsHealing>{InitialMaxHealing*100}%</style><style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max combined health. Recharges every <style=cIsUtility>{HealRing.HealingRingsCooldownTime}</style> seconds.";
+        public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also grant a <style=cIsHealing>temporary barrier</style> for <style=cIsHealing>{InitialPercent*100}%</style><style=cStack>(+{AdditionalPercent*100}% per stack)</style> of the TOTAL damage" +
+            $" up to <style=cIsHealing>{InitialMaxHealing*100}%</style><style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max combined health. Recharges every <style=cIsUtility>{HealRing.HealingRingsCooldownTime}</style> seconds.";
 
         public override string ItemLore => "";
 

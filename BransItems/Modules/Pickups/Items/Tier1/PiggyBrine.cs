@@ -19,7 +19,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         public override string ItemName => "Piggy Brine";
         public override string ItemLangTokenName => "PIG_JAR";
         public override string ItemPickupDesc => "Increase regen. Breaks at low health.";
-        public override string ItemFullDescription => $"Increases <style=cIsHealing>health regeneration</style> by <style=cIsHealing>{RegenPercent*100}%</style><style=cStack>(+{RegenPercent*100}% per stack)</style> <style=cIsHealing>plus</style> an additional <style=cIsHealing>+{RegenBase} hp/s</style><style=cStack>(+{RegenBase} hp/s per stack)</style>. Taking damage to below <style=cIsHealth>25% health</style> <style=cIsUtility>breaks</style> this item. ";
+        public override string ItemFullDescription => $"Increases <style=cIsHealing>regeneration</style> by <style=cIsHealing>{RegenPercent*100}%</style><style=cStack>(+{RegenPercent*100}% per stack)</style> <style=cIsHealing>plus</style> an additional <style=cIsHealing>+{RegenBase} hp/s</style><style=cStack>(+{RegenBase} hp/s per stack)</style>. Taking damage to below <style=cIsHealth>25% health</style> <style=cIsUtility>breaks</style> this item and gives 1 second of <style=cIsHealing>invincibility</style>. ";
 
         public override string ItemLore => $"";
 
@@ -37,7 +37,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Healing, ItemTag.LowHealth };
 
-        public static float RegenPercent = .15f;
+        public static float RegenPercent = .20f;
         public static float RegenBase = 1f;
 
 
@@ -119,10 +119,12 @@ namespace BransItems.Modules.Pickups.Items.Tier1
             orig.Invoke(self, damageValue, damagePosition, damageIsSilent, attacker);
             if (NetworkServer.active && (bool)self && (bool)self.body && GetCount(self.body) > 0 && self.isHealthLow)
             {
-                int count = GetCount(self.body);
+                int count = 1;//GetCount(self.body);
                 self.body.inventory.RemoveItem(ItemDef,count);
                 self.body.inventory.GiveItem(ShatteredPiggyBrine.instance.ItemDef, count);
                 CharacterMasterNotificationQueue.PushItemTransformNotification(self.body.master, ItemDef.itemIndex, ShatteredPiggyBrine.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+                self.TriggerOneShotProtection();
+                self.ospTimer += .9f;
             }
         }
     }

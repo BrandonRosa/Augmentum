@@ -16,7 +16,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Life";
         public override string ItemLangTokenName => "ESSENCE_OF_LIFE";
         public override string ItemPickupDesc => "Slightly increase maximum health.";
-        public override string ItemFullDescription => $"Gain <style=cIsHealing>{HealthGain}</style><style=cStack>(+{HealthGain} per stack)</style> <style=cIsHealing>maximum health</style>.";
+        public override string ItemFullDescription => $"Gain <style=cIsHealing>{HealthGain} </style><style=cStack>(+{HealthGain} per stack)</style> <style=cIsHealing>maximum health</style>.";
 
         public override string ItemLore => $"<style=cMono>/--AUTO-TRANSCRIPTION FROM MEDICAL WARD OF UES [Redacted] --//</style>\n\n" +
             $"\"How have you been since our last appointment?\"\n\n" +
@@ -31,8 +31,8 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal3/source/crystal3.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal3/source/TempCrystal3.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal/source/Crystal1.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal/source/LifeIcon.png");
 
         public static GameObject ItemBodyModelPrefab;
 

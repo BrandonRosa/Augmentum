@@ -31,7 +31,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             //$"<style=cIsHealing>{InitialRange}m</style> <style=cStack>(+{AdditionalRange}m per stack)</style> " +
             $"<style=cIsHealing>shielding nova</style>" +
             $" which gives <style=cIsHealing>{InitialPercent*100}%</style> <style=cStack>(+{AdditionalPercent*100}% per stack)</style> TOTAL damage as <style=cIsHealing>temporary shield</style> up to <style=cIsHealing>{InitialMaxHealing*100}%</style> <style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max health. " +
-            $"Give {(AllyBonus)*100}% more shield per Ally in range. Recharges every <style=cIsUtility>20</style> seconds. <style=cIsVoid>Corrupts all {HealRing.instance.ItemName.Replace(" Band","")} and {BarrierRing.instance.ItemName.Replace(" Band", "")} Bands.</style> "; //Lasts <style=cIsHealing>{TempShieldDuration}</style> seconds. 
+            $"Give <style=cIsHealing>{(AllyBonus)*100}% more shield</style> per Ally in range. Recharges every <style=cIsUtility>20</style> seconds. <style=cIsVoid>Corrupts all {HealRing.instance.ItemName.Replace(" Band","")} and {BarrierRing.instance.ItemName.Replace(" Band", "")} Bands.</style> "; //Lasts <style=cIsHealing>{TempShieldDuration}</style> seconds. 
 
         public override string ItemLore => "";
 
@@ -165,7 +165,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public void CreateConfig(ConfigFile config)
         {
-            InitialPercent = config.Bind<float>("Item: " + ItemName, "Percent of total damage converted to shield", .08f, "What percent of total damage should be healed from the first stack of this item?").Value;
+            InitialPercent = config.Bind<float>("Item: " + ItemName, "Percent of total damage converted to shield", .10f, "What percent of total damage should be healed from the first stack of this item?").Value;
             AdditionalPercent = config.Bind<float>("Item: " + ItemName, "Percent of additional damage converted to shield", .05f, "What percent of total damage should be healed from additional stacks of this item?").Value;
             InitialMaxHealing = config.Bind<float>("Item: " + ItemName, "Max percent of max health you can gain in shield", .20f, "What is the maximum percent of your health you can heal from this item from the first stack?").Value;
             AdditionalMaxHealing = config.Bind<float>("Item: " + ItemName, "Additional percent of max health you can heal", .10f, "What is the maximum percent of your health you can heal from this item from additional stacks?").Value;

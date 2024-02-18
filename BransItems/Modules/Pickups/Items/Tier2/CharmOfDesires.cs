@@ -24,8 +24,8 @@ namespace BransItems.Modules.Pickups.Items.Tier2
     {
         public override string ItemName => "Charm of Desires";
         public override string ItemLangTokenName => "CHARM_OF_DESIRES";
-        public override string ItemPickupDesc => "At the start of each stage, wish for 1 of 2 Essences.";
-        public override string ItemFullDescription => $"At the start of <style=cIsUtility>each stage</style>, spawn in <style=cIsUtility>{DropCount}</style><style=cStack>(+{AdditionalDrops} per stack)</style> wishes with 1 of 2 "+BransItems.EssencesKeyword+" to pick from.";
+        public override string ItemPickupDesc => "At the start of each stage, discover an Essence.";
+        public override string ItemFullDescription => $"At the start of <style=cIsUtility>each stage</style>, discover <style=cIsUtility>{DropCount}</style><style=cStack>(+{AdditionalDrops} per stack)</style> " + BransItems.EssenceKeyword + ".";
 
         public override string ItemLore => "";
 
@@ -43,9 +43,9 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
 
 
-        public static int DropCount;
+        public static int DropCount=1;
 
-        public static int AdditionalDrops;
+        public static int AdditionalDrops=1;
 
         public static int BaseChoices=2;
 
@@ -62,9 +62,8 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of initial wishes dropped", 1, "How many wishes should drop from the first stack?").Value;
-            AdditionalDrops = config.Bind<int>("Item: " + ItemName, "Number of additional wishes dropped", 1, "How many additional wishes should drop after the first stack ? ").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            //DropCount = config.Bind<int>("Item: " + ItemName, "Number of initial wishes dropped", 1, "How many wishes should drop from the first stack?").Value;
+            //AdditionalDrops = config.Bind<int>("Item: " + ItemName, "Number of additional wishes dropped", 1, "How many additional wishes should drop after the first stack ? ").Value;
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -285,8 +284,6 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public override void Hooks()
         {
-            //On.RoR2.CharacterMaster.OnServerStageBegin += CharacterMaster_OnServerStageBegin;
-            //On.RoR2.CharacterMaster.SpawnBodyHere += CharacterMaster_SpawnBodyHere;
             On.RoR2.CharacterMaster.OnBodyStart += CharacterMaster_OnBodyStart;
         }
 
@@ -298,38 +295,11 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                 int count = self.inventory.GetItemCount(ItemDef);
                 if (count > 0)
                 {
-                    ModLogger.LogWarning("Trigger2");
                     DropWishes(body.transform, self.inventory, DropCount + (count - 1) * AdditionalDrops);
                 }
             }
         }
 
-        private void CharacterMaster_SpawnBodyHere(On.RoR2.CharacterMaster.orig_SpawnBodyHere orig, CharacterMaster self)
-        {
-            orig(self);
-            if (self)
-            {
-                int count = self.inventory.GetItemCount(ItemDef);
-                if (count > 0)
-                {
-                    ModLogger.LogWarning("Trigger");
-                    DropWishes(self.GetBody().transform, self.inventory, DropCount + (count - 1) * AdditionalDrops);
-                }
-            }
-        }
-
-        private void CharacterMaster_OnServerStageBegin(On.RoR2.CharacterMaster.orig_OnServerStageBegin orig, CharacterMaster self, Stage stage)
-        {
-            orig(self, stage);
-            if (self)
-            {
-                int count = self.inventory.GetItemCount(ItemDef);
-                if (count > 0)
-                {
-                    DropWishes(self.GetBody().transform,self.inventory,DropCount+(count-1)*AdditionalDrops);
-                }
-            }
-        }
 
         private void DropWishes(Transform transform,Inventory inventory, int count)
         {
