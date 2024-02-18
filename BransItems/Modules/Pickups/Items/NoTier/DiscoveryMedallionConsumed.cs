@@ -17,15 +17,15 @@ namespace BransItems.Modules.Pickups.Items.NoTier
     {
         public override string ItemName => "Consumed Discovery Medallion";
         public override string ItemLangTokenName => "DISCOVERY_MEDALLION_CONSUMED";
-        public override string ItemPickupDesc => "Future wishes will come with 1 more choice.";
-        public override string ItemFullDescription => $"Future wishes will come with 1<style=cStack>(+{DiscoveryMedallion.AdditionalChoices})</style) more choice.";
+        public override string ItemPickupDesc => "Future discoveries will come with 1 more option.";
+        public override string ItemFullDescription => $"Future discoveries will come with 1<style=cStack>(+{DiscoveryMedallion.AdditionalChoices})</style> more choice.";
 
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.NoTier;
 
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallionconsumed.png");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/DiscoveryMedallion/DiscoveryMedallionConsumedIcon.png");
 
         public static GameObject ItemBodyModelPrefab;
 

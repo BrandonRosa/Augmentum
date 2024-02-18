@@ -18,29 +18,27 @@ using R2API.Networking.Interfaces;
 using UnityEngine.Networking;
 using BransItems.Modules.Compatability;
 using System.Runtime.Serialization;
+using UnityEngine.AddressableAssets;
 
 namespace BransItems.Modules.Pickups.Equipments
 {
     class EarthTotem : EquipmentBase<EarthTotem>
     {
-        public override string EquipmentName => "Earth Totem";
+        public override string EquipmentName => "Reuser";
 
-        public override string EquipmentLangTokenName => "EARTH_TOTEM";
+        public override string EquipmentLangTokenName => "REUSER";
 
-        public override string EquipmentPickupDesc => "Absorb an equipment and fire all absorbed equipments.";
+        public override string EquipmentPickupDesc => "Absorb an equipment and gain its effect.";
 
-        public override string EquipmentFullDescription => "<style=cIsUtility>Absorb</style> an equipment and fire all absorbed equipments.";
+        public override string EquipmentFullDescription => "<style=cIsUtility>Absorb</style> an equipment and add its effect to this equipment.";
 
         public override string EquipmentLore =>
 
-            $"Excerpt from the findings of Engineer Miriam, Equipment Specialist\n\n" +
-            $"\"In the heart of the verdant wilderness, we stumbled upon the enigmatic Earth Totem. Its roots intertwined with the soil, and its stoic form bore markings reminiscent of ancient symbols. Upon closer inspection, the totem exhibited an astonishing ability: the absorption and assimilation of nearby equipment.\n" +
-            $"When presented with other artifacts, the Earth Totem would radiate a pulsating energy, drawing the essence of the offerings into itself.Subsequently, it would release a burst of power that mirrored the absorbed equipment's effects. The harmony between the totem and the surrounding nature was palpable, as if the earth itself granted this mystical conduit its unique capabilities.\n" +
-            $"Adventurers flocked to witness the totem's absorbent prowess, offering a diverse array of equipment for assimilation. In the heart of the wilderness, the Earth Totem became a beacon of adaptability, wielding a symphony of effects drawn from the artifacts of explorers past. Its mysterious influence continues to echo through the foliage, inviting those who seek to merge the essence of their equipment with the ancient power of the Earth Totem.";
+            $"";
         public override bool UseTargeting => true;
 
-        public override GameObject EquipmentModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.prefab");
-        public override Sprite EquipmentIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.png");
+        public override GameObject EquipmentModel => SetupModel();
+        public override Sprite EquipmentIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Equipment/Reuser/ReuserIcon.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -78,6 +76,17 @@ namespace BransItems.Modules.Pickups.Equipments
             TargetingIndicatorPrefabBase.GetComponentInChildren<SpriteRenderer>().transform.rotation = Quaternion.identity;
             TargetingIndicatorPrefabBase.GetComponentInChildren<TMPro.TextMeshPro>().color = new Color(0.423f, 1, 0.749f);
         }
+
+        private GameObject SetupModel()//RoR2/Base/Recycle/PickupRecycler.prefab
+        {
+            GameObject temp = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Recycle/PickupRecycler.prefab").WaitForCompletion().InstantiateClone("Reuser", false);
+            Texture2D texture = MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Icons/Equipment/Reuser/ReuserTexture.png");
+
+            temp.GetComponentInChildren<MeshRenderer>().GetMaterial().SetTexture("_MainTex", texture);
+
+            return temp;
+        }
+
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
             ItemBodyModelPrefab = EquipmentModel;
@@ -456,14 +465,15 @@ namespace BransItems.Modules.Pickups.Equipments
                 if (!equipIndex.Equals(EquipmentIndex.None))
                 {
                     self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerIndicator");
+                    self.targetIndicator.active = true;
+                    self.targetIndicator.targetTransform = self.currentTarget.transformToIndicateAt;
                 }
                 else
                 {
-                    self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerBadIndicator");
+                    //self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerBadIndicator");
                 }
 
-                self.targetIndicator.active = true;
-                self.targetIndicator.targetTransform = self.currentTarget.transformToIndicateAt;
+                
             }
             else
             {
@@ -545,7 +555,7 @@ namespace BransItems.Modules.Pickups.Equipments
                     if(EquipDefFireIndex>EquipDefList.Count-1)
                     {
                         //NEGATIVE to ADD to cooldown!
-                        ModLogger.LogInfo("Count Absorbed:" + EquipDefList.Count + "   Count Absorbed:" + HighestCooldown + "Cooldown Added:" + EarthTotem.CalcAdditionalCooldownComplex(EquipDefList.Count, HighestCooldown));
+                        //ModLogger.LogInfo("Count Absorbed:" + EquipDefList.Count + "   Count Absorbed:" + HighestCooldown + "Cooldown Added:" + EarthTotem.CalcAdditionalCooldownComplex(EquipDefList.Count, HighestCooldown));
                         float cooldownAdded = EarthTotem.CalcAdditionalCooldownByAbsorb(Math.Max(EquipDefList.Count-EarthTotemAbsorbedCount,1));
 
                         //Adjust cooldown by gesture of drowned and fuelcells

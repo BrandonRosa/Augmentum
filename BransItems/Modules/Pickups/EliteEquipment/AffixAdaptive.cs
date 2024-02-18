@@ -45,11 +45,11 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public override Sprite EliteBuffIcon => AffixAdaptiveBuff.instance.BuffIcon;
 
-        public override float HealthMultiplier => 5f;
+        public override float HealthMultiplier => 4.5f;
 
         public override float DamageMultiplier => 2f;
 
-        public override float CostMultiplierOfElite => 4.5f;
+        public override float CostMultiplierOfElite { get; set; } = 5;
 
         public static int PreHitArmorAdd=150;
 
@@ -543,7 +543,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
                     followerPrefab = ItemBodyModelPrefab,
                     childName = "Eye",
                     localPos = DefaultPos+new Vector3(0,-.05f,-.15f),
-                    localAngles = DefaultAngles+new Vector3(-10f,0,0),
+                    localAngles = DefaultAngles+new Vector3(-40f,0,0),
                     localScale = DefaultScale*3f
                 }
            });

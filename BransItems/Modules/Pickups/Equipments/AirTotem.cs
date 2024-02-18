@@ -16,27 +16,27 @@ using static RoR2.EquipmentSlot;
 using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
 using BransItems.Modules.Pickups.Items.NoTier;
 using BransItems.Modules.Pickups.Items.Tier3;
+using UnityEngine.AddressableAssets;
 
 namespace BransItems.Modules.Pickups.Equipments
 {
     class AirTotem : EquipmentBase<AirTotem>
     {
-        public override string EquipmentName => "Air Totem";
+        public override string EquipmentName => "Reducer";
 
-        public override string EquipmentLangTokenName => "AIR_TOTEM";
+        public override string EquipmentLangTokenName => "Reducer";
 
-        public override string EquipmentPickupDesc => "On use, transform an item to its base "+BransItems.EssenceKeyword+".";
+        public override string EquipmentPickupDesc => "Transform an item to its an "+BransItems.EssenceKeyword+".";
 
-        public override string EquipmentFullDescription => "<style=cIsUtility>Transform</style> an item to an " + BransItems.EssenceKeyword + " which gives a slight <style=cIsUtility>stat boost</style>.";
+        public override string EquipmentFullDescription => "<style=cIsUtility>Transform</style> an item to an " + BransItems.EssenceKeyword + " which gives a slight <style=cIsUtility>stat boost</style>.<style=cIsUtility> Scales with item rarity</style>.";
 
         public override string EquipmentLore =>
-            $"Excerpt from the expedition log of Captain Elara, High Altitude Surveyor \n" +
-            $"In the rarefied air atop the mountain peaks, we uncovered the Air Totem—a slender monument adorned with feathered carvings. Its mystical aura resonated with the very essence of the high-altitude winds. To our amazement, the totem revealed an extraordinary power: the ability to transmute ordinary objects into Essences.\n" +
-            $"Objects placed in the totem's presence underwent a profound transformation, acquiring an otherworldly quality. The air, charged with the magic of the totem, granted these Essences an ethereal resonance. News of this discovery spread swiftly, drawing adventurers to the heights in search of the Air Totem's transformative touch. \n";
+            $"";
         public override bool UseTargeting => true;
 
-        public override GameObject EquipmentModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/QuadModels/airtotem.prefab");
-        public override Sprite EquipmentIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/QuadModels/airtotem.png");
+        public override GameObject EquipmentModel => SetupModel();
+
+        public override Sprite EquipmentIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Equipment/Reducer/ReducerIcon.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -71,6 +71,17 @@ namespace BransItems.Modules.Pickups.Equipments
             TargetingIndicatorPrefabBase.GetComponentInChildren<SpriteRenderer>().transform.rotation = Quaternion.identity;
             TargetingIndicatorPrefabBase.GetComponentInChildren<TMPro.TextMeshPro>().color = new Color(0.423f, 1, 0.749f);
         }
+
+        private GameObject SetupModel()//RoR2/Base/Recycle/PickupRecycler.prefab
+        {
+            GameObject temp= Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Recycle/PickupRecycler.prefab").WaitForCompletion().InstantiateClone("Reducer", false);
+            Texture2D texture = MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Icons/Equipment/Reducer/ReducerTexture.png");
+
+            temp.GetComponentInChildren<MeshRenderer>().GetMaterial().SetTexture("_MainTex",texture);
+
+            return temp;
+        }
+
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
             ItemBodyModelPrefab = EquipmentModel;

@@ -17,15 +17,15 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Acuity";
         public override string ItemLangTokenName => "ESSENCE_OF_ACUITY";
         public override string ItemPickupDesc => "Slightly increase your Critical Strike chance.";
-        public override string ItemFullDescription => $"Increase <style=cIsDamage>Critical Strike</style> chance by <style=cIsDamage>{CritChanceGain}%</style><style=cStack>(+{CritChanceGain}% per stack)</style>.";
+        public override string ItemFullDescription => $"Increase <style=cIsDamage>Critical Strike</style> chance by <style=cIsDamage>{CritChanceGain}% </style><style=cStack>(+{CritChanceGain}% per stack)</style>.";
 
         public override string ItemLore => $"After getting my hands on that Essence of Acuity, it's like my eyes got an upgrade or something. Everything just looks sharper, you know? And hitting those sweet spots? It's like my aim suddenly got laser-focused." +
             $" Used to be I'd just shoot and hope for the best, but now it's like I see where to hit, and bam, right on target. It's wild, like getting a whole new set of eyes that are really good at finding the soft spots on those nasty baddies.";
 
         public override ItemTierDef ModdedTierDef => EssenceHelpers.essenceTierDef; //ItemTier.AssignedAtRuntime;
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.prefab");//("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal3/source/Ferocity.prefab");//("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal3/source/AcuityIcon.png");
 
         public static GameObject ItemBodyModelPrefab;
 

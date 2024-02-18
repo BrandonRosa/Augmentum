@@ -26,7 +26,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public override string ItemName => "Halda's Band";
         public override string ItemLangTokenName => "HEALING_BAND";
         public override string ItemPickupDesc => "High damage hits also heal you. Recharges over time.";
-        public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also <style=cIsHealing>heal</style> you for <style=cIsHealing>{InitialPercent*100}%</style> <style=cStack>(+{AdditionalPercent*100}% per stack)</style> TOTAL damage as <style=cIsHealing>health</style>" +
+        public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also <style=cIsHealing>heal</style> you for <style=cIsHealing>{InitialPercent*100}%</style> <style=cStack>(+{AdditionalPercent*100}% per stack)</style> of the TOTAL damage" +
             $" up to <style=cIsHealing>{InitialMaxHealing*100}%</style> <style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max health. Recharges every <style=cIsUtility>{HealRing.HealingRingsCooldownTime}</style> seconds.";
 
         public override string ItemLore => "";

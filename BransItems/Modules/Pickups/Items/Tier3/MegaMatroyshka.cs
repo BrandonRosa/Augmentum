@@ -25,7 +25,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         public override string ItemName => "Mega Matroyshka";
         public override string ItemLangTokenName => "MEGA_MATROYSHKA";
         public override string ItemPickupDesc => "The next you kill an elite, crack open for a <style=cIsHealth>red item</style> and a <style=cIsHealing>massive surprise</style>.";
-        public override string ItemFullDescription => $"On next <style=cIsDamage>elite kill</style>, cracks open for a <style=cIsHealth>red item</style>. Gain <style=cIsHealing>Massive Matroyshka</style>. Future Matroyshka drops become wishes with 2<style=cStack>(+{AdditionalChoices} per stack)</style> choices.";
+        public override string ItemFullDescription => $"On next <style=cIsDamage>elite kill</style>, cracks open for a <style=cIsHealth>red item</style>. Gain <style=cIsHealing>Massive Matroyshka</style>. <style=cIsUtility>Discover future Matroyshka rewards</style>.";
 
         public override string ItemLore => "";
 
