@@ -8,8 +8,15 @@
 
   <ItemGroup>
     <Compile Remove="libs\**" />
+    <Compile Remove="Modules\ColorCatalogEntry\CoreColors\**" />
     <EmbeddedResource Remove="libs\**" />
+    <EmbeddedResource Remove="Modules\ColorCatalogEntry\CoreColors\**" />
     <None Remove="libs\**" />
+    <None Remove="Modules\ColorCatalogEntry\CoreColors\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Modules\ColorCatalogEntry\ColorCatalogEntryBase.cs" />
   </ItemGroup>
 
 
