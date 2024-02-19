@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using BransItems.Modules.ColorCatalogEntry;
-using BransItems.Modules.ColorCatalogEntry.CoreColors;
+//using BransItems.Modules.ColorCatalogEntry.CoreColors;
 using BransItems.Modules.ItemTiers;
 using BransItems.Modules.Pickups.Items.Essences;
 using static BransItems.BransItems;
