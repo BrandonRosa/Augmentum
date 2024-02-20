@@ -26,7 +26,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public override string EquipmentLangTokenName => "Reducer";
 
-        public override string EquipmentPickupDesc => "Transform an item to its an "+BransItems.EssenceKeyword+".";
+        public override string EquipmentPickupDesc => "Transform an item to its "+BransItems.EssencesKeyword+".";
 
         public override string EquipmentFullDescription => "<style=cIsUtility>Transform</style> an item to an " + BransItems.EssenceKeyword + " which gives a slight <style=cIsUtility>stat boost</style>.<style=cIsUtility> Scales with item rarity</style>.";
 
