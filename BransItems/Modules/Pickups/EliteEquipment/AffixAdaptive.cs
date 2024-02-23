@@ -22,7 +22,8 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public override string EliteEquipmentPickupDesc => "Become an aspect of evolution.";
 
-        public override string EliteEquipmentFullDescription => "";
+        public override string EliteEquipmentFullDescription => EliteEquipmentPickupDesc+$"\nWhen hit, gain a <style=cIsHealing>defensive boost</style> for <style=cIsHealing>{AdaptiveBoostTimer}</style> seconds, become <style=cIsUtility>invisible</style> for <style=cIsUtility>{InvisibleTimer}</style> , and gain a massive movement speed boost. Recharges after {AdaptiveCooldownTimer} seconds.\n" +
+            $"Attacks apply 20 <style=cIsDamage>laceration</style> on hit for <style=cIsDamage>{LacerationDuration}</style> seconds, increasing <style=cIsDamage>incoming damage</style> by <style=cIsDamage>.1</style> per stack of laceration.";
 
         public override string EliteEquipmentLore => "";
 

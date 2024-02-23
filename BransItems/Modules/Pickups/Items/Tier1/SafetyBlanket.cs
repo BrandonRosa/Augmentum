@@ -23,7 +23,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
     {
         public override string ItemName => "Safety Blanket";
         public override string ItemLangTokenName => "SAFETY_BLANKET";
-        public override string ItemPickupDesc => "Slightly increase your one shot protection fraction and invincibility time.";
+        public override string ItemPickupDesc => "Increases one shot protection fraction and invincibility time.";
         public override string ItemFullDescription => $"Increases <style=cIsHealing>oneshot protection</style> by <style=cIsHealing>5%</style><style=cStack>(+2.5% per stack)</style> of your health for a maximum of <style=cIsHealing>{FractionCap*100}%</style>. Increases <style=cIsHealing>invincibility frames</style> by <style=cIsHealing>{InitialIFrames}</style><style=cStack>(+{AdditionalIFrames} per stack)</style> seconds.";
 
         public override string ItemLore => "";
