@@ -302,9 +302,11 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             orig(self);
             if (!self || !NetworkServer.active) return;
             if (self.inventory.GetItemCount(ItemDef.itemIndex) <= 0) return;
-
-            DropWishes(self);
-            BreakItem(self);
+            if (self && self.isPlayerControlled)
+            {
+                DropWishes(self);
+                BreakItem(self);
+            }
         }
 
 

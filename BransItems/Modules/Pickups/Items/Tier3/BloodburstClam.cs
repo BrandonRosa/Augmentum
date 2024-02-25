@@ -303,8 +303,11 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             if (!self || !NetworkServer.active) return;
             if (self.inventory.GetItemCount(ItemDef.itemIndex)<=0 ) return;
 
-            DropEssences(self);
-            BreakItem(self);
+            if (self && self.isPlayerControlled)
+            {
+                DropEssences(self);
+                BreakItem(self);
+            }
         }
         /*
         private void CharacterMaster_OnItemAddedClient(On.RoR2.CharacterMaster.orig_OnItemAddedClient orig, CharacterMaster self, ItemIndex itemIndex)

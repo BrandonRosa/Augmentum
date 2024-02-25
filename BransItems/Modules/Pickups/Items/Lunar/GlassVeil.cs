@@ -126,7 +126,12 @@ namespace BransItems.Modules.Pickups.Items.Lunar
             {
                 new ItemDisplayRule
                 {
-                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    ruleType = ItemDisplayRuleType.
+            
+            
+            
+            
+            edPrefab,
                     followerPrefab = ItemBodyModelPrefab,
                     childName = "Head",
                     localPos = new Vector3(0F, 0.42142F, -0.10234F),
@@ -420,7 +425,7 @@ namespace BransItems.Modules.Pickups.Items.Lunar
             self.inventory.RemoveItem(itemDef,itemCount);
 
             ItemTier itemTier = itemDef.tier;//itemDef._itemTierDef;
-            if(itemTier!=ItemTier.NoTier)
+            if(itemTier!=ItemTier.NoTier && self.GetBody() && self.GetBody().isPlayerControlled)
             {
                 for (int i = 0; i < itemCount; i++)
                 {

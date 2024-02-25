@@ -358,7 +358,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                 if (!masterList[i].master.IsDeadAndOutOfLivesServer())
                 {
                     //if the player has a body and an inventory AND they have the item
-                    if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0)
+                    if (masterList[i].body && masterList[i].body.isPlayerControlled && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0)
                     {
                         int count = masterList[i].body.inventory.GetItemCount(ItemDef);
                         DropMassive(masterList[i].body, count);

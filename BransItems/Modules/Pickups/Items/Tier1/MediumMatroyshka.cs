@@ -75,7 +75,11 @@ namespace BransItems.Modules.Pickups.Items.Tier1
             //{
             //    new ItemDisplayRule
             //    {
-            //        ruleType = ItemDisplayRuleType.ParentedPrefab,
+            //        ruleType = ItemDisplayRuleType.
+            //
+            //
+            //
+            //        edPrefab,
             //        followerPrefab = ItemBodyModelPrefab,
             //        childName = "Head",
             //        localPos = new Vector3(0F, 0.42142F, -0.10234F),
@@ -335,7 +339,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                     if (!masterList[i].master.IsDeadAndOutOfLivesServer())
                     {
                         //if the player has a body and an inventory AND they have the item
-                        if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && self== masterList[i].body)
+                        if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && self== masterList[i].body && self.isPlayerControlled)
                         {
                             int count = masterList[i].body.inventory.GetItemCount(ItemDef);
                             DropMedium(masterList[i].body, count*DropCount);

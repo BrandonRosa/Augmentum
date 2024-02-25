@@ -166,7 +166,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
             DT.segmentPrefab = pinkTrailSegment;
 
             TrailEffect = pinkTrail;
-            ContentAddition.AddEffect(TrailEffect);
+            //ContentAddition.AddEffect(TrailEffect);
         }
 
         private void MakeMaterial()

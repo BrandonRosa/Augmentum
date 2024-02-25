@@ -17,8 +17,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
     {
         public override string ItemName => "Augmented Contact";
         public override string ItemLangTokenName => "AUGMENTED_CONTACT";
-        public override string ItemPickupDesc => "Slightly increase crit damage.";
-        public override string ItemFullDescription => $"Increase <style=cIsDamage>Critical Strike damage</style> by <style=cIsDamage>{DamageGain}</style>.";
+        public override string ItemPickupDesc => "Increase crit damage and crit chance.";
+        public override string ItemFullDescription => $"Increase <style=cIsDamage>Critical Strike damage</style> by <style=cIsDamage>{DamageGain}%</style> and <style=cIsDamage>Critical Strike chance</style> by <style=cIsDamage>{CritChanceGain}%</style>.";
 
         public override string ItemLore => "";
 
@@ -44,7 +44,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
         public static float DamageGain;
-
+        public static float CritChanceGain;
 
         public override void Init(ConfigFile config)
         {
@@ -60,6 +60,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public void CreateConfig(ConfigFile config)
         {
             DamageGain = config.Bind<float>("Item: " + ItemName, "Base crit damage given to character", 20f, "How much base crit damage should Augmented Contact grant?").Value;
+            CritChanceGain = config.Bind<float>("Item: " + ItemName, "Crit Chance given to character", 20f, "How much Crit Chance should Augmented Contact grant?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
@@ -287,6 +288,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
             args.critDamageMultAdd += DamageGain *.01f* GetCount(sender);
+            args.critAdd += CritChanceGain * GetCount(sender);
         }
     }
 }

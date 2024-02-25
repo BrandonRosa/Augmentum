@@ -360,7 +360,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                         if (!masterList[i].master.IsDeadAndOutOfLivesServer())
                         {
                             //if the player has a body and an inventory AND they have the item
-                            if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && masterList[i].body==self)
+                            if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && masterList[i].body==self && self.isPlayerControlled)
                             {
                                 int count = masterList[i].body.inventory.GetItemCount(ItemDef);
                                 DropMega(masterList[i].body, count);

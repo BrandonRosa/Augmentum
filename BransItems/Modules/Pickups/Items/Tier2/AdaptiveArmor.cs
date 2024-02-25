@@ -65,10 +65,10 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public void CreateConfig(ConfigFile config)
         {
             DamageWindow = config.Bind<float>("Item: " + ItemName, "Time Window", 2f, "How long is the time window between the first and second hit?").Value;
-            InitialFortify = config.Bind<int>("Item: " + ItemName, "Initial Fortify Count", 6, "How many stacks of Fortify does the fist stack give?").Value;
+            InitialFortify = config.Bind<int>("Item: " + ItemName, "Initial Fortify Count", 5, "How many stacks of Fortify does the fist stack give?").Value;
             AdditionalFortify = config.Bind<int>("Item: " + ItemName, "Additional Fortify Count", 2, "How many addtional stacks of Fortify does Adaptive Armor give after the fist stack?").Value;
             InitialFortifyTime = config.Bind<float>("Item: " + ItemName, "Initial Fortify Duration", 10f, "How many seconds is the duration of Fortify for the first stack of Adaptive Armor?").Value;
-            AdditionalFortifyTime = config.Bind<float>("Item: " + ItemName, "Additional Fortify Duration", 2f, "How many additional seconds is the duration of Fortify for Adaptive Armor after the first stack?").Value;
+            AdditionalFortifyTime = config.Bind<float>("Item: " + ItemName, "Additional Fortify Duration", 1f, "How many additional seconds is the duration of Fortify for Adaptive Armor after the first stack?").Value;
             CooldownTime = config.Bind<float>("Item: " + ItemName, "Duration of cooldown", 20f, "How many  seconds is the duration of Fortify for Adaptive Armor after the first stack?").Value;
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
