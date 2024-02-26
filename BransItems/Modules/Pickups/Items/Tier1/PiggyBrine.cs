@@ -19,7 +19,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         public override string ItemName => "Piggy Brine";
         public override string ItemLangTokenName => "PIG_JAR";
         public override string ItemPickupDesc => "Increase regen. Breaks at low health.";
-        public override string ItemFullDescription => $"Increases <style=cIsHealing>regeneration</style> by <style=cIsHealing>{RegenPercent*100}%</style><style=cStack>(+{RegenPercent*100}% per stack)</style> <style=cIsHealing>plus</style> an additional <style=cIsHealing>+{RegenBase} hp/s</style><style=cStack>(+{RegenBase} hp/s per stack)</style>. Taking damage to below <style=cIsHealth>25% health</style> <style=cIsUtility>breaks</style> this item and gives 1 second of <style=cIsHealing>invincibility</style>. ";
+        public override string ItemFullDescription => $"Increases <style=cIsHealing>regeneration</style> by <style=cIsHealing>{RegenPercent*100}%</style><style=cStack>(+{RegenAdditionalPercent*100}% per stack)</style> <style=cIsHealing>plus</style> an additional <style=cIsHealing>+{RegenBase} hp/s</style><style=cStack>(+{RegenAdditionalBase} hp/s per stack)</style>. Taking damage to below <style=cIsHealth>25% health</style> <style=cIsUtility>breaks</style> this item and gives 1 second of <style=cIsHealing>invincibility</style>. ";
 
         public override string ItemLore => $"";
 
@@ -38,7 +38,9 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Healing, ItemTag.LowHealth };
 
         public static float RegenPercent = .20f;
+        public static float RegenAdditionalPercent = .05f;
         public static float RegenBase = 1f;
+        public static float RegenAdditionalBase = 1f;
 
 
         public override void Init(ConfigFile config)
@@ -110,8 +112,12 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
-            args.regenMultAdd += RegenPercent * GetCount(sender);
-            args.baseRegenAdd += RegenBase * GetCount(sender);
+            int count = GetCount(sender);
+            if (count > 0)
+            {
+                args.regenMultAdd += RegenPercent+ RegenAdditionalPercent*(count-1);
+                args.baseRegenAdd += RegenBase + RegenAdditionalBase * (count-1);
+            }
         }
 
         private void BreakItem(On.RoR2.HealthComponent.orig_UpdateLastHitTime orig, HealthComponent self, float damageValue, Vector3 damagePosition, bool damageIsSilent, GameObject attacker)

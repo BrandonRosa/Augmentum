@@ -129,6 +129,15 @@ namespace BransItems.Modules.Compatability
 
         }
 
+        internal static class EliteReworksCompat
+        {
+            public static bool IsEliteReworksInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Moffein.EliteReworks");
+
+            public static bool AddEliteReworksScaling = true;
+
+
+        }
+
         public static event Action FinishedLoadingCompatability;
 
         public static void FinishedLoading()

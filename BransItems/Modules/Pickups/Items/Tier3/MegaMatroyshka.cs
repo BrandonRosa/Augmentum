@@ -40,7 +40,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override bool CanRemove => true;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility, ItemTag.CannotDuplicate };
 
 
         public static int DropCount;
@@ -353,23 +353,20 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                 if (killer)
                 {
                     CharacterBody self = killer;
-                    List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
+
                         //If the player isnt dead
-                        if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+                        if (self)
                         {
                             //if the player has a body and an inventory AND they have the item
-                            if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && masterList[i].body==self && self.isPlayerControlled)
+                            if (self.inventory && self.inventory.GetItemCount(ItemDef) > 0 &&  self.isPlayerControlled)
                             {
-                                int count = masterList[i].body.inventory.GetItemCount(ItemDef);
-                                DropMega(masterList[i].body, count);
-                                GiveMassive(masterList[i].body, count);
-                                BreakItem(masterList[i].body, count);
-                                break;
+                                int count = self.inventory.GetItemCount(ItemDef);
+                                DropMega(self, count);
+                                GiveMassive(self, count);
+                                BreakItem(self, count);
                             }
                         }
-                    }
+                    
                 }
             }
         }

@@ -50,6 +50,8 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public override float DamageMultiplier => 2f;
 
+        public override int VanillaTier => 1;
+
         public override float CostMultiplierOfElite { get; set; } = 5;
 
         public static int PreHitArmorAdd=150;
@@ -86,6 +88,8 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public static bool ProcIsChance = true;
 
+        
+
         /// <summary>
         /// SafegaurdPercent is equal to:SafegaurdPercent * MaxCombinedHealth =MaxDamageTakenInOneAttack
         /// </summary>
@@ -109,11 +113,12 @@ namespace BransItems.Modules.Pickups.EliteEquipments
             CreateConfig(config);
             CreateLang();
             //CreateAffixBuffDef();
+
             CreateEquipment();
             CreateEliteTiers();
             CreateElite();
             Hooks();
-            EliteRamp.AddRamp(EliteDef,RemapTexture); //MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Ramps/texRampAdaptive4.png"));
+            EliteRamp.AddRamp(EliteDef,RemapTexture); 
         }
 
         private void MakeInvisEffect()

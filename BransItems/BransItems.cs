@@ -54,7 +54,7 @@ namespace BransItems
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.Augmentum"; //Our Package Name
         public const string ModName = "Augmentum";
-        public const string ModVer = "0.13.0";
+        public const string ModVer = "1.0.2";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;
@@ -273,13 +273,21 @@ namespace BransItems
             }
 
             var enabledProperSave = Config.Bind<bool>("Mod Compatability: " + "ProperSave", "Enable Compatability Patches?", true, "Attempt to add Propersave compatability (if installed)?").Value;
-            if (ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled && enabledProperSave)
+            if (ModCompatability.ProperSaveCompat.IsProperSaveInstalled && enabledProperSave)
             {
                 ModLogger.LogInfo("ModCompatability: " + "ProperSave Recognized!");
                 ModCompatability.ProperSaveCompat.AddProperSaveFunctionality = true;
             }
 
-            bool IfAnyLoaded = enabledShareSuite || enabledHIV || enabledProperSave;
+
+            //var enabledEliteReworks = Config.Bind<bool>("Mod Compatability: " + "EliteReworks", "Enable Compatability Patches?", true, "Attempt to add Elite Reworks compatability (if installed)?").Value;
+            //if (ModCompatability.EliteReworksCompat.IsEliteReworksInstalled && enabledProperSave)
+            //{
+            //    ModLogger.LogInfo("ModCompatability: " + "EliteReworks!");
+            //    ModCompatability.EliteReworksCompat.AddEliteReworksScaling = true;
+            //}
+
+            bool IfAnyLoaded = enabledShareSuite || enabledHIV || enabledProperSave;// || enabledEliteReworks;
             if(IfAnyLoaded)
             {
                 ModCompatability.FinishedLoading();

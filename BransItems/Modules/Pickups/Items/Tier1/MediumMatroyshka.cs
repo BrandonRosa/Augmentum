@@ -39,7 +39,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         public override bool CanRemove => true;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility , ItemTag.CannotDuplicate};
 
 
         public static int DropCount;
@@ -297,58 +297,24 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         {
 
             orig(equipSlot);
-            /*
             if (equipSlot.characterBody)
             {
-                CharacterBody self = equipSlot.characterBody;
-                if (MediumList.Count > 0)
-                {
-                    List<CharacterBody> removelater = new List<CharacterBody>();
-                    foreach (CharacterBody body in MediumList.Keys)
-                    {
-                        if (body != null)
-                        {
-                            if (body.isActiveAndEnabled)
-                            {
-                                if (self == body)
-                                {
-                                    DropMedium(body, MediumList[body]);
-                                    GiveMini(body, MediumList[body]);
-                                    BreakItem(body);
-                                    MediumList.Remove(body);
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                            removelater.Add(body);
-                    }
+                CharacterBody body = equipSlot.characterBody;
 
-                    foreach (CharacterBody body in removelater)
-                        MediumList.Remove(body);
-                }
-            }
-            */
-            if (equipSlot.characterBody)
-            {
-                CharacterBody self = equipSlot.characterBody;
-                List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
-                for (int i = 0; i < masterList.Count; i++)
-                {
                     //If the player isnt dead
-                    if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+                    if (body)
                     {
                         //if the player has a body and an inventory AND they have the item
-                        if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && self== masterList[i].body && self.isPlayerControlled)
+                        if (body.inventory && body.inventory.GetItemCount(ItemDef) > 0 && body.isPlayerControlled)
                         {
-                            int count = masterList[i].body.inventory.GetItemCount(ItemDef);
-                            DropMedium(masterList[i].body, count*DropCount);
-                            GiveMini(masterList[i].body, count);
-                            BreakItem(masterList[i].body, count);
-                            break;
+                            int count = body.inventory.GetItemCount(ItemDef);
+                            DropMedium(body, count*DropCount);
+                            GiveMini(body, count);
+                            BreakItem(body, count);
+
                         }
                     }
-                }
+                
             }
         }
 
