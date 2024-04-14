@@ -18,7 +18,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
     class BloodburstClam : ItemBase<BloodburstClam>
     {
         //ADD SHARESUITE BLACKLIST
-        public override string ItemName => "Bloodbust Clam";
+        public override string ItemName => "Bloodburst Clam";
         public override string ItemLangTokenName => "BLOODBURST_CLAM";
         public override string ItemPickupDesc => $"On pickup, crack open for {DropCount} essences which boost stats. Future essence drops will come with 1 more.";
         public override string ItemFullDescription => $"Crack open for <style=cIsDamage>{DropCount}</style> "+BransItems.EssencesKeyword+". Future "+BransItems.EssenceKeyword+ $" drops will come with 1<style=cStack>(+{AdditionalDrops} per stack)</style> more.";
@@ -303,8 +303,11 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             if (!self || !NetworkServer.active) return;
             if (self.inventory.GetItemCount(ItemDef.itemIndex)<=0 ) return;
 
-            DropEssences(self);
-            BreakItem(self);
+            if (self && self.isPlayerControlled)
+            {
+                DropEssences(self);
+                BreakItem(self);
+            }
         }
         /*
         private void CharacterMaster_OnItemAddedClient(On.RoR2.CharacterMaster.orig_OnItemAddedClient orig, CharacterMaster self, ItemIndex itemIndex)

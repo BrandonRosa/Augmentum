@@ -17,7 +17,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Totality";
         public override string ItemLangTokenName => "ESSENCE_OF_TOTALITY";
         public override string ItemPickupDesc => "Slightly increase all stats.";
-        public override string ItemFullDescription => $"Gain: \n<style=cIsDamage>{AttackSpeedGain}%</style><style=cStack> (+{AttackSpeedGain}% per stack)</style> <style=cIsDamage>attack speed</style>, \n<style=cIsUtility>{MoveSpeedGain}%</style><style=cStack> (+{MoveSpeedGain}% per stack)</style> <style=cIsUtility>movement speed</style>, \n<style=cIsDamage>{CritChanceGain}%</style><style=cStack> (+{CritChanceGain}% per stack)</style> <style=cIsDamage>Critical Strike</style> chance, \n<style=cIsDamage>{DamageGain}</style><style=cStack> (+{DamageGain} per stack)</style> <style=cIsDamage>damage</style>, \nand <style=cIsHealing>{HealthGain} </style><style=cStack> (+{HealthGain} per stack)</style> <style=cIsHealing>health</style>.";
+        public override string ItemFullDescription => $"Gain: \n<style=cIsDamage>{AttackSpeedGain}%</style><style=cStack> (+{AttackSpeedGain}% per stack)</style> <style=cIsDamage>attack speed</style>, \n<style=cIsUtility>{MoveSpeedGain}%</style><style=cStack> (+{MoveSpeedGain}% per stack)</style> <style=cIsUtility>movement speed</style>, \n<style=cIsDamage>{CritChanceGain}%</style><style=cStack> (+{CritChanceGain}% per stack)</style> <style=cIsDamage>Critical Strike</style> chance, \n<style=cIsDamage>{DamageGain*100}%</style><style=cStack> (+{DamageGain*100}% per stack)</style> <style=cIsDamage>damage</style>, \nand <style=cIsHealing>{HealthGain*100}% </style><style=cStack> (+{HealthGain*100}% per stack)</style> <style=cIsHealing>health</style>.";
 
         public override string ItemLore => $"Excerpt from the folk tale \"The Radiant Luminance:\"\n\n" +
             $"\"In the twilight of ancient realms, a tale unfolds of the rarest gem, a stone coveted by noble souls of valor. Legends speak of the Radiant Luminance, an ethereal jewel that bestowed boundless strength upon those deemed worthy. " +
@@ -65,9 +65,11 @@ namespace BransItems.Modules.Pickups.Items.Essences
             MoveSpeedGain = config.Bind<float>("Item: " + ItemName, "Move Speed given to character", 6, "How much movement speed should Essence of Totality grant?").Value;
             AttackSpeedGain = config.Bind<float>("Item: " + ItemName, "Attack Speed given to character", 6, "How much attack speed should Essence of Totality grant?").Value;
             CritChanceGain = config.Bind<float>("Item: " + ItemName, "Crit Chance given to character", 3, "How much crit chance should Essence of Totality grant?").Value;
-            HealthGain = config.Bind<float>("Item: " + ItemName, "Health given to character", 15, "How much health should Essence of Totality grant?").Value;
-            DamageGain = config.Bind<float>("Item: " + ItemName, "Damage given to character", 1, "How much damage should Essence of Totality grant?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            //HealthGain = config.Bind<float>("Item: " + ItemName, "Health given to character", 15, "How much health should Essence of Totality grant?").Value;
+            //DamageGain = config.Bind<float>("Item: " + ItemName, "Damage given to character", 1, "How much damage should Essence of Totality grant?").Value;
+
+            HealthGain = config.Bind<float>("Item: " + ItemName, "Health percent given to character", .04f, "How much health percent should Essence of Totality grant?").Value;
+            DamageGain = config.Bind<float>("Item: " + ItemName, "Damage percent given to character", .04f, "How much damage should percent Essence of Totality grant?").Value;
         }
         private GameObject SetModel()//RoR2/Base/ShinyPearl/matShinyPearl.mat
         {
@@ -304,8 +306,10 @@ namespace BransItems.Modules.Pickups.Items.Essences
             args.moveSpeedMultAdd += MoveSpeedGain * .01f * GetCount(sender);
             args.attackSpeedMultAdd += AttackSpeedGain * .01f * GetCount(sender);
             args.critAdd += CritChanceGain * GetCount(sender);
-            args.baseDamageAdd += DamageGain * GetCount(sender);
-            args.baseHealthAdd += HealthGain * GetCount(sender);
+            //args.baseDamageAdd += DamageGain * GetCount(sender);
+            //args.baseHealthAdd += HealthGain * GetCount(sender);
+            args.damageMultAdd += DamageGain * GetCount(sender);
+            args.healthMultAdd += HealthGain * GetCount(sender);
         }
     }
 }

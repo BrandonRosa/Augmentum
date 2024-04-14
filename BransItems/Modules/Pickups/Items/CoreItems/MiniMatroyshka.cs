@@ -310,58 +310,39 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
         private void PurchaseInteraction_OnInteractionBegin(On.RoR2.PurchaseInteraction.orig_OnInteractionBegin orig, PurchaseInteraction self, Interactor activator)
         {
             orig(self, activator);
-            /*
-            ModLogger.LogWarning("Interaction:" + self.name.Substring(0, self.name.Length - 7));
-            ModLogger.LogWarning("Activator:" + activator.name);
+
+            //if (whiteList.Contains(self.name.Substring(0, self.name.Length - 7)))
+            //{
+            //    List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
+            //    for (int i = 0; i < masterList.Count; i++)
+            //    {
+            //        //If the player isnt dead
+            //        if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+            //        {
+            //            //if the player has a body and an inventory AND they have the item
+            //            if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && activator.gameObject== masterList[i].body.gameObject)
+            //            {
+            //                int itemCount = masterList[i].body.inventory.GetItemCount(ItemDef);
+            //                DropMini(masterList[i].body, itemCount*DropCount);
+            //                //GiveTiny(body, MiniList[body]);
+            //                BreakItem(masterList[i].body,itemCount);
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
             if (whiteList.Contains(self.name.Substring(0, self.name.Length - 7)))
             {
-                if (MiniList.Count > 0)
-                {
-                    List<CharacterBody> removelater = new List<CharacterBody>();
-                    foreach (CharacterBody body in MiniList.Keys)
-                    {
-                        if (body != null)
-                            if (body.isActiveAndEnabled)
-                            {
-                                if (activator.gameObject == body.gameObject)
-                                {
-                                    DropMini(body, MiniList[body]);
-                                    //GiveTiny(body, MiniList[body]);
-                                    BreakItem(body);
-                                    MiniList.Remove(body);
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                removelater.Add(body);
-                            }
-                    }
 
-                    foreach (CharacterBody body in removelater)
-                        MiniList.Remove(body);
-                }
-
-            }
-            */
-            if (whiteList.Contains(self.name.Substring(0, self.name.Length - 7)))
-            {
-                List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
-                for (int i = 0; i < masterList.Count; i++)
+                //if the player has a body and an inventory AND they have the the item
+                CharacterBody body =activator.gameObject.GetComponent<CharacterBody>();
+                if (body && body.inventory && body.inventory.GetItemCount(ItemDef) > 0 && body.isPlayerControlled)
                 {
-                    //If the player isnt dead
-                    if (!masterList[i].master.IsDeadAndOutOfLivesServer())
-                    {
-                        //if the player has a body and an inventory AND they have the item
-                        if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && activator.gameObject== masterList[i].body.gameObject)
-                        {
-                            int itemCount = masterList[i].body.inventory.GetItemCount(ItemDef);
-                            DropMini(masterList[i].body, itemCount*DropCount);
-                            //GiveTiny(body, MiniList[body]);
-                            BreakItem(masterList[i].body,itemCount);
-                            break;
-                        }
-                    }
+                    int itemCount = body.inventory.GetItemCount(ItemDef);
+                    DropMini(body, itemCount * DropCount);
+                    //GiveTiny(body, MiniList[body]);
+                    BreakItem(body, itemCount);
+
                 }
             }
         }

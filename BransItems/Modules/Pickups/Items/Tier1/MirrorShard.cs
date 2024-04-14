@@ -104,7 +104,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
         {
             orig(self);
-            if(self && self.inventory && self.inventory.GetItemCount(ItemDef)>0 && self.inventory.GetTotalItemCountOfTier(ItemTier.Tier1)>self.inventory.GetItemCount(ItemDef))
+            if(self && self.isPlayerControlled && self.inventory && self.inventory.GetItemCount(ItemDef)>0 && self.inventory.GetTotalItemCountOfTier(ItemTier.Tier1)>self.inventory.GetItemCount(ItemDef))
             {
                 List<ItemIndex> whiteItemsInInventory = new List<ItemIndex>();
                 for(int i=0;i<self.inventory.itemAcquisitionOrder.Count;i++)

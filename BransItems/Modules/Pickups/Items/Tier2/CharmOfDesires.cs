@@ -78,7 +78,11 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             {
                 new ItemDisplayRule
                 {
-                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    ruleType = ItemDisplayRuleType.
+            
+            
+            
+            edPrefab,
                     followerPrefab = ItemBodyModelPrefab,
                     childName = "Head",
                     localPos = new Vector3(0F, 0.42142F, -0.10234F),
@@ -290,7 +294,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         private void CharacterMaster_OnBodyStart(On.RoR2.CharacterMaster.orig_OnBodyStart orig, CharacterMaster self, CharacterBody body)
         {
             orig(self,body);
-            if (self)
+            if (self && self.GetBody() && self.GetBody().isPlayerControlled)
             {
                 int count = self.inventory.GetItemCount(ItemDef);
                 if (count > 0)

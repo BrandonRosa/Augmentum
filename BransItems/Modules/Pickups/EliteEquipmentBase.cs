@@ -78,9 +78,13 @@ namespace BransItems.Modules.Pickups
 
         public virtual float CostMultiplierOfElite { get; set; } = 1;
 
+        public virtual int VanillaTier { get; set; } = 0;
+
         public static Color AffixColor { get; set; } = Color.grey; // = new Color32(192, 119, 189, 255);
 
         public static Color AffixLightColor { get; set; } = Color.white;// new Color32(250, 155, 245, 255);
+
+        public static List<EliteEquipmentBase> elites = new List<EliteEquipmentBase>();
 
         public abstract void Init(ConfigFile config);
 
@@ -116,7 +120,8 @@ namespace BransItems.Modules.Pickups
             EliteEquipmentDef.isBoss = IsBoss;
             EliteEquipmentDef.isLunar = IsLunar;
             EliteEquipmentDef.passiveBuffDef = EliteBuffDef;
-            
+
+            elites.Add(this);
 
             DefaultTexture();
 
@@ -132,6 +137,29 @@ namespace BransItems.Modules.Pickups
             if (EliteMaterial)
             {
                 On.RoR2.CharacterBody.FixedUpdate += OverlayManager;
+            }
+
+            On.RoR2.CombatDirector.Init += CombatDirector_Init;
+        }
+
+        private void CombatDirector_Init(On.RoR2.CombatDirector.orig_Init orig)
+        {
+            orig();
+            foreach (EliteEquipmentBase customElite in elites)
+            {
+                switch (customElite.VanillaTier)
+                {
+                    case 1:
+                        HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[1].eliteTypes, customElite.EliteDef);
+                        break;
+                    case 2:
+                        HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[3].eliteTypes, customElite.EliteDef);
+                        break;
+                }
+                //if (customElite.isHonor)
+                //{
+                //    HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[2].eliteTypes, customElite.EliteDef);
+                //}
             }
         }
 
@@ -204,33 +232,37 @@ namespace BransItems.Modules.Pickups
 
 
             var baseEliteTierDefs = EliteAPI.GetCombatDirectorEliteTiers();
-            if (!CanAppearInEliteTiers.All(x => baseEliteTierDefs.Contains(x)))
+            if (VanillaTier != 0)
             {
-                //if (Plugin.DEBUG)
-                //{
-                //    Log.LogInfo("Creating custom elite tier");
-                //}
-                var distinctEliteTierDefs = CanAppearInEliteTiers.Except(baseEliteTierDefs);
-                //if (Plugin.DEBUG)
-                //{
-                //    Log.LogInfo("distinct tiers = " + distinctEliteTierDefs.Count());
-                //}
-                foreach (EliteTierDef eliteTierDef in distinctEliteTierDefs)
+                if (!CanAppearInEliteTiers.All(x => baseEliteTierDefs.Contains(x)))
                 {
-                    var indexToInsertAt = Array.FindIndex(baseEliteTierDefs, x => x.costMultiplier >= eliteTierDef.costMultiplier);
-                    if (indexToInsertAt >= 0)
+                    //if (Plugin.DEBUG)
+                    //{
+                    //    Log.LogInfo("Creating custom elite tier");
+                    //}
+                    var distinctEliteTierDefs = CanAppearInEliteTiers.Except(baseEliteTierDefs);
+                    //if (Plugin.DEBUG)
+                    //{
+                    //    Log.LogInfo("distinct tiers = " + distinctEliteTierDefs.Count());
+                    //}
+                    foreach (EliteTierDef eliteTierDef in distinctEliteTierDefs)
                     {
-                        EliteAPI.AddCustomEliteTier(eliteTierDef, indexToInsertAt);
+                        var indexToInsertAt = Array.FindIndex(baseEliteTierDefs, x => x.costMultiplier >= eliteTierDef.costMultiplier);
+                        if (indexToInsertAt >= 0)
+                        {
+                            EliteAPI.AddCustomEliteTier(eliteTierDef, indexToInsertAt);
+                        }
+                        else
+                        {
+                            EliteAPI.AddCustomEliteTier(eliteTierDef);
+                        }
+                        baseEliteTierDefs = EliteAPI.GetCombatDirectorEliteTiers();
                     }
-                    else
-                    {
-                        EliteAPI.AddCustomEliteTier(eliteTierDef);
-                    }
-                    baseEliteTierDefs = EliteAPI.GetCombatDirectorEliteTiers();
                 }
+                EliteAPI.Add(new CustomElite(EliteDef, CanAppearInEliteTiers));
             }
 
-            EliteAPI.Add(new CustomElite(EliteDef, CanAppearInEliteTiers));
+            
 
             EliteBuffDef.eliteDef = EliteDef;
             ContentAddition.AddBuffDef(EliteBuffDef);

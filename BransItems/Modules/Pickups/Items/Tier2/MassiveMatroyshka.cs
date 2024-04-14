@@ -40,7 +40,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public override bool CanRemove => true;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility, ItemTag.CannotDuplicate };
 
 
         public static int DropCount;
@@ -325,45 +325,23 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         private void TeleporterInteraction_onTeleporterBeginChargingGlobal(TeleporterInteraction obj)
         {
-            /*
-            if (MassiveList.Count > 0)
+            if (NetworkServer.active)
             {
-                List<CharacterBody> removelater = new List<CharacterBody>();
-                foreach (CharacterBody body in MassiveList.Keys)
+                List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
+                for (int i = 0; i < masterList.Count; i++)
                 {
-                    if (body != null)
+                    //If the player isnt dead
+                    if (!masterList[i].master.IsDeadAndOutOfLivesServer())
                     {
-                        if (body.isActiveAndEnabled)
+                        CharacterBody body = masterList[i].master.GetBody();
+                        //if the player has a body and an inventory AND they have the item
+                        if ( body && body.isPlayerControlled && body.inventory && body.inventory.GetItemCount(ItemDef) > 0)
                         {
-                            DropMassive(body, MassiveList[body]);
-                            GiveMedium(body, MassiveList[body]);
-                            BreakItem(body);
-                            //MassiveList.Remove(body);
-                            removelater.Add(body);
+                            int count = body.inventory.GetItemCount(ItemDef);
+                            DropMassive(body, count);
+                            GiveMedium(body, count);
+                            BreakItem(body, count);
                         }
-                    }
-                    else
-                        removelater.Add(body);
-                }
-
-                foreach (CharacterBody body in removelater)
-                    MassiveList.Remove(body);
-            }
-            */
-
-            List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
-            for (int i = 0; i < masterList.Count; i++)
-            {
-                //If the player isnt dead
-                if (!masterList[i].master.IsDeadAndOutOfLivesServer())
-                {
-                    //if the player has a body and an inventory AND they have the item
-                    if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0)
-                    {
-                        int count = masterList[i].body.inventory.GetItemCount(ItemDef);
-                        DropMassive(masterList[i].body, count);
-                        GiveMedium(masterList[i].body, count);
-                        BreakItem(masterList[i].body,count);
                     }
                 }
             }

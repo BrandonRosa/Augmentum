@@ -54,7 +54,7 @@ namespace BransItems
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.Augmentum"; //Our Package Name
         public const string ModName = "Augmentum";
-        public const string ModVer = "0.13.0";
+        public const string ModVer = "1.0.3";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;
@@ -273,13 +273,21 @@ namespace BransItems
             }
 
             var enabledProperSave = Config.Bind<bool>("Mod Compatability: " + "ProperSave", "Enable Compatability Patches?", true, "Attempt to add Propersave compatability (if installed)?").Value;
-            if (ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled && enabledProperSave)
+            if (ModCompatability.ProperSaveCompat.IsProperSaveInstalled && enabledProperSave)
             {
                 ModLogger.LogInfo("ModCompatability: " + "ProperSave Recognized!");
                 ModCompatability.ProperSaveCompat.AddProperSaveFunctionality = true;
             }
 
-            bool IfAnyLoaded = enabledShareSuite || enabledHIV || enabledProperSave;
+
+            //var enabledEliteReworks = Config.Bind<bool>("Mod Compatability: " + "EliteReworks", "Enable Compatability Patches?", true, "Attempt to add Elite Reworks compatability (if installed)?").Value;
+            //if (ModCompatability.EliteReworksCompat.IsEliteReworksInstalled && enabledProperSave)
+            //{
+            //    ModLogger.LogInfo("ModCompatability: " + "EliteReworks!");
+            //    ModCompatability.EliteReworksCompat.AddEliteReworksScaling = true;
+            //}
+
+            bool IfAnyLoaded = enabledShareSuite || enabledHIV || enabledProperSave;// || enabledEliteReworks;
             if(IfAnyLoaded)
             {
                 ModCompatability.FinishedLoading();
@@ -355,63 +363,38 @@ namespace BransItems
             return false;
         }
 
-        private void GlobalEventManager_onCharacterDeathGlobal(DamageReport report)
-        {
-            /*
-            //If a character was killed by the world, we shouldn't do anything.
-            if (!report.attacker || !report.attackerBody)
-            {
-                return;
-            }
-
-            var attackerCharacterBody = report.attackerBody;
-
-            //We need an inventory to do check for our item
-            if (attackerCharacterBody.inventory)
-            {
-                //store the amount of our item we have
-                var garbCount = attackerCharacterBody.inventory.GetItemCount(myItemDef.itemIndex);
-                if (garbCount > 0 &&
-                    //Roll for our 50% chance.
-                    Util.CheckRoll(50, attackerCharacterBody.master))
-                {
-                    //Since we passed all checks, we now give our attacker the cloaked buff.
-                    //Note how we are scaling the buff duration depending on the number of the custom item in our inventory.
-                    attackerCharacterBody.AddTimedBuff(RoR2Content.Buffs.Cloak, 3 + garbCount);
-                }
-            }
-            */
-        }
         //SHARE SUITE ITEM LIST:ITEM_MINI_MATROYSHKA,ITEM_ABYSSAL_BEACON,ITEM_AUGMENTED_CONTACT,ITEM_CURVED_HORN,ITEM_GOAT_LEG,ITEM_MEDIUM_MATROYSHKA,ITEM_CHARM_OF_DESIRES,ITEM_MASSIVE_MATROYSHKA,ITEM_BLOODBURST_CLAM,ITEM_DISCOVERY_MEDALLION,ITEM_MEGA_MATROYSHKA
         //The Update() method is run on every frame of the game.
         private void Update()
         {
-            
-            //This if statement checks if the player has currently pressed F2.
-            if (Input.GetKeyDown(KeyCode.F2))
+            if (false)
             {
-                //Get the player body to use a position:
-                var transform = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
+                //This if statement checks if the player has currently pressed F2.
+                if (Input.GetKeyDown(KeyCode.F2))
+                {
+                    //Get the player body to use a position:
+                    var transform = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
 
-                //And then drop our defined item in front of the player.
+                    //And then drop our defined item in front of the player.
 
-                //Log.Info($"Player pressed F2. Spawning our custom item at coordinates {transform.position}");
-                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(AirTotem.instance.EquipmentDef.equipmentIndex), transform.position, transform.forward * 20f);
-                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(EarthTotem.instance.EquipmentDef.equipmentIndex), transform.position, transform.forward * -20f);
-            }
+                    //Log.Info($"Player pressed F2. Spawning our custom item at coordinates {transform.position}");
+                    PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(AirTotem.instance.EquipmentDef.equipmentIndex), transform.position, transform.forward * 20f);
+                    PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(EarthTotem.instance.EquipmentDef.equipmentIndex), transform.position, transform.forward * -20f);
+                }
 
-            if (Input.GetKeyDown(KeyCode.F3))
-            {
-                //Get the player body to use a position:
-                var transform = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
+                if (Input.GetKeyDown(KeyCode.F3))
+                {
+                    //Get the player body to use a position:
+                    var transform = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
 
-                //And then drop our defined item in front of the player.
+                    //And then drop our defined item in front of the player.
 
-                //Log.Info($"Player pressed F2. Spawning our custom item at coordinates {transform.position}");
-                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(EOAcuity.instance.ItemDef.itemIndex), transform.position, transform.forward * 20f);
-                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(AbyssalBeacon.instance.ItemDef.itemIndex), transform.position, transform.forward * -20f);
-                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(Modules.Pickups.Items.Tier1.MediumMatroyshka.instance.ItemDef.itemIndex), transform.position, transform.right * 20f);
-                PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(Modules.Pickups.Items.Tier2.CharmOfDesires.instance.ItemDef.itemIndex), transform.position, transform.right * -20f);
+                    //Log.Info($"Player pressed F2. Spawning our custom item at coordinates {transform.position}");
+                    PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(EOAcuity.instance.ItemDef.itemIndex), transform.position, transform.forward * 20f);
+                    PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(AbyssalBeacon.instance.ItemDef.itemIndex), transform.position, transform.forward * -20f);
+                    PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(Modules.Pickups.Items.Tier1.MediumMatroyshka.instance.ItemDef.itemIndex), transform.position, transform.right * 20f);
+                    PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(Modules.Pickups.Items.Tier2.CharmOfDesires.instance.ItemDef.itemIndex), transform.position, transform.right * -20f);
+                }
             }
 
         }
