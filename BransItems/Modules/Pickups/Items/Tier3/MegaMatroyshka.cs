@@ -443,11 +443,20 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                     {
                         pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),
                         prefabOverride = potentialPrefab,
-                        position = body.transform.position,
+                        position = dropTransform.position + Vector3.up * 1.5f,
                         rotation = Quaternion.identity,
                         pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier3)
                     },
-                            dropTransform.position + Vector3.up * 1.5f, val);
+                             val);
+                    //PickupDropletController.CreatePickupDroplet(new GenericPickupController.CreatePickupInfo
+                    //{
+                    //    pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),
+                    //    prefabOverride = potentialPrefab,
+                    //    position = body.transform.position,
+                    //    rotation = Quaternion.identity,
+                    //    pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier3)
+                    //},
+                    //        dropTransform.position + Vector3.up * 1.5f, val);
                 }
                 else
                 {

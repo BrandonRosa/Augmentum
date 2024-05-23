@@ -3,7 +3,6 @@ using R2API;
 using R2API.Utils;
 using RoR2;
 using RoR2.Projectile;
-using static RoR2.EquipmentSlot;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -252,12 +251,15 @@ namespace BransItems.Modules.Pickups.Equipments
                 switch(Tier)
                 {
                     case ItemTier.Tier1:
+                    case ItemTier.VoidTier1:
                         spawnTotal = 1;
                         break;
                     case ItemTier.Tier2:
+                    case ItemTier.VoidTier2:
                         spawnTotal = 3;
                         break;
                     case ItemTier.Tier3:
+                    case ItemTier.VoidTier3:
                         spawnTotal = 15;
                             break;
                     case ItemTier.Boss:
