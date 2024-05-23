@@ -457,7 +457,7 @@ namespace BransItems.Modules.Pickups.Items.Lunar
                         rotation = Quaternion.identity,
                         pickupIndex = pickupIndex[0] //PickupCatalog.FindPickupIndex(ItemTier.Tier3)
                     },
-                                    self.GetBody().transform.position, Vector3.up * dropUpVelocityStrength);
+                                     Vector3.up * dropUpVelocityStrength);
                 }
             }
 

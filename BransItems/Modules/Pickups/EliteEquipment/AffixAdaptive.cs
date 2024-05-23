@@ -76,6 +76,8 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public static float MinimumStacksofRepulsionArmor = 2f;
 
+        public static float MaxStacksofRepulsionArmor = 10f;
+
         public static float DamageTakenModifierTimer = 8f;
 
         public static float InvisibleTimer = 3.25f;
@@ -838,6 +840,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
                     {
                         //Repultion Armor Stacks
                         int stacks = (int)Math.Ceiling(Math.Max(AffixAdaptive.MinimumStacksofRepulsionArmor, AffixAdaptive.StacksOfRepulsionArmorPerHealth * self.combinedHealth));
+                        stacks = (int) Math.Min(AffixAdaptive.MaxStacksofRepulsionArmor, stacks);
                         self.itemCounts.armorPlate += stacks;
 
                         //Max Damage per Attack

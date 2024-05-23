@@ -328,11 +328,11 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                 {
                     pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),
                     prefabOverride = potentialPrefab,
-                    position = transform.position,
+                    position = transform.position + Vector3.up * 1.5f,
                     rotation = Quaternion.identity,
                     pickupIndex =drops[0]
                 },
-                        transform.position + Vector3.up * 1.5f, val);
+                         val);
                 val = val2 * val;
             }
         }
