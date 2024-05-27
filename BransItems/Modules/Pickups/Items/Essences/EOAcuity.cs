@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using BransItems.Modules.ItemTiers.CoreTier;
+using BransItems.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -53,8 +54,8 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            CritChanceGain = config.Bind<float>("Item: " + ItemName, "Crit chance given to character", 4, "How much crit chance should Essense of Acuity grant?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            CritChanceGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Crit chance given to character", 4, "How much crit chance should Essense of Acuity grant?");
+           
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

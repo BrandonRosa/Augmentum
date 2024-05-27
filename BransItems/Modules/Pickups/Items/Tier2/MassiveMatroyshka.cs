@@ -60,8 +60,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of white items dropped", 1, "How many white items should drop from this item?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of white items dropped", 1, "How many white items should drop from this item?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using BransItems.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -58,7 +59,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
         public void CreateConfig(ConfigFile config)
         {
             //HealthGain = config.Bind<float>("Item: " + ItemName, "Base health given to character", 15f, "How much base health should Essense of Life grant?").Value;
-            HealthGain = config.Bind<float>("Item: " + ItemName, "Percent health given to character", .04f, "How much percent health should Essense of Life grant?").Value;
+            HealthGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent health given to character", .04f, "How much percent health should Essense of Life grant?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

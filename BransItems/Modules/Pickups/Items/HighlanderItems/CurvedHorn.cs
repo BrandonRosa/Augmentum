@@ -10,6 +10,7 @@ using static BransItems.BransItems;
 using static BransItems.Modules.Utils.ItemHelpers;
 using static RoR2.ItemTag;
 using BransItems.Modules.ItemTiers.HighlanderTier;
+using BransItems.Modules.Utils;
 
 namespace BransItems.Modules.Pickups.Items.HighlanderItems
 {
@@ -59,8 +60,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DamageGain = config.Bind<float>("Item: " + ItemName, "Damage percent given to character", .30f, "How much percent damage should Curved Horn grant?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage percent given to character", .30f, "How much percent damage should Curved Horn grant?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

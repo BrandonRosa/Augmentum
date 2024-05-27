@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using BransItems.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -61,15 +62,15 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            ReplaceChance= config.Bind<float>("Item: " + ItemName, "Chance to replace other Essences", .05f, "What percent of the time will Essence of Totality replace other Essences?").Value;
-            MoveSpeedGain = config.Bind<float>("Item: " + ItemName, "Move Speed given to character", 6, "How much movement speed should Essence of Totality grant?").Value;
-            AttackSpeedGain = config.Bind<float>("Item: " + ItemName, "Attack Speed given to character", 6, "How much attack speed should Essence of Totality grant?").Value;
-            CritChanceGain = config.Bind<float>("Item: " + ItemName, "Crit Chance given to character", 3, "How much crit chance should Essence of Totality grant?").Value;
+            ReplaceChance = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Chance to replace other Essences", .05f, "What percent of the time will Essence of Totality replace other Essences?");
+            MoveSpeedGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Move Speed given to character", 6, "How much movement speed should Essence of Totality grant?");
+            AttackSpeedGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack Speed given to character", 6, "How much attack speed should Essence of Totality grant?");
+            CritChanceGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Crit Chance given to character", 3, "How much crit chance should Essence of Totality grant?");
             //HealthGain = config.Bind<float>("Item: " + ItemName, "Health given to character", 15, "How much health should Essence of Totality grant?").Value;
             //DamageGain = config.Bind<float>("Item: " + ItemName, "Damage given to character", 1, "How much damage should Essence of Totality grant?").Value;
 
-            HealthGain = config.Bind<float>("Item: " + ItemName, "Health percent given to character", .04f, "How much health percent should Essence of Totality grant?").Value;
-            DamageGain = config.Bind<float>("Item: " + ItemName, "Damage percent given to character", .04f, "How much damage should percent Essence of Totality grant?").Value;
+            HealthGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health percent given to character", .04f, "How much health percent should Essence of Totality grant?");
+            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage percent given to character", .04f, "How much damage should percent Essence of Totality grant?");
         }
         private GameObject SetModel()//RoR2/Base/ShinyPearl/matShinyPearl.mat
         {

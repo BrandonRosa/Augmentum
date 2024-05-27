@@ -240,6 +240,7 @@ namespace BransItems.Modules.Pickups
                     //{
                     //    Log.LogInfo("Creating custom elite tier");
                     //}
+                    //BransItems.ModLogger.LogWarning("Case1");
                     var distinctEliteTierDefs = CanAppearInEliteTiers.Except(baseEliteTierDefs);
                     //if (Plugin.DEBUG)
                     //{
@@ -251,15 +252,22 @@ namespace BransItems.Modules.Pickups
                         if (indexToInsertAt >= 0)
                         {
                             EliteAPI.AddCustomEliteTier(eliteTierDef, indexToInsertAt);
+                            //BransItems.ModLogger.LogWarning("Case2");
                         }
                         else
                         {
                             EliteAPI.AddCustomEliteTier(eliteTierDef);
+                            //BransItems.ModLogger.LogWarning("Case3");
                         }
                         baseEliteTierDefs = EliteAPI.GetCombatDirectorEliteTiers();
                     }
                 }
-                EliteAPI.Add(new CustomElite(EliteDef, CanAppearInEliteTiers));
+                
+                {
+                    EliteAPI.Add(new CustomElite(EliteDef, CanAppearInEliteTiers));
+                    //BransItems.ModLogger.LogWarning("Case4");
+                }
+
             }
 
             

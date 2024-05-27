@@ -59,7 +59,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            AdditionalChoices = config.Bind<int>("Item: " + ItemName, "Extra choices in future wishes", 1, "How many extra options should DiscoveryMedallion give?").Value;
+            AdditionalChoices = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Extra choices in future wishes", 1, "How many extra options should DiscoveryMedallion give?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

@@ -52,7 +52,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public override int VanillaTier => 1;
 
-        public override float CostMultiplierOfElite { get; set; } = 5;
+        public override float CostMultiplierOfElite { get; set; } = 6;
 
         public static int PreHitArmorAdd=150;
 
@@ -196,7 +196,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         private void CreateConfig(ConfigFile config)
         {
-            CostMultiplierOfElite = config.Bind<float>("Elite: " + EliteModifier, "Cost Multiplier", 5f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more.").Value;
+            CostMultiplierOfElite = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cost Multiplier", 6f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more.");
 
         }
 

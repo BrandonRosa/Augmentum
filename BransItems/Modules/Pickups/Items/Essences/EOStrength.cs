@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using BransItems.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -69,7 +70,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 		public void CreateConfig(ConfigFile config)
 		{
             //DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 1.25f, "How much base damage should Essense of Strength grant?").Value;
-            DamageGain = config.Bind<float>("Item: " + ItemName, "Percent damage given to character", .04f, "How much percent damage should Essense of Strength grant?").Value;
+            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent damage given to character", .04f, "How much percent damage should Essense of Strength grant?");
             
         }
 

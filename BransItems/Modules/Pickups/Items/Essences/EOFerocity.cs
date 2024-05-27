@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using BransItems.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -55,8 +56,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            AttackSpeedGain = config.Bind<float>("Item: " + ItemName, "Attack speed given to character", 7f, "How much attack speed should Essense of Ferocity grant?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            AttackSpeedGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack speed given to character", 7f, "How much attack speed should Essense of Ferocity grant?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

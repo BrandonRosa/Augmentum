@@ -67,7 +67,7 @@ namespace BransItems.Modules.Utils
                 $"<align=left>Estimated Delivery:<indent=70%>Sent To:</indent></align>",
                 $"<align=left>{estimatedDelivery}<indent=70%>{sentTo}</indent></align>",
                 "",
-                $"<indent=1%><style=cIsDamage><size=125%><u>  Shipping Details:\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0</u></size></style></indent>",
+                $"<indent=1%><style=cIsDamage><size=125%><u>  Shipping Details:</u></size></style></indent>",
                 "",
                 $"<indent=2%>-Order: <style=cIsUtility>{deviceName}</style></indent>",
                 $"<indent=4%><style=cStack>Tracking Number:  {trackingNumber}</style></indent>",

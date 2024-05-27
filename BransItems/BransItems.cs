@@ -20,30 +20,17 @@ using BransItems.Modules.Pickups.Equipments;
 using BransItems.Modules.Compatability;
 using BransItems.Modules.Pickups.Items.Essences;
 using BransItems.Modules.Pickups.Items.HighlanderItems;
+using BepInEx.Configuration;
+using HarmonyLib;
 
 namespace BransItems
 {
-    //This is an example plugin that can be put in BepInEx/plugins/ExamplePlugin/ExamplePlugin.dll to test out.
-    //It's a small plugin that adds a relatively simple item to the game, and gives you that item whenever you press F2.
 
-    //This attribute specifies that we have a dependency on R2API, as we're using it to add our item to the game.
-    //You don't need this if you're not using R2API in your plugin, it's just to tell BepInEx to initialize R2API before this plugin so it's safe to use R2API.
-    //[BepInDependency(R2API.R2API.PluginGUID)]
-
-    //This attribute is required, and lists metadata for your plugin.
-    //[BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-
+    
     [BepInDependency(R2API.R2API.PluginGUID, R2API.R2API.PluginVersion)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    //  [BepInDependency(R2API.ColorsAPI.PluginGUID)]
     [BepInDependency(R2API.R2API.PluginGUID)]
     [BepInDependency(R2API.RecalculateStatsAPI.PluginGUID)]
-
-    //[R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI), nameof(PrefabAPI), nameof(RecalculateStatsAPI), nameof(ColorsAPI))]//nameof(BuffAPI), nameof(ResourcesAPI), nameof(EffectAPI), nameof(ProjectileAPI), nameof(ArtifactAPI), nameof(LoadoutAPI),   
-    // nameof(PrefabAPI), nameof(SoundAPI), nameof(OrbAPI),
-    // nameof(NetworkingAPI), nameof(DirectorAPI), nameof(RecalculateStatsAPI), nameof(UnlockableAPI), nameof(EliteAPI),
-    // nameof(CommandHelper), nameof(DamageAPI))]
-
 
     //This is the main declaration of our plugin class. BepInEx searches for all classes inheriting from BaseUnityPlugin to initialize on startup.
     //BaseUnityPlugin itself inherits from MonoBehaviour, so you can use this as a reference for what you can declare and use in your plugin class: https://docs.unity3d.com/ScriptReference/MonoBehaviour.html
@@ -59,11 +46,16 @@ namespace BransItems
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;
 
+        public static ConfigFile AugConfig;
+        public static ConfigFile AugBackupConfig;
+        public static ConfigEntry<bool> enableAutoConfig { get; set; }
+        public static ConfigEntry<string> latestVersion { get; set; }
+
+        public static bool _preVersioning = false;
 
         //We need our item definition to persist through our functions, and therefore make it a class field.
         //private static ItemDef myItemDef;
 
-        //The Awake() method is run at the very start when the game is initialized.
         public static AssetBundle MainAssets;
 
         //public List<CoreModule> CoreModules = new List<CoreModule>();
@@ -100,6 +92,19 @@ namespace BransItems
         public void Awake()
         {
             ModLogger = this.Logger;
+
+            AugBackupConfig = new(Paths.ConfigPath + "\\" + ModGuid + "." + ModName + ".Backup.cfg", true);
+            AugBackupConfig.Bind(": DO NOT MODIFY THIS FILES CONTENTS :", ": DO NOT MODIFY THIS FILES CONTENTS :", ": DO NOT MODIFY THIS FILES CONTENTS :", ": DO NOT MODIFY THIS FILES CONTENTS :");
+
+            enableAutoConfig = AugConfig.Bind("Config", "Enable Auto Config Sync", true, "Disabling this would stop Augmentum from syncing config whenever a new version is found.");
+            _preVersioning = !((Dictionary<ConfigDefinition, string>)AccessTools.DeclaredPropertyGetter(typeof(ConfigFile), "OrphanedEntries").Invoke(AugConfig, null)).Keys.Any(x => x.Key == "Latest Version");
+            latestVersion = AugConfig.Bind("Config", "Latest Version", ModVer, "DO NOT CHANGE THIS");
+            if (enableAutoConfig.Value && (_preVersioning || (latestVersion.Value != ModVer)))
+            {
+                latestVersion.Value = ModVer;
+                ConfigManager.VersionChanged = true;
+                ModLogger.LogInfo("Config Autosync Enabled.");
+            }
         }
 
         private void Start()
@@ -142,7 +147,7 @@ namespace BransItems
                 foreach (var itemTierType in ItemTierTypes)
                 {
                     ItemTierBase itemtier = (ItemTierBase)System.Activator.CreateInstance(itemTierType);
-                    if (true)//ValidateSurvivor(itemtier, Survivors))
+                    if (true)
                     {
                         itemtier.Init();
 
@@ -151,8 +156,8 @@ namespace BransItems
                 }
             }
 
-            var disableBuffs = Config.Bind<bool>("Buffs", "Disable All Standalone Buffs?", false, "Do you wish to disable every standalone buff in Aetherium?").Value;
-            if (!disableBuffs)
+            //var disableBuffs = Config.Bind<bool>("Buffs", "Disable All Standalone Buffs?", false, "Do you wish to disable every standalone buff in Aetherium?").Value;
+            if (true)
             {
                 //Standalone Buff Initialization
                 var BuffTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(BuffBase)));
@@ -171,8 +176,8 @@ namespace BransItems
                 }
             }
 
-            var disableItems = Config.Bind<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in BransItems?");
-            if (!disableItems.Value)
+            var disableItems = ConfigManager.ConfigOption<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in BransItems?");
+            if (!disableItems)
             {
                 //Item Initialization
                 var ItemTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(ItemBase)));
@@ -205,8 +210,8 @@ namespace BransItems
                 //IL.RoR2.ShopTerminalBehavior.GenerateNewPickupServer_bool += ItemBase.BlacklistFromPrinter;
                 On.RoR2.Items.ContagiousItemManager.Init += ItemBase.RegisterVoidPairings;
             }
-            var disableEquipment = Config.Bind<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in BransItems?");
-            if (!disableEquipment.Value)
+            var disableEquipment = ConfigManager.ConfigOption<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in BransItems?");
+            if (!disableEquipment)
             {
                 //Equipment Initialization
                 var EquipmentTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(EquipmentBase)));
@@ -253,8 +258,8 @@ namespace BransItems
             string defaultShareSuiteBlacklist= "ITEM_MINI_MATROYSHKA,ITEM_ABYSSAL_BEACON,ITEM_AUGMENTED_CONTACT,ITEM_CURVED_HORN,ITEM_GOAT_LEG,ITEM_MEDIUM_MATROYSHKA,ITEM_CHARM_OF_DESIRES,ITEM_MASSIVE_MATROYSHKA,ITEM_BLOODBURST_CLAM,ITEM_DISCOVERY_MEDALLION,ITEM_MEGA_MATROYSHKA";
 
 
-            var enabledShareSuite = Config.Bind<bool>("Mod Compatability: " + "ShareSuite", "Enable Compatability Patches?", true, "Attempt to patch ShareSuite (if installed) to work with this mod?").Value;
-            var ShareSuiteBlackList= Config.Bind<string>("Mod Compatability: " + "ShareSuite", "ShareSuite Blacklist", defaultShareSuiteBlacklist, "Add items to ShareSuite blacklist?").Value;
+            var enabledShareSuite = ConfigManager.ConfigOption<bool>("Mod Compatability: " + "ShareSuite", "Enable Compatability Patches?", true, "Attempt to patch ShareSuite (if installed) to work with this mod?");
+            var ShareSuiteBlackList= ConfigManager.ConfigOption("Mod Compatability: " + "ShareSuite", "ShareSuite Blacklist", defaultShareSuiteBlacklist, "Add items to ShareSuite blacklist?");
             if (ModCompatability.ShareSuiteCompat.IsShareSuiteInstalled && enabledShareSuite)
             {
                 ModLogger.LogInfo("ModCompatability: " + "ShareSuite Recognized!");
@@ -266,13 +271,13 @@ namespace BransItems
                 ModLogger.LogInfo("ModCompatability: " + "ShareSuite Blacklist added to Whitelist!");
             }
 
-            var enabledHIV = Config.Bind<bool>("Mod Compatability: " + "HighItemVizability", "Enable Compatability Patches?", true, "Attempt to patch HighItemVizability (if installed) to work with this mod?").Value;
+            var enabledHIV = ConfigManager.ConfigOption("Mod Compatability: " + "HighItemVizability", "Enable Compatability Patches?", true, "Attempt to patch HighItemVizability (if installed) to work with this mod?");
             if (ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled && enabledHIV)
             {
                 ModLogger.LogInfo("ModCompatability: " + "HighItemVizability Recognized!");
             }
 
-            var enabledProperSave = Config.Bind<bool>("Mod Compatability: " + "ProperSave", "Enable Compatability Patches?", true, "Attempt to add Propersave compatability (if installed)?").Value;
+            var enabledProperSave = ConfigManager.ConfigOption("Mod Compatability: " + "ProperSave", "Enable Compatability Patches?", true, "Attempt to add Propersave compatability (if installed)?");
             if (ModCompatability.ProperSaveCompat.IsProperSaveInstalled && enabledProperSave)
             {
                 ModLogger.LogInfo("ModCompatability: " + "ProperSave Recognized!");
@@ -298,10 +303,10 @@ namespace BransItems
 
         public bool ValidateItem(ItemBase item, List<ItemBase> itemList)
         {
-            var enabled = Config.Bind<bool>("Item: " + item.ConfigItemName, "Enable Item?", true, "Should this item appear in runs?").Value;
-            var aiBlacklist = Config.Bind<bool>("Item: " + item.ConfigItemName, "Blacklist Item from AI Use?", false, "Should the AI not be able to obtain this item?").Value;
-            var printerBlacklist = Config.Bind<bool>("Item: " + item.ConfigItemName, "Blacklist Item from Printers?", false, "Should the printers be able to print this item?").Value;
-            var requireUnlock = Config.Bind<bool>("Item: " + item.ConfigItemName, "Require Unlock", true, "Should we require this item to be unlocked before it appears in runs? (Will only affect items with associated unlockables.)").Value;
+            var enabled = ConfigManager.ConfigOption<bool>("Item: " + item.ConfigItemName, "Enable Item?", true, "Should this item appear in runs?");
+            var aiBlacklist = ConfigManager.ConfigOption<bool>("Item: " + item.ConfigItemName, "Blacklist Item from AI Use?", false, "Should the AI not be able to obtain this item?");
+            var printerBlacklist = ConfigManager.ConfigOption("Item: " + item.ConfigItemName, "Blacklist Item from Printers?", false, "Should the printers be able to print this item?");
+            var requireUnlock = ConfigManager.ConfigOption<bool>("Item: " + item.ConfigItemName, "Require Unlock", true, "Should we require this item to be unlocked before it appears in runs? (Will only affect items with associated unlockables.)");
 
             ItemStatusDictionary.Add(item, enabled);
 
@@ -324,11 +329,11 @@ namespace BransItems
 
         public bool ValidateBuff(BuffBase buff, List<BuffBase> buffList)
         {
-            var enabled = Config.Bind<bool>("Buff: " + buff.BuffName, "Enable Buff?", true, "Should this buff be registered for use in the game?").Value;
+            //var enabled = Config.Bind<bool>("Buff: " + buff.BuffName, "Enable Buff?", true, "Should this buff be registered for use in the game?").Value;
 
             BuffStatusDictionary.Add(buff, enabled);
 
-            if (enabled)
+            if (true)
             {
                 buffList.Add(buff);
             }
@@ -337,7 +342,7 @@ namespace BransItems
 
         public bool ValidateEquipment(EquipmentBase equipment, List<EquipmentBase> equipmentList)
         {
-            var enabled = Config.Bind<bool>("Equipment: " + equipment.EquipmentName, "Enable Equipment?", true, "Should this equipment appear in runs?").Value;
+            var enabled = ConfigManager.ConfigOption<bool>("Equipment: " + equipment.EquipmentName, "Enable Equipment?", true, "Should this equipment appear in runs?");
 
             EquipmentStatusDictionary.Add(equipment, enabled);
 
@@ -351,7 +356,7 @@ namespace BransItems
 
         public bool ValidateEliteEquipment(EliteEquipmentBase eliteEquipment, List<EliteEquipmentBase> eliteEquipmentList)
         {
-            var enabled = Config.Bind<bool>("Equipment: " + eliteEquipment.EliteEquipmentName, "Enable Elite Equipment?", true, "Should this elite equipment appear in runs? If disabled, the associated elite will not appear in runs either.").Value;
+            var enabled = ConfigManager.ConfigOption<bool>("Elite: " + eliteEquipment.EliteModifier, "Enable Elite Equipment?", true, "Should this elite equipment appear in runs? If disabled, the associated elite will not appear in runs either.");
 
             EliteEquipmentStatusDictionary.Add(eliteEquipment, enabled);
 

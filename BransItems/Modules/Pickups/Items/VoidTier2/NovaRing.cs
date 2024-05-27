@@ -165,16 +165,14 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public void CreateConfig(ConfigFile config)
         {
-            InitialPercent = config.Bind<float>("Item: " + ItemName, "Percent of total damage converted to shield", .10f, "What percent of total damage should be healed from the first stack of this item?").Value;
-            AdditionalPercent = config.Bind<float>("Item: " + ItemName, "Percent of additional damage converted to shield", .05f, "What percent of total damage should be healed from additional stacks of this item?").Value;
-            InitialMaxHealing = config.Bind<float>("Item: " + ItemName, "Max percent of max health you can gain in shield", .20f, "What is the maximum percent of your health you can heal from this item from the first stack?").Value;
-            AdditionalMaxHealing = config.Bind<float>("Item: " + ItemName, "Additional percent of max health you can heal", .10f, "What is the maximum percent of your health you can heal from this item from additional stacks?").Value;
-            AllyBonus = config.Bind<float>("Item: " + ItemName, "Bonus Percent of shield from allies", .4f, "What is the bonus shield gained from giving shields to allies?").Value;
-            InitialRange = config.Bind<float>("Item: " + ItemName, "Range of nova on first stack", 15f, "What is the initial range of the nova from the first stack of this item?").Value;
-            AdditionalRange = config.Bind<float>("Item: " + ItemName, "Range of nova on additional stacks", 4f, "What is the additional range of the nova from additional stacks of this item?").Value;
-            TempShieldDuration= config.Bind<float>("Item: " + ItemName, "Duration in seconds", 15f, "What is the duration of the temporary shields?").Value;
-
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            InitialPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent of total damage converted to shield", .10f, "What percent of total damage should be healed from the first stack of this item?");
+            AdditionalPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent of additional damage converted to shield", .05f, "What percent of total damage should be healed from additional stacks of this item?");
+            InitialMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Max percent of max health you can gain in shield", .20f, "What is the maximum percent of your health you can heal from this item from the first stack?");
+            AdditionalMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Additional percent of max health you can heal", .10f, "What is the maximum percent of your health you can heal from this item from additional stacks?");
+            AllyBonus = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Bonus Percent of shield from allies", .4f, "What is the bonus shield gained from giving shields to allies?");
+            InitialRange = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Range of nova on first stack", 15f, "What is the initial range of the nova from the first stack of this item?");
+            AdditionalRange = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Range of nova on additional stacks", 4f, "What is the additional range of the nova from additional stacks of this item?");
+            TempShieldDuration = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Duration in seconds", 15f, "What is the duration of the temporary shields?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

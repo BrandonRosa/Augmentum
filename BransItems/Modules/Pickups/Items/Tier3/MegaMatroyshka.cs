@@ -62,9 +62,9 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of red items dropped", 1, "How many red items should drop from this item?").Value;
-            AdditionalChoices = config.Bind<int>("Item: " + ItemName, "Number of additional wish options in Matroyshka drops", 1, "How additional choices should this provide in future Matroyshka drops?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of red items dropped", 1, "How many red items should drop from this item?");
+            AdditionalChoices = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of additional wish options in Matroyshka drops", 1, "How additional choices should this provide in future Matroyshka drops?");
+            
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

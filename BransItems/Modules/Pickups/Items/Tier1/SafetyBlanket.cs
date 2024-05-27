@@ -63,9 +63,9 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         public void CreateConfig(ConfigFile config)
         {
-            FractionCap = config.Bind<float>("Item: " + ItemName, "Plateau value", .75f, "What value shoud Saftey Blanket plateu to?").Value;
-            InitialIFrames = config.Bind<float>("Item: " + ItemName, "Initial Invincibility Time", 1f, "How much additional invincibility time should Safety Blanket add?").Value;
-            AdditionalIFrames = config.Bind<float>("Item: " + ItemName, "Added Invincibility Time", .25f, "How much invincibility time should Safety Blanket add?").Value;
+            FractionCap = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Plateau value", .75f, "What value shoud Saftey Blanket plateu to?");
+            InitialIFrames = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Initial Invincibility Time", 1f, "How much additional invincibility time should Safety Blanket add?");
+            AdditionalIFrames = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Added Invincibility Time", .25f, "How much invincibility time should Safety Blanket add?");
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 

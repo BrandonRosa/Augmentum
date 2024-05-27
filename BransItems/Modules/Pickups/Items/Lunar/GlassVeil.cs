@@ -474,11 +474,9 @@ namespace BransItems.Modules.Pickups.Items.Lunar
 
         public void CreateConfig(ConfigFile config)
         {
-            ConfigBlacklist = config.Bind<string>("Item: " + ItemName, "Item blacklist", DefaultBlacklist , "Items (by internal name) that are rerolled on pickup, comma separated. Please find the item \"Code Names\" at: https://github.com/risk-of-thunder/R2Wiki/wiki/Item-&-Equipment-IDs-and-Names").Value;
-            BlacklistHealCatagory = config.Bind<bool>("Item: " + ItemName, "Auto blacklist heal catagory", true, "Enable to automatically add all items within the \"healing\" category").Value;
-            HealWhitelist = config.Bind<string>("Item: " + ItemName, "Heal catagory exclude blacklist", DefaultHealWhitelist, "Healing catagory Items (by internal name) that are excluded from \"Auto Blacklist\", comma separated. Please find the item \"Code Names\" at: https://github.com/risk-of-thunder/R2Wiki/wiki/Item-&-Equipment-IDs-and-Names").Value;
-
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            ConfigBlacklist = ConfigManager.ConfigOption<string>("Item: " + ItemName, "Item blacklist", DefaultBlacklist , "Items (by internal name) that are rerolled on pickup, comma separated. Please find the item \"Code Names\" at: https://github.com/risk-of-thunder/R2Wiki/wiki/Item-&-Equipment-IDs-and-Names");
+            BlacklistHealCatagory = ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Auto blacklist heal catagory", true, "Enable to automatically add all items within the \"healing\" category");
+            HealWhitelist = ConfigManager.ConfigOption<string>("Item: " + ItemName, "Heal catagory exclude blacklist", DefaultHealWhitelist, "Healing catagory Items (by internal name) that are excluded from \"Auto Blacklist\", comma separated. Please find the item \"Code Names\" at: https://github.com/risk-of-thunder/R2Wiki/wiki/Item-&-Equipment-IDs-and-Names");
         }
 
         private static HashSet<ItemDef> InstantiateItemBlacklist()

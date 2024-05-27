@@ -12,6 +12,7 @@ using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
 using BransItems.Modules.Pickups.Items.Essences;
 using BransItems.Modules.Pickups.Items.NoTier;
+using BransItems.Modules.Utils;
 
 namespace BransItems.Modules.Pickups.Items.Tier3
 {
@@ -57,9 +58,8 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of essences dropped", 15, "How many essences should drop from this item?").Value;
-            AdditionalDrops = config.Bind<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of essences dropped", 15, "How many essences should drop from this item?");
+            AdditionalDrops = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
