@@ -92,8 +92,9 @@ namespace BransItems
         public void Awake()
         {
             ModLogger = this.Logger;
+            AugConfig = Config;
 
-            AugBackupConfig = new(Paths.ConfigPath + "\\" + ModGuid + "." + ModName + ".Backup.cfg", true);
+            AugBackupConfig = new(Paths.ConfigPath + "\\" + ModGuid + "." + ".Backup.cfg", true);
             AugBackupConfig.Bind(": DO NOT MODIFY THIS FILES CONTENTS :", ": DO NOT MODIFY THIS FILES CONTENTS :", ": DO NOT MODIFY THIS FILES CONTENTS :", ": DO NOT MODIFY THIS FILES CONTENTS :");
 
             enableAutoConfig = AugConfig.Bind("Config", "Enable Auto Config Sync", true, "Disabling this would stop Augmentum from syncing config whenever a new version is found.");
