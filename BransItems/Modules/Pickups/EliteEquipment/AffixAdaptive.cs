@@ -90,6 +90,8 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
         public static bool ProcIsChance = true;
 
+        public static bool EnableInvisibility = true;
+
         
 
         /// <summary>
@@ -197,6 +199,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
         private void CreateConfig(ConfigFile config)
         {
             CostMultiplierOfElite = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cost Multiplier", 6f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more.");
+            EnableInvisibility =  ConfigManager.ConfigOption<bool>("Elite: " + EliteModifier, "Enable Invisibility", true, "Enable Adaptive Elites to be invisible.");
 
         }
 
@@ -692,7 +695,8 @@ namespace BransItems.Modules.Pickups.EliteEquipments
 
                 //for (int i = 0; i < 4; i++)
                 //    self.body.AddTimedBuff(Fortified.instance.BuffDef, 5f);
-                self.body.AddTimedBuff(RoR2Content.Buffs.AffixHauntedRecipient, AffixAdaptive.InvisibleTimer);
+                if(AffixAdaptive.EnableInvisibility)
+                    self.body.AddTimedBuff(RoR2Content.Buffs.AffixHauntedRecipient, AffixAdaptive.InvisibleTimer);
 
                 for (int i = 0; i < AffixAdaptive.AdaptiveCooldownTimer; i++)
                     self.body.AddTimedBuff(AdaptiveCooldown.instance.BuffDef, i);
