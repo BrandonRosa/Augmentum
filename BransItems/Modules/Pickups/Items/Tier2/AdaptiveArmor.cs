@@ -242,10 +242,10 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                         if (cpt.Hit())
                         {
                             self.body.RemoveBuff(BuffDef);
-                            ModLogger.LogWarning("Stacks " + cpt.StackCount);
+                            //ModLogger.LogWarning("Stacks " + cpt.StackCount);
                             for (int i = 0; i < cpt.StackCount; i++)
                             {
-                                ModLogger.LogWarning("stack:" + i + 1);
+                                //ModLogger.LogWarning("stack:" + i + 1);
                                 self.body.AddTimedBuff(Fortified.instance.BuffDef, cpt.BuffDuration);
                             }
                             self.body.AddTimedBuff(AdaptiveArmorCooldown.instance.BuffDef, cpt.CooldownDuration);

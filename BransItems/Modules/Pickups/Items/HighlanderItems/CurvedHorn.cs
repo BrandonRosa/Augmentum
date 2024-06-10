@@ -18,8 +18,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
     {
         public override string ItemName => "Curved Horn";
         public override string ItemLangTokenName => "CURVED_HORN";
-        public override string ItemPickupDesc => "Increases damage.";
-        public override string ItemFullDescription => $"Increase your <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain*100}%</style>.";
+        public override string ItemPickupDesc => "Increases damage and primary charges.";
+        public override string ItemFullDescription => $"Increase your <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain*100}%</style>. Increases <style=cIsUtility>Primary skill</style> charges by <style=cIsUtility>{(PrimaryChargeMultiplier-1)*100f}%</style>.";
 
         public override string ItemLore => "";
 
@@ -45,7 +45,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public override ItemTag[] ItemTags => new ItemTag[] {ItemTag.Damage };
 
         public static float DamageGain;
-        public static float PrimaryChargePercentIncrease;
+        public static float PrimaryChargeMultiplier;
 
         public override void Init(ConfigFile config)
         {
@@ -61,7 +61,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public void CreateConfig(ConfigFile config)
         {
             DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage percent given to character", .25f, "How much percent damage should Curved Horn grant?");
-            PrimaryChargePercentIncrease = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Multiplier to increase primary charges (rounded up)", 1.5f, "What multiplier should curved horn increase primary charges by? (1.5=150%)");
+            PrimaryChargeMultiplier = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Multiplier to increase primary charges (rounded up)", 1.5f, "What multiplier should curved horn increase primary charges by? (1.5=150%)");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -79,25 +79,40 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public override void Hooks()
         {
             RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
-            On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+            On.RoR2.GenericSkill.RecalculateMaxStock += GenericSkill_RecalculateMaxStock;
+
         }
 
-        private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
+        private void GenericSkill_RecalculateMaxStock(On.RoR2.GenericSkill.orig_RecalculateMaxStock orig, GenericSkill self)
         {
             orig(self);
-            if(GetCount(self)>0)
+            if (GetCount(self.characterBody) > 0)
             {
-                SkillLocator skillLocator = self.skillLocator;
-                int charges = Mathf.CeilToInt(skillLocator.primary.baseStock*PrimaryChargePercentIncrease);
-                skillLocator.primary.SetBonusStockFromBody(skillLocator.secondary.bonusStockFromBody + charges);
+
+                SkillLocator skillLocator = self.characterBody.skillLocator;
+                if (self == skillLocator.primaryBonusStockSkill)
+                {
+                    int additional = Mathf.CeilToInt(self.skillDef.baseMaxStock * (PrimaryChargeMultiplier - 1));
+                    self.maxStock += additional;
+
+                    //if (self.rechargeStock == self.skillDef.baseMaxStock && self.rechargeStock > 1)
+                        //self.rechargeStock += additional;
+                }
             }
         }
 
+
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
-            //args.baseDamageAdd += DamageGain * GetCount(sender);
-            args.damageMultAdd += DamageGain * GetCount(sender);
-            
+            int count = GetCount(sender);
+            args.damageMultAdd += DamageGain * count;
+
+            if (count > 0 && sender.skillLocator.primaryBonusStockSkill)
+            {
+                sender.skillLocator.primaryBonusStockSkill.RecalculateMaxStock();
+            }
+
+
         }
     }
 }

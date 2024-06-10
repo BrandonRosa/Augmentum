@@ -80,6 +80,8 @@ namespace BransItems.Modules.Pickups
 
         public virtual int VanillaTier { get; set; } = 0;
 
+        public virtual float DropChance { get; set; } = .00025f;
+
         public static Color AffixColor { get; set; } = Color.grey; // = new Color32(192, 119, 189, 255);
 
         public static Color AffixLightColor { get; set; } = Color.white;// new Color32(250, 155, 245, 255);
@@ -120,6 +122,7 @@ namespace BransItems.Modules.Pickups
             EliteEquipmentDef.isBoss = IsBoss;
             EliteEquipmentDef.isLunar = IsLunar;
             EliteEquipmentDef.passiveBuffDef = EliteBuffDef;
+            EliteEquipmentDef.dropOnDeathChance = DropChance;
 
             elites.Add(this);
 
