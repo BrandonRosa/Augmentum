@@ -52,6 +52,8 @@ namespace BransItems.Modules.Pickups
         public bool AIBlacklisted { get; internal set; }
         public bool PrinterBlacklisted { get; internal set; }
 
+		public virtual bool BlacklistFromPreLoad { get; internal set; } = false;
+
 		public virtual string[] CorruptsItem { get; set; } = null;
 
 		public ItemDef ItemDef;

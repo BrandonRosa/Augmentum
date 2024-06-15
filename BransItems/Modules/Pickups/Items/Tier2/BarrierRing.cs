@@ -17,6 +17,7 @@ using UnityEngine.AddressableAssets;
 using BransItems.Modules.Pickups.Items.CoreItems;
 using BransItems.Modules.Pickups.Items.Tier1;
 using BransItems.Modules.Pickups.Items.Tier3;
+using BransItems.Modules.Pickups.Items.HighlanderItems;
 
 namespace BransItems.Modules.Pickups.Items.Tier2
 {
@@ -149,7 +150,8 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                         triggered = true;
                         if (itemCount > 0)
                         {
-                            component2.healthComponent.AddBarrier(Math.Min(damageInfo.damage * (InitialPercent + AdditionalPercent * ((float)itemCount - 1f)), component2.healthComponent.fullCombinedHealth * (InitialMaxHealing + AdditionalMaxHealing * ((float)itemCount - 1f))));
+                            for(int i=0;i<=component2.inventory.GetItemCount(DoubleBand.instance.ItemDef);i++)
+                                component2.healthComponent.AddBarrier(Math.Min(damageInfo.damage * (InitialPercent + AdditionalPercent * ((float)itemCount - 1f)), component2.healthComponent.fullCombinedHealth * (InitialMaxHealing + AdditionalMaxHealing * ((float)itemCount - 1f))));
                         }
                     }
                 }
@@ -159,7 +161,10 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             if (triggered && component2.HasBuff(HealingRingsReady.instance.BuffDef))
             {
                 component2.RemoveBuff(HealingRingsReady.instance.BuffDef);
-                for (int k = 1; (float)k <= HealRing.HealingRingsCooldownTime; k++)
+                float cooldown = HealRing.HealingRingsCooldownTime;
+                if (component2.inventory.GetItemCount(HighlanderItems.CooldownBand.instance.ItemDef) > 0)
+                    cooldown *= HighlanderItems.CooldownBand.CooldownReduction;
+                for (int k = 1; (float)k <= cooldown; k++)
                 {
                     component2.AddTimedBuff(HealingRingsCooldown.instance.BuffDef, k);
                 }

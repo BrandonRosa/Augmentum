@@ -14,6 +14,7 @@ using BransItems.Modules.ColorCatalogEntry;
 using BransItems.Modules.ItemTiers.HighlanderTier;
 using System.Reflection;
 using MonoMod.RuntimeDetour;
+using BransItems.Modules.Pickups.EliteEquipments;
 
 namespace BransItems.Modules.Compatability
 {
@@ -136,6 +137,35 @@ namespace BransItems.Modules.Compatability
             public static bool AddEliteReworksScaling = true;
 
 
+        }
+
+        internal static class ZetAspectsCompat
+        {
+            public static bool IsZetAspectsInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.TPDespair.ZetAspects");
+
+            public static void ForceZetAspectCompat()
+            {
+                ZetAdaptiveDrop.instance.Init(BransItems.AugConfig);
+
+                BransItems.ModLogger.LogInfo("Item: " + ZetAdaptiveDrop.instance.ItemName + " Initialized!");
+
+                On.RoR2.PickupDropletController.CreatePickupDroplet_PickupIndex_Vector3_Vector3 += (orig, pickupIndex, position, velocity) =>
+                {
+                    if (!TPDespair.ZetAspects.DropHooks.CanObtainEquipment())
+                    {
+                        EquipmentIndex equipIndex = PickupCatalog.GetPickupDef(pickupIndex).equipmentIndex;
+
+                        if (equipIndex != EquipmentIndex.None && equipIndex==AffixAdaptive.instance.EliteEquipmentDef.equipmentIndex)
+                        {
+                            ItemIndex newIndex = ZetAdaptiveDrop.instance.ItemDef.itemIndex;
+
+                            if (newIndex != ItemIndex.None) pickupIndex = PickupCatalog.FindPickupIndex(newIndex);
+                        }
+                    }
+
+                    orig(pickupIndex, position, velocity);
+                };
+            }
         }
 
         public static event Action FinishedLoadingCompatability;

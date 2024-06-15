@@ -41,7 +41,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public override bool CanRemove => false;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Utility };
 
         public static float MovementGain=20f;
 

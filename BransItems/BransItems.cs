@@ -188,7 +188,7 @@ namespace BransItems
                 foreach (var itemType in ItemTypes)
                 {
                     ItemBase item = (ItemBase)System.Activator.CreateInstance(itemType);
-                    if (ValidateItem(item, Items))
+                    if (!item.BlacklistFromPreLoad && ValidateItem(item, Items))
                     {
                         item.Init(Config);
 
@@ -283,6 +283,13 @@ namespace BransItems
             {
                 ModLogger.LogInfo("ModCompatability: " + "ProperSave Recognized!");
                 ModCompatability.ProperSaveCompat.AddProperSaveFunctionality = true;
+            }
+
+            var enabledZetAspects = ConfigManager.ConfigOption("Mod Compatability: " + "ZetAspects", "Enable Compatability Patches?", true, "Attempt to force ZetAspects compatability (if installed)?");
+            if (ModCompatability.ZetAspectsCompat.IsZetAspectsInstalled && enabledZetAspects)
+            {
+                ModLogger.LogInfo("ModCompatability: " + "ZetAspects Recognized!");
+                ModCompatability.ZetAspectsCompat.ForceZetAspectCompat();
             }
 
 

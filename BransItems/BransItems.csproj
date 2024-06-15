@@ -124,6 +124,9 @@
       <HintPath>libs\Wwise.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="ZetAspects">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\JessicaDev\BepInEx\plugins\William758-ZetAspects\ZetAspects.dll</HintPath>
+    </Reference>
     <Reference Include="Zio">
       <HintPath>libs\Zio.dll</HintPath>
       <Private>false</Private>
