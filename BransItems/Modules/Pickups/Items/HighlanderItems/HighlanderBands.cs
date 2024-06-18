@@ -33,8 +33,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
         //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/HorseLeg/HorseLeg.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/Prefavs/Item/HorseLeg/HorseLegIcon.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/HighlanderBands/SilverRingModel.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/HighlanderBands/CooldownBand.png");
 
         //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
         //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
@@ -562,8 +562,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
         //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Prefavs/Item/HorseLeg/HorseLeg.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/Prefavs/Item/HorseLeg/HorseLegIcon.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/HighlanderBands/GoldRingModel.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/HighlanderBands/DoubleBand.png");
 
         //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
         //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");

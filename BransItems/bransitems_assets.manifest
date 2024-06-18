@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2867665622
+CRC: 372137213
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: fb0a45f0b7e27634bd5eb4bf06a7de8d
+    Hash: 5b9e037d309fc97c8f269735ed2db42b
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -44,6 +44,7 @@ Assets:
 - Assets/Textrures/Icons/Buff/NovaBandReady.png
 - Assets/Models/GlassVeil/GhostIcon.png
 - Assets/Models/Meshes/P3SMesh.obj
+- Assets/Models/EssenceOfRes/ResGemModel.prefab
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_albedo.jpeg
 - Assets/Models/AdaptiveArmor/AACooldownIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.png
@@ -79,6 +80,7 @@ Assets:
 - Assets/Models/Matroyshka/MediumMap.png
 - Assets/Models/AdaptiveArmor/everytexture.com-stock-metal-texture-00011-normal-1024.jpg
 - Assets/Textrures/Icons/Temporary/crystal/source/LifeIcon.png
+- Assets/Models/HighlanderBands/CooldownBand.png
 - Assets/Textrures/Icons/TierBackground/BgCore.png
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_roughness.jpeg
 - Assets/Models/Matroyshka/Massive.prefab
@@ -92,7 +94,9 @@ Assets:
 - Assets/Models/CritContact/TransparentContact.png
 - Assets/Models/Matroyshka/Materials/MiniMap2.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallionconsumed.png
+- Assets/Models/HighlanderBands/Ring_Gold.prefab
 - Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab
+- Assets/Textrures/Icons/Item/HealingBands/texHaldaBand.png
 - Assets/Textrures/Icons/Equipment/Reuser/ReuserTexture.png
 - Assets/Textrures/Icons/Temporary/crystal3/textures/crystal_dif.png
 - Assets/Models/Piggy/PigJar.png
@@ -116,7 +120,9 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal5/source/TotalityIcon2.png
 - Assets/Models/Piggy/PigJarShattered.png
 - Assets/Textrures/Ramps/texRampAdaptive4.png
+- Assets/Models/HighlanderBands/Ring_Silver.prefab
 - Assets/Textrures/Icons/Temporary/crystal3/source/AcuityIcon.png
+- Assets/Models/HighlanderBands/DoubleBand.png
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem3.prefab
 - Assets/Models/GlassVeil/GlassVeilTexture.png
 - Assets/Models/Matroyshka/Mega.prefab
@@ -144,8 +150,10 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal2/textures/ground ao texture.jpeg
 - Assets/Models/Matroyshka/MassiveMap.png
 - Assets/Models/AdaptiveArmor/Materials/ArmorTexture.mat
+- Assets/Models/HighlanderBands/GoldRingModel.prefab
 - Assets/Models/GlassVeil/GlassVeilIcon.png
 - Assets/Models/CurvedHorn/HornIcon2.png
+- Assets/Models/EssenceOfRes/ResGemIcon.png
 - Assets/Models/CritContact/Materials/TransparentContact.mat
 - Assets/Textrures/Icons/Temporary/crystal2/source/gem.fbx
 - Assets/Textrures/Icons/Buff/HealingRingsCooldown.png
@@ -159,6 +167,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal3/source/crystals.fbx
 - Assets/Models/Matroyshka/Materials/MegaMap.mat
 - Assets/Models/GlassVeil/GlassVeilModel.prefab
+- Assets/Models/HighlanderBands/SilverRingModel.prefab
 - Assets/Models/Matroyshka/MegaMap.png
 - Assets/Textrures/Icons/Temporary/crystal/textures/TEX_crystal.png
 - Assets/Models/CritContact/CritContact.blend
@@ -168,6 +177,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/4jud1kk6.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.prefab
 - Assets/Models/Prefavs/Elite/Gills/Materials/GillTexture.png
+- Assets/Models/EssenceOfRes/ResGem.prefab
 - Assets/Models/Matroyshka/Mini.prefab
 - Assets/Textrures/Icons/Buff/AdaptiveIconBWMap.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/earthtotem.mat
