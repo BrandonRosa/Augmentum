@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 372137213
+CRC: 3969600949
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 5b9e037d309fc97c8f269735ed2db42b
+    Hash: 4e3bbf651d3a05ae8443e8f1d597465e
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -107,6 +107,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal6/source/VelocityIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab
 - Assets/Models/Matroyshka/Materials/MassiveMap.mat
+- Assets/Models/Pacemaker/PacemakerBuff2.png
 - Assets/Textrures/Icons/Temporary/QuadModels/discoveryMedallion.prefab
 - Assets/Textrures/Icons/Buff/HealingRingsReady.png
 - Assets/Models/CharmOfDesires/DesireCharm.png
@@ -131,10 +132,13 @@ Assets:
 - Assets/Textrures/Materials/Item/Essence of Strength/EssenceofStrengthMaterial.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/lootedbloodburstclam.mat
 - Assets/Models/Prefavs/Item/Null Newt/VoidNewt2.png
+- Assets/Models/Pacemaker/PacemakerModel.prefab
+- Assets/Models/Pacemaker/ArcReactor2.fbx
 - Assets/Textrures/Icons/Temporary/crystal3/source/Ferocity.prefab
 - Assets/Models/CritContact/Materials/ContactInside.mat
 - Assets/Models/CurvedHorn/LowResHorn_normal.png
 - Assets/Textrures/Icons/Temporary/crystal6/source/crystal6.prefab
+- Assets/Models/Pacemaker/ArcReactor2.prefab
 - Assets/Textrures/Icons/Temporary/crystal/source/Crystal1.prefab
 - Assets/Textrures/Icons/Buff/Fortified.png
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem.bmp
@@ -173,6 +177,7 @@ Assets:
 - Assets/Models/CritContact/CritContact.blend
 - Assets/Models/Prefavs/Item/HorseLeg/HorseLeg.png
 - Assets/Models/Matroyshka/Mini2.prefab
+- Assets/Models/Pacemaker/Pacemaker.png
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem2.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/4jud1kk6.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.prefab

@@ -16,7 +16,7 @@ namespace BransItems.Modules.Utils
         /// <param name="obj">The GameObject/Prefab that you wish to set up RendererInfos for.</param>
         /// <param name="debugmode">Do we attempt to attach a material shader controller instance to meshes in this?</param>
         /// <returns>Returns an array full of RendererInfos for GameObject.</returns>
-        public static CharacterModel.RendererInfo[] ItemDisplaySetup(GameObject obj,bool IgnoreOverlays=false, bool debugmode = false)
+        public static CharacterModel.RendererInfo[] ItemDisplaySetup(GameObject obj, bool IgnoreOverlays = false, bool debugmode = false)
         {
 
             List<Renderer> AllRenderers = new List<Renderer>();
@@ -33,7 +33,7 @@ namespace BransItems.Modules.Utils
             {
                 if (debugmode)
                 {
-                   // var controller = AllRenderers[i].gameObject.AddComponent<MaterialControllerComponents.HGControllerFinder>();
+                    // var controller = AllRenderers[i].gameObject.AddComponent<MaterialControllerComponents.HGControllerFinder>();
                     //controller.Renderer = AllRenderers[i];
                 }
 
@@ -139,13 +139,13 @@ namespace BransItems.Modules.Utils
             return index;
         }
 
-        public static  T[] GetRandomSelectionFromArray<T>(List<T> itemList, int maxCount, Xoroshiro128Plus rng)
+        public static T[] GetRandomSelectionFromArray<T>(List<T> itemList, int maxCount, Xoroshiro128Plus rng)
         {
-            int selectionSize = Math.Min(itemList.Count,maxCount);
+            int selectionSize = Math.Min(itemList.Count, maxCount);
             T[] selection = new T[selectionSize];
             HashSet<T> usedItems = new HashSet<T>();
 
-            for(int i=0;i<selectionSize;i++)
+            for (int i = 0; i < selectionSize; i++)
             {
                 T selectedItem;
                 do
@@ -161,7 +161,7 @@ namespace BransItems.Modules.Utils
 
         public static List<ItemDef> ItemDefsWithTier(ItemTierDef itemTierDef)
         {
-            HashSet<ItemDef > items = new HashSet<ItemDef>();
+            HashSet<ItemDef> items = new HashSet<ItemDef>();
             foreach (ItemDef itemDef in ItemCatalog.allItemDefs)
             {
                 if (itemDef.itemIndex != ItemIndex.None && itemDef.tier == itemTierDef.tier) //&& !itemDef.tags.Contains(ItemTag.WorldUnique))
@@ -177,7 +177,7 @@ namespace BransItems.Modules.Utils
             HashSet<PickupDef> items = new HashSet<PickupDef>();
             foreach (PickupDef pickupDef in PickupCatalog.allPickups)
             {
-                if (pickupDef.itemIndex!= ItemIndex.None && pickupDef.itemTier == itemTierDef.tier)// && !itemDef.tags.Contains(ItemTag.WorldUnique))
+                if (pickupDef.itemIndex != ItemIndex.None && pickupDef.itemTier == itemTierDef.tier)// && !itemDef.tags.Contains(ItemTag.WorldUnique))
                 {
                     items.Add(pickupDef);
                 }
@@ -185,6 +185,113 @@ namespace BransItems.Modules.Utils
             return items.ToList<PickupDef>();
         }
 
-        //public static PickupIndex[] ItemIndexToPickupIndex
+        public static bool IsBossGroupDamageHookEnabled => _IsBossGroupDamageHookEnabled;
+        private static bool _IsBossGroupDamageHookEnabled = false;
+        public static bool ToggleBossGroupDamageHooks(bool enable)
+        {
+            if (enable == IsBossGroupDamageHookEnabled)
+                return false;
+            _IsBossGroupDamageHookEnabled = enable;
+            if (enable)
+            {
+                On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
+            }
+            else
+                On.RoR2.HealthComponent.TakeDamage -= HealthComponent_TakeDamage;
+
+            return true;
+        }
+
+        private static void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo)
+        {
+            float damageTaken = 0;
+            BossGroup bossGroup = null;
+
+            orig(self, damageInfo);
+            if (self.body && self.body.isBoss)
+            {
+                bossGroup = BossGroup.FindBossGroup(self.body);
+                if (bossGroup != null)
+                {
+                    var cpt = bossGroup.GetComponent<BossGroupDamageTakenTracker>();
+                    if (!cpt) cpt = bossGroup.gameObject.AddComponent<BossGroupDamageTakenTracker>();
+                    damageTaken = damageInfo.damage;
+                    cpt.UpdateValues(bossGroup, damageInfo, damageTaken);
+                }
+            }
+
+        }
+
+        public class BossGroupDamageTakenTracker : MonoBehaviour
+        {
+            public float TotalDamageTaken;
+
+            public static Dictionary<float, List<Action<BossGroup, DamageInfo, int>>> PercentLostActionList = new Dictionary<float, List<Action<BossGroup, DamageInfo, int>>>();
+            private void Awake()
+            {
+                TotalDamageTaken = 0f;
+            }
+
+            public static void AddToPercentLostActionList(float percent, Action<BossGroup, DamageInfo, int> action )
+            {
+                if (!PercentLostActionList.ContainsKey(percent))
+                    PercentLostActionList.Add(percent, new List<Action<BossGroup, DamageInfo, int>>());
+
+                if (PercentLostActionList[percent] == null)
+                    PercentLostActionList[percent] = new List<Action<BossGroup, DamageInfo, int>>();
+
+                PercentLostActionList[percent].Add(action);
+            }
+
+            public void UpdateValues(BossGroup bossGroup, DamageInfo damageInfo, float damageTaken)
+            {
+                float healthBefore = bossGroup.totalObservedHealth;
+                float healthAfter = Mathf.Max(bossGroup.totalObservedHealth - damageTaken, 0);
+                float percentBefore=healthBefore/bossGroup.totalMaxObservedMaxHealth;
+                float percentAfter =  healthAfter/ bossGroup.totalMaxObservedMaxHealth;
+
+                float[] Keys = PercentLostActionList.Keys.ToArray();
+                for (int di=0;di<PercentLostActionList.Count;di++)
+                {
+                    float percent = Keys[di];
+                    int timesTriggered = 0;
+                    /*
+                    for(float health=bossGroup.totalMaxObservedMaxHealth;health>0;health-=percent*bossGroup.totalMaxObservedMaxHealth)
+                    {
+                        BransItems.ModLogger.LogWarning("FLAG1");
+                        if(health<healthBefore)
+                        {
+                            BransItems.ModLogger.LogWarning("FLAG2");
+                            if (health>=healthAfter && health>=0)
+                            {
+                                BransItems.ModLogger.LogWarning("FLAG3");
+                                timesTriggered++;
+                            }
+                            else
+                            {
+                                BransItems.ModLogger.LogWarning("FLAG4");
+                                foreach (Action<BossGroup, DamageInfo, int> action in PercentLostActionList[percent])
+                                    action.Invoke(bossGroup, damageInfo, timesTriggered);
+                                break;
+                            }
+
+                        }
+                    }
+                    */
+                    int timesTriggeredAfter = (int)((TotalDamageTaken + damageTaken) / (percent * bossGroup.totalMaxObservedMaxHealth));
+                    int timesTriggeredBefore = (int)(TotalDamageTaken / (percent * bossGroup.totalMaxObservedMaxHealth));
+                    timesTriggered = timesTriggeredAfter-timesTriggeredBefore;
+                    BransItems.ModLogger.LogWarning(timesTriggeredBefore);
+                    BransItems.ModLogger.LogWarning(timesTriggeredAfter);
+                    BransItems.ModLogger.LogWarning(timesTriggered);
+                    BransItems.ModLogger.LogWarning("---");
+                    foreach (Action<BossGroup, DamageInfo, int> action in PercentLostActionList[percent])
+                        action.Invoke(bossGroup, damageInfo, timesTriggered);
+                }
+
+                TotalDamageTaken += damageTaken;
+                
+            }
+        }
     }
 }

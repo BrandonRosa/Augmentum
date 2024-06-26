@@ -19,7 +19,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 {
     class CooldownBand : ItemBase<CooldownBand>
     {
-        public override string ItemName => "Tlaloc’s Band";
+        public override string ItemName => "Chal’s Band";
         public override string ItemLangTokenName => "COOLDOWN_BAND";
         public override string ItemPickupDesc => "Reduces Band cooldowns. High damage hits deal more damage.";
         public override string ItemFullDescription => $"Reduces Band <style=cIsUtility>cooldowns</style> by <style=cIsUtility>{CooldownReduction * 100f}%</style>. Hits that deal <style=cIsDamage>more than 350% damage</style> deal <style=cIsDamage>50% more</style>.";
@@ -366,7 +366,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
                     if (attacker)
                     {
                         bool HasCooldown = GetCount(attacker) > 0;
-                        bool HasDouble = attacker.inventory.GetItemCount(DoubleBand.instance.ItemDef) > 0;
+                        bool HasDouble = attacker.inventory && attacker.inventory.GetItemCount(DoubleBand.instance.ItemDef) > 0;
                         if (HasCooldown || HasDouble)
                         {
                             float currentDamage = attacker.damage;
@@ -530,15 +530,22 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public bool ShouldModifyLoopCooldown(DamageInfo damageInfo, GameObject victim)
         {
+            if (!damageInfo.attacker || !victim)
+                return false;
             int count = GetCount(damageInfo.attacker.GetComponent<CharacterBody>());
             if (count > 0)
                 return true;
             return false;
         }
 
-        public bool ShouldDouble(DamageInfo damageInfo, GameObject victom)
+        public bool ShouldDouble(DamageInfo damageInfo, GameObject victim)
         {
-            int count = damageInfo.attacker.GetComponent<CharacterBody>().inventory.GetItemCount(DoubleBand.instance.ItemDef);
+            if (!damageInfo.attacker || !victim)
+                return false;
+            CharacterBody body = damageInfo.attacker.GetComponent<CharacterBody>();
+            if (!body || !body.inventory)
+                return false;
+            int count = body.inventory.GetItemCount(DoubleBand.instance.ItemDef);
             if (count > 0)
                 return true;
             return false;
@@ -548,7 +555,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
     class DoubleBand : ItemBase<DoubleBand>
     {
-        public override string ItemName => "Chal’s Band";
+        public override string ItemName => "Tlaloc’s Band";
         public override string ItemLangTokenName => "DOUBLE_BAND";
         public override string ItemPickupDesc => "Band effects trigger twice. High damage hits deal more damage.";
         public override string ItemFullDescription => $"Band <style=cIsUtility>effects trigger twice</style>. Hits that deal <style=cIsDamage>more than 400% damage</style> deal <style=cIsDamage>50% more</style>.";

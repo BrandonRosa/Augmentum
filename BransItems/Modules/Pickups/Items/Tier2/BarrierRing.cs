@@ -29,7 +29,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also grant a <style=cIsHealing>temporary barrier</style> for <style=cIsHealing>{InitialPercent*100}%</style><style=cStack>(+{AdditionalPercent*100}% per stack)</style> of the TOTAL damage" +
             $" up to <style=cIsHealing>{InitialMaxHealing*100}%</style><style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max combined health. Recharges every <style=cIsUtility>{HealRing.HealingRingsCooldownTime}</style> seconds.";
 
-        public override string ItemLore => "";
+        public override string ItemLore => $"Should you become weak,\nShould harm come to you,\nI will protect you.\nI will be there.";
 
         public override ItemTier Tier => ItemTier.Tier2;
 

@@ -42,7 +42,6 @@ namespace BransItems.Modules.StandaloneBuffs
             {
                 if (self.body && self.body.GetBuffCount(BuffDef) > 0)
                 {
-                    ModLogger.LogWarning("Damage:" + damageInfo.damage);
                     damageInfo.damage += (float)self.body.GetBuffCount(BuffDef)*.1f; //Multiply by 2 cuz damage is wierd???
                     orig(self, damageInfo);
                     usedOrig = true;

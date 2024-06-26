@@ -17,10 +17,10 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 {
     class TonatiuhsForge : ItemBase<TonatiuhsForge>
     {
-        public override string ItemName => "Tonatiuh's Forge";
-        public override string ItemLangTokenName => "TONA_FORGE";
+        public override string ItemName => "Overclocked Pacemaker";
+        public override string ItemLangTokenName => "OVERCLOCKED_PACEMAKER";
         public override string ItemPickupDesc => "When using your Special skill, increase your damage. Scales with cooldown.";
-        public override string ItemFullDescription =>  $"When using your <style=cIsUtility>Special skill</style>, increase your total <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain*10}%</style> for every second of cooldown. Lasts {Duration} seconds.";
+        public override string ItemFullDescription =>  $"When using your <style=cIsUtility>Special skill</style>, increase your total <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain*100}%</style> for every second of cooldown. Lasts {Duration} seconds.";
 
         public override string ItemLore => "";
 
@@ -31,8 +31,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
         //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/CurvedHorn/HornItem.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/CurvedHorn/HornIcon.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/Pacemaker/PacemakerModel.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/Pacemaker/Pacemaker.png");
 
         //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
         //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
@@ -102,11 +102,11 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
     public class DivineHeat : BuffBase<DivineHeat>
     {
-        public override string BuffName => "Divine Heat";
+        public override string BuffName => "Overclocked Heat";
 
         public override Color Color => new Color32(250, 250, 250, 255);
 
-        //public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/AdaptiveArmor/AAReadyIcon.png");
+        public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/Pacemaker/PacemakerBuff2.png");
         public override bool CanStack => true;
         public virtual bool IsDebuff => false;
 

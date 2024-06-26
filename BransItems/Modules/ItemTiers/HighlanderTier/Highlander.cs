@@ -72,10 +72,7 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
             //itemTierDef.highlightPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
             //itemTierDef.dropletDisplayPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
             SetHooks();
-            //BransItems.ModLogger.LogWarning(itemTierDef.tier.ToString());
-            //BransItems.ModLogger.LogWarning("Correct:" + ItemTier.AssignedAtRuntime.ToString());
-            //BransItems.ModLogger.LogWarning("MyTierName:" + itemTierDef.name);
-            //BransItems.ModLogger.LogWarning("MyTierCanScrap:" + itemTierDef.canScrap);
+
 
         }
         private void CreateDropletPrefab()
@@ -237,7 +234,7 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         {
             List<PickupDef> HighList = ItemHelpers.PickupDefsWithTier(this.itemTierDef);
             int picked = RoR2Application.rng.RangeInt(0, HighList.Count);
-            //BransItems.ModLogger.LogWarning("Item#"+picked+"   Count:"+HighList.Count+"    Name"+ItemCatalog.GetItemDef(HighList[picked].itemIndex).nameToken+"     index"+ HighList[picked].itemIndex);
+
             PickupDef pickupDef = HighList[picked];
             PickupDropletController.CreatePickupDroplet(pickupDef.pickupIndex, location.position + Vector3.up * height, Vector3.up * 25f);
             Chat.SendBroadcastChat(new Chat.SimpleChatMessage
@@ -248,21 +245,20 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         private void CharacterMaster_OnItemAddedClient(On.RoR2.CharacterMaster.orig_OnItemAddedClient orig, CharacterMaster self, ItemIndex itemIndex)
         {
-            //BransItems.ModLogger.LogWarning("Indexed Pickup" + itemIndex.ToString());
-            //BransItems.ModLogger.LogWarning("All Highlander" + Highlander.instance.ItemsWithThisTier.Count);
+            
             orig(self, itemIndex); //JUST ADDED, adjust if it breaks stuff
             if (ItemCatalog.GetItemDef(itemIndex)._itemTierDef==itemTierDef)
             {
                 int count = self.inventory.GetTotalItemCountOfTier(itemTierDef.tier);
-                BransItems.ModLogger.LogWarning("IN LIST, Count:"+count);
+               
                 
                 if (count >= 2)
                 {
-                    BransItems.ModLogger.LogWarning("Inventory Count" + self.inventory.itemAcquisitionOrder.Count);
+
                     for (int i = 0; i < self.inventory.itemAcquisitionOrder.Count; i++)
                     {
                         ItemIndex temp = self.inventory.itemAcquisitionOrder[i];
-                        BransItems.ModLogger.LogWarning("i:" + i + "    index" + temp.ToString());
+
                         if ((ItemCatalog.GetItemDef(temp)._itemTierDef == itemTierDef))
                         {
                             ItemIndex toss = self.inventory.itemAcquisitionOrder[i];
@@ -270,7 +266,7 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
                             Vector3 val = Vector3.up * 25f; //dropTransform.forward * dropForwardVelocityStrength;
                             PickupIndex pickupIndex = PickupCatalog.FindPickupIndex(toss);
-                            BransItems.ModLogger.LogWarning("DropIndex:" + pickupIndex);
+
                             PickupDropletController.CreatePickupDroplet(pickupIndex, self.GetBody().transform.position + Vector3.up * 1.5f, val);
                             break;
                         }

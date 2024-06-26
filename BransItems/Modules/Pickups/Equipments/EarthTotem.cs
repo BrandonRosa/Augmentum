@@ -236,7 +236,7 @@ namespace BransItems.Modules.Pickups.Equipments
         private void Loading_OnLoadingStarted(ProperSave.SaveFile obj)
         {
             string ETTDictKey = "BransExpansion_EarthTotemTrackers";
-            BransItems.ModLogger.LogWarning("Flag1");
+
             /*
             List<string> earthTotemTrackers = obj.GetModdedData<List<string>>(ETTDictKey);
             BransItems.ModLogger.LogWarning("Flag2");
@@ -259,19 +259,19 @@ namespace BransItems.Modules.Pickups.Equipments
             }
             */
             List<EarthTotemTrackerSaveStructure> ETTSStructures = obj.GetModdedData<List<EarthTotemTrackerSaveStructure>>(ETTDictKey);
-            BransItems.ModLogger.LogWarning("Flag2");
+
             foreach (EarthTotemTrackerSaveStructure ETTS in ETTSStructures)
             {
                 NetworkUserId NUID = ETTS.userID.Load();
                 CharacterMaster master = NetworkUser.readOnlyInstancesList.FirstOrDefault(Nuser=> Nuser.id.Equals(NUID)).master;//RoR2.Run.instance.GetUserMaster(ETTS.userID.Load());
                 int absorbedCount = ETTS.EarthTotemsAbsorbed;
-                BransItems.ModLogger.LogWarning("Flag3 " + absorbedCount);
+
                 List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
                 foreach(string equip in ETTS.EquipList)
                     equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(equip)));
 
                 EarthTotemTracker temp = master.gameObject.AddComponent<EarthTotemTracker>();
-                BransItems.ModLogger.LogWarning("Flag4");
+
                 temp.EquipDefList = equipmentDefs;
                 temp.EarthTotemAbsorbedCount = absorbedCount;
 

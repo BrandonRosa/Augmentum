@@ -30,7 +30,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also <style=cIsHealing>heal</style> you for <style=cIsHealing>{InitialPercent*100}%</style> <style=cStack>(+{AdditionalPercent*100}% per stack)</style> of the TOTAL damage" +
             $" up to <style=cIsHealing>{InitialMaxHealing*100}%</style> <style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max health. Recharges every <style=cIsUtility>{HealRing.HealingRingsCooldownTime}</style> seconds.";
 
-        public override string ItemLore => "";
+        public override string ItemLore => $"Should sickness overtake you,\nShould death draw near,\nI will heal you.\nI will be there.";
 
         public override ItemTier Tier => ItemTier.Tier2;
 
