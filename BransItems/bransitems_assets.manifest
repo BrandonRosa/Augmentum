@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3969600949
+CRC: 601778359
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 4e3bbf651d3a05ae8443e8f1d597465e
+    Hash: 96cdcb74cef11da9596b17202a596e39
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -49,6 +49,7 @@ Assets:
 - Assets/Models/AdaptiveArmor/AACooldownIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/diffuse.png
+- Assets/Models/PlatinumFists/PlatinumFistsModel.prefab
 - Assets/Textrures/Icons/Equipment/Reducer/ReducerIcon.png
 - Assets/Textrures/Icons/TierBackground/BgHighlander.png
 - Assets/Textrures/Icons/Buff/Status_AffixAdaptive.png
@@ -80,6 +81,7 @@ Assets:
 - Assets/Models/Matroyshka/MediumMap.png
 - Assets/Models/AdaptiveArmor/everytexture.com-stock-metal-texture-00011-normal-1024.jpg
 - Assets/Textrures/Icons/Temporary/crystal/source/LifeIcon.png
+- Assets/Models/PlatinumFists/PlatinumFistsIcon.png
 - Assets/Models/HighlanderBands/CooldownBand.png
 - Assets/Textrures/Icons/TierBackground/BgCore.png
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_roughness.jpeg
@@ -173,6 +175,7 @@ Assets:
 - Assets/Models/GlassVeil/GlassVeilModel.prefab
 - Assets/Models/HighlanderBands/SilverRingModel.prefab
 - Assets/Models/Matroyshka/MegaMap.png
+- Assets/Models/PlatinumFists/PlatFistBuff.png
 - Assets/Textrures/Icons/Temporary/crystal/textures/TEX_crystal.png
 - Assets/Models/CritContact/CritContact.blend
 - Assets/Models/Prefavs/Item/HorseLeg/HorseLeg.png
@@ -200,6 +203,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal2/textures/lowpoly1_DefaultMaterial_Diffuse1.png
 - Assets/Models/CurvedHorn/HornItem.prefab
 - Assets/Textrures/Icons/Equipment/Reuser/ReuserIcon.png
+- Assets/Models/PlatinumFists/PlatinumFists.fbx
 - Assets/Models/Prefavs/Item/HorseLeg/HorseLeg.blend
 - Assets/Models/AdaptiveArmor/ArmorTexture2.png
 - Assets/Textrures/Icons/Temporary/crystal3/source/crystal3.prefab

@@ -17,10 +17,10 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 {
     class BattleArmor : ItemBase<CurvedHorn>
     {
-        public override string ItemName => "Battle Armor";
-        public override string ItemLangTokenName => "BATTLE_ARMOR";
+        public override string ItemName => "Platinum Fists";
+        public override string ItemLangTokenName => "PLATINUM_FISTS";
         public override string ItemPickupDesc => "While only using your Primary skill, increase attack speed and armor.";
-        public override string ItemFullDescription => $"While only using your <style=cIsUtility>Primary skill</style>, gain <style=cIsDamage>{AttackSpeedIncrease}% attack speed</style> and <style=cIsHealing>{ArmorIncrease} armor</style> every second up to 10 seconds.";
+        public override string ItemFullDescription => $"While only using your <style=cIsUtility>Primary skill</style>, gain <style=cIsDamage>{AttackSpeedIncrease}% attack speed</style> and <style=cIsHealing>{ArmorIncrease} armor</style> every second up to {MaxSeconds} seconds.";
 
         public override string ItemLore => "";
 
@@ -31,8 +31,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
         //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/CritContact/CritContact.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/CritContact/ContactIcon.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/PlatinumFists/PlatinumFistsModel.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/PlatinumFists/PlatinumFistsIcon.png");
 
         //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
         //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
@@ -47,6 +47,10 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public static float AttackSpeedIncrease;
         public static float ArmorIncrease;
+        public static float MaxSeconds;
+        public static float DecelerationRate;
+
+        public static int MaxStacks=100;
 
         public override void Init(ConfigFile config)
         {
@@ -61,8 +65,10 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            AttackSpeedIncrease = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack speed increase", 5f, "How much attack speed per second should this item give?");
-            ArmorIncrease = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Armor increase", 5f, "How much armor should this item grant?");
+            AttackSpeedIncrease = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack speed increase", 4f, "How much attack speed per second should this item give?");
+            ArmorIncrease = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Armor increase", 1f, "How much armor should this item grant?");
+            MaxSeconds = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Maximum Seconds", 20f, "How long does this effect take to get to max potential?");
+            DecelerationRate = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Deceleration Rate", .5f, "How fast does this item lose its stacks of Platinum Surge? (.3=30% as fast as the gain rate, 0 means no stacks are lost)");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -351,11 +357,11 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
     public class BattleSurge : BuffBase<BattleSurge>
     {
-        public override string BuffName => "Battle Surge";
+        public override string BuffName => "Platinum Surge";
 
         public override Color Color => new Color32(250, 250, 250, 255);
 
-        //public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/AdaptiveArmor/AAReadyIcon.png");
+        public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/PlatinumFists/PlatFistBuff.png");
         public override bool CanStack => true;
         public virtual bool IsDebuff => false;
 
@@ -377,8 +383,10 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
             int count = sender.GetBuffCount(BattleSurge.instance.BuffDef);
             if (count>0)
             {
-                args.attackSpeedMultAdd += 1 * .01f * count;
-                args.armorAdd += 1 * count;
+                float armorPerStack = BattleArmor.ArmorIncrease * BattleArmor.MaxSeconds/BattleArmor.MaxStacks;
+                float attackSpeedPerStack = BattleArmor.AttackSpeedIncrease * BattleArmor.MaxSeconds / BattleArmor.MaxStacks;
+                args.attackSpeedMultAdd += .01f* attackSpeedPerStack * count;
+                args.armorAdd += armorPerStack* count;
             }
         }
     }
@@ -386,8 +394,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
     public class BattleArmorTracker : MonoBehaviour
     {
         public float SecondsSinceFirstTrigger;
-        public float IncreaseVelocity=5;
-        public float DecreaseVelocity = -10;
+        public float IncreaseVelocity=BattleArmor.MaxStacks/BattleArmor.MaxSeconds;
+        public float DecreaseVelocity =-BattleArmor.DecelerationRate*BattleArmor.MaxStacks / BattleArmor.MaxSeconds;
         public float CurrentPosition;
         public void Init()
         {
@@ -396,7 +404,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public void Increase(float dt)
         {
-            CurrentPosition = Mathf.Min(CurrentPosition+ dt * IncreaseVelocity,50f);
+            CurrentPosition = Mathf.Min(CurrentPosition+ dt * IncreaseVelocity,BattleArmor.MaxStacks);
         }
 
         public void Decrease(float dt)

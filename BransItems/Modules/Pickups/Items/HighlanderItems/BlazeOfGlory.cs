@@ -302,6 +302,13 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
             On.RoR2.Inventory.GiveItem_ItemIndex_int += Inventory_GiveItem_ItemIndex_int;
             On.RoR2.Inventory.RemoveItem_ItemIndex_int += Inventory_RemoveItem_ItemIndex_int;
             On.RoR2.HealthComponent.Suicide += HealthComponent_Suicide;
+            On.RoR2.Run.OnClientGameOver += Run_OnClientGameOver;
+        }
+
+        private void Run_OnClientGameOver(On.RoR2.Run.orig_OnClientGameOver orig, Run self, RunReport runReport)
+        {
+            orig(self, runReport);
+            TeamsWithItem = new Dictionary<TeamIndex, HashSet<CharacterMaster>>();
         }
 
         private void HealthComponent_Suicide(On.RoR2.HealthComponent.orig_Suicide orig, HealthComponent self, GameObject killerOverride, GameObject inflictorOverride, DamageType damageType)

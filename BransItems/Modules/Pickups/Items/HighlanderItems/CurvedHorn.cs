@@ -60,7 +60,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage percent given to character", .25f, "How much percent damage should Curved Horn grant?");
+            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage percent given to character", .30f, "How much percent damage should Curved Horn grant?");
             PrimaryChargeMultiplier = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Multiplier to increase primary charges (rounded up)", 1.5f, "What multiplier should curved horn increase primary charges by? (1.5=150%)");
         }
 
