@@ -20,7 +20,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Platinum Fists";
         public override string ItemLangTokenName => "PLATINUM_FISTS";
         public override string ItemPickupDesc => "While only using your Primary skill, increase attack speed and armor.";
-        public override string ItemFullDescription => $"While only using your <style=cIsUtility>Primary skill</style>, gain <style=cIsDamage>{AttackSpeedIncrease}% attack speed</style> and <style=cIsHealing>{ArmorIncrease} armor</style> every second up to {MaxSeconds} seconds.";
+        public override string ItemFullDescription => $"While using your <style=cIsUtility>Primary skill</style>, gain <style=cIsDamage>{AttackSpeedIncrease}% attack speed</style> and <style=cIsHealing>{ArmorIncrease} armor</style> every second up to {MaxSeconds} seconds."+FinishDescription();
 
         public override string ItemLore => "";
 
@@ -49,6 +49,12 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public static float ArmorIncrease;
         public static float MaxSeconds;
         public static float DecelerationRate;
+        public static bool EnableTech;
+        public enum PunishTypes { Reset, SubtractTime, Divide, IncreaseLossRate };
+        public static PunishTypes PunishType;
+        public static float PunishSubractSeconds;
+        public static float PunishDivisorValue;
+        public static float PunishLossRateMultiplier;
 
         public static int MaxStacks=100;
 
@@ -69,6 +75,15 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
             ArmorIncrease = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Armor increase", 1f, "How much armor should this item grant?");
             MaxSeconds = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Maximum Seconds", 20f, "How long does this effect take to get to max potential?");
             DecelerationRate = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Deceleration Rate", .5f, "How fast does this item lose its stacks of Platinum Surge? (.3=30% as fast as the gain rate, 0 means no stacks are lost)");
+
+            EnableTech= ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Enable Tech", true , "As long as the primary fire button is held, you wont be punished. Keep this behavior enabled?");
+
+            PunishType = ConfigManager.ConfigOption<PunishTypes>("Item: " + ItemName, "Other Skill Punishment Type", PunishTypes.Reset, "How should the item react when using non-primary abilities?");
+
+            PunishSubractSeconds= ConfigManager.ConfigOption<float>("Item: " + ItemName, "Subract Type", 10f, "How many seconds will the Subract Punish Type remove?");
+            PunishDivisorValue= ConfigManager.ConfigOption<float>("Item: " + ItemName, "Divide Type", 2f, "How much should the divide punish type divide the current stacks of Platinum Surge?");
+            PunishLossRateMultiplier=ConfigManager.ConfigOption<float>("Item: " + ItemName, "Increase Loss Type", 5f, "What should the multiplier be for the LossRate Punish Type? (5=-5xGrowthRate. MaxSeconds/LossRatePunishMultiplier=Seconds to loose max stacks)");
+
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -286,6 +301,32 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
             return rules;
         }
 
+        public static string FinishDescription()
+        {
+            string ans = $" After ";
+            if (EnableTech)
+                ans += "only ";
+            ans+="using a <style=cIsUtility>different skill</style>, ";
+
+            switch(PunishType)
+            {
+                case PunishTypes.SubtractTime:
+                    ans += $" remove {PunishSubractSeconds} seconds from the bonus.";
+                    break;
+                case PunishTypes.Divide:
+                    ans += $" divide the bonus by {PunishDivisorValue}.";
+                    break;
+                case PunishTypes.IncreaseLossRate:
+                    ans += $" quickly lose the bonus until the primary skill is used again.";
+                    break;
+                case PunishTypes.Reset:
+                default:
+                    ans += $" reset the bonus to 0.";
+                    break;
+            }
+
+            return ans;
+        }
 
         public override void Hooks()
         {
@@ -302,31 +343,125 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
                 var cpt = self.master.GetComponent<BattleArmorTracker>();
                 if(cpt)
                 {
-                    if(self.inputBank.skill1.down)
+                    bool JustDownPunish = (self.inputBank.skill2.justPressed || self.inputBank.skill3.justPressed || self.inputBank.skill4.justPressed);
+                    bool DownPunish = self.inputBank.skill2.down || self.inputBank.skill3.down || self.inputBank.skill4.down;
+                    if (EnableTech)
                     {
-                        cpt.Increase(Time.fixedDeltaTime);
-                        int buffCountCurrent = self.GetBuffCount(BattleSurge.instance.BuffDef);
-                        int buffCountCorrect = Mathf.CeilToInt(cpt.CurrentPosition);
-                        if (buffCountCorrect>buffCountCurrent)
+                        if (self.inputBank.skill1.down)
                         {
-                            for (int i = buffCountCorrect - buffCountCurrent; i > 0; i--)
-                                self.AddBuff(BattleSurge.instance.BuffDef);
-                            //self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, buffCountCorrect);
+                            cpt.UsePunishDecreaseVelocity = false;
+                            cpt.Increase(Time.fixedDeltaTime);
+                            int buffCountCurrent = self.GetBuffCount(BattleSurge.instance.BuffDef);
+                            int buffCountCorrect = Mathf.CeilToInt(cpt.CurrentPosition);
+                            if (buffCountCorrect > buffCountCurrent)
+                            {
+                                for (int i = buffCountCorrect - buffCountCurrent; i > 0; i--)
+                                    self.AddBuff(BattleSurge.instance.BuffDef);
+                                //self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, buffCountCorrect);
+                            }
                         }
-                    }
-                    else if(self.inputBank.skill2.down || self.inputBank.skill3.down || self.inputBank.skill4.down)
-                    {
-                        cpt.Reset();
-                        self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, 0);
+                        else if ((PunishType == PunishTypes.Reset && DownPunish) || (PunishType != PunishTypes.Reset && JustDownPunish))
+                        {
+                            switch (PunishType)
+                            {
+                                case PunishTypes.SubtractTime:
+
+                                    cpt.Decrease(PunishSubractSeconds);
+                                    self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, Mathf.CeilToInt(cpt.CurrentPosition));
+                                    break;
+                                case PunishTypes.Divide:
+                                    cpt.CurrentPosition /= PunishDivisorValue;
+                                    self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, Mathf.CeilToInt(cpt.CurrentPosition));
+                                    break;
+                                case PunishTypes.IncreaseLossRate:
+                                    cpt.UsePunishDecreaseVelocity = true;
+                                    cpt.DecreaseWithCustomVelocity(Time.fixedDeltaTime, PunishLossRateMultiplier);
+                                    int buffCountCurrent = self.GetBuffCount(BattleSurge.instance.BuffDef);
+                                    int buffCountCorrect = Mathf.CeilToInt(cpt.CurrentPosition);
+                                    if (buffCountCorrect < buffCountCurrent)
+                                    {
+                                        self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, buffCountCorrect);
+                                    }
+                                    break;
+                                case PunishTypes.Reset:
+                                default:
+                                    cpt.Reset();
+                                    self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, 0);
+                                    break;
+                            }
+
+                        }
+                        else
+                        {
+                            if (cpt.UsePunishDecreaseVelocity)
+                                cpt.DecreaseWithCustomVelocity(Time.fixedDeltaTime, PunishLossRateMultiplier);
+                            else
+                                cpt.Decrease(Time.fixedDeltaTime);
+                            int buffCountCurrent = self.GetBuffCount(BattleSurge.instance.BuffDef);
+                            int buffCountCorrect = Mathf.CeilToInt(cpt.CurrentPosition);
+                            if (buffCountCorrect < buffCountCurrent)
+                            {
+                                self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, buffCountCorrect);
+                            }
+                        }
                     }
                     else
                     {
-                        cpt.Decrease(Time.fixedDeltaTime);
-                        int buffCountCurrent = self.GetBuffCount(BattleSurge.instance.BuffDef);
-                        int buffCountCorrect = Mathf.CeilToInt(cpt.CurrentPosition);
-                        if (buffCountCorrect < buffCountCurrent)
+                        if ((PunishType == PunishTypes.Reset && DownPunish) || (PunishType != PunishTypes.Reset && JustDownPunish))
                         {
-                            self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, buffCountCorrect);
+                            switch (PunishType)
+                            {
+                                case PunishTypes.SubtractTime:
+                                    cpt.Decrease(PunishSubractSeconds);
+                                    self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, Mathf.CeilToInt(cpt.CurrentPosition));
+                                    break;
+                                case PunishTypes.Divide:
+                                    cpt.CurrentPosition /= PunishDivisorValue;
+                                    self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, Mathf.CeilToInt(cpt.CurrentPosition));
+                                    break;
+                                case PunishTypes.IncreaseLossRate:
+                                    cpt.UsePunishDecreaseVelocity = true;
+                                    cpt.DecreaseWithCustomVelocity(Time.fixedDeltaTime, PunishLossRateMultiplier);
+                                    int buffCountCurrent = self.GetBuffCount(BattleSurge.instance.BuffDef);
+                                    int buffCountCorrect = Mathf.CeilToInt(cpt.CurrentPosition);
+                                    if (buffCountCorrect < buffCountCurrent)
+                                    {
+                                        self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, buffCountCorrect);
+                                    }
+                                    break;
+                                case PunishTypes.Reset:
+                                default:
+                                    cpt.Reset();
+                                    self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, 0);
+                                    break;
+                            }
+
+                        }
+                        else if (self.inputBank.skill1.down)
+                        {
+                            cpt.UsePunishDecreaseVelocity = false;
+                            cpt.Increase(Time.fixedDeltaTime);
+                            int buffCountCurrent = self.GetBuffCount(BattleSurge.instance.BuffDef);
+                            int buffCountCorrect = Mathf.CeilToInt(cpt.CurrentPosition);
+                            if (buffCountCorrect > buffCountCurrent)
+                            {
+                                for (int i = buffCountCorrect - buffCountCurrent; i > 0; i--)
+                                    self.AddBuff(BattleSurge.instance.BuffDef);
+                                //self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, buffCountCorrect);
+                            }
+                        }
+                        else
+                        {
+                            if (cpt.UsePunishDecreaseVelocity)
+                                cpt.DecreaseWithCustomVelocity(Time.fixedDeltaTime, PunishLossRateMultiplier);
+                            else
+                                cpt.Decrease(Time.fixedDeltaTime);
+                            int buffCountCurrent = self.GetBuffCount(BattleSurge.instance.BuffDef);
+                            int buffCountCorrect = Mathf.CeilToInt(cpt.CurrentPosition);
+                            if (buffCountCorrect < buffCountCurrent)
+                            {
+                                self.SetBuffCount(BattleSurge.instance.BuffDef.buffIndex, buffCountCorrect);
+                            }
                         }
                     }
                 }
@@ -397,9 +532,12 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public float IncreaseVelocity=BattleArmor.MaxStacks/BattleArmor.MaxSeconds;
         public float DecreaseVelocity =-BattleArmor.DecelerationRate*BattleArmor.MaxStacks / BattleArmor.MaxSeconds;
         public float CurrentPosition;
+        public bool UsePunishDecreaseVelocity;
+
         public void Init()
         {
             CurrentPosition = 0;
+            UsePunishDecreaseVelocity = false;
         }
 
         public void Increase(float dt)
@@ -410,6 +548,11 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public void Decrease(float dt)
         {
             CurrentPosition = Mathf.Max(CurrentPosition+ dt * DecreaseVelocity,0f);
+        }
+
+        public void DecreaseWithCustomVelocity(float dt, float multiplier)
+        {
+            CurrentPosition = Mathf.Max(CurrentPosition + dt * IncreaseVelocity*(-multiplier), 0f);
         }
 
         public void Reset()

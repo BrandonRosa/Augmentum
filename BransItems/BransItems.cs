@@ -65,6 +65,7 @@ namespace BransItems
         public List<EquipmentBase> Equipments = new List<EquipmentBase>();
         public List<ItemTierBase> ItemTiers = new List<ItemTierBase>();
         public List<EliteEquipmentBase> EliteEquipments = new List<EliteEquipmentBase>();
+        public List<ArtifactBase> Artifacts = new List<ArtifactBase>();
        // public List<InteractableBase> Interactables = new List<InteractableBase>();
        // public List<SurvivorBase> Survivors = new List<SurvivorBase>();
 
@@ -74,12 +75,12 @@ namespace BransItems
 
 
         // For modders that seek to know whether or not one of the items or equipment are enabled for use in...I dunno, adding grip to Blaster Sword?
-        //public static Dictionary<ArtifactBase, bool> ArtifactStatusDictionary = new Dictionary<ArtifactBase, bool>();
-        //public static Dictionary<BuffBase, bool> BuffStatusDictionary = new Dictionary<BuffBase, bool>();
+
         public static Dictionary<ItemBase, bool> ItemStatusDictionary = new Dictionary<ItemBase, bool>();
         public static Dictionary<EquipmentBase, bool> EquipmentStatusDictionary = new Dictionary<EquipmentBase, bool>();
         public static Dictionary<BuffBase, bool> BuffStatusDictionary = new Dictionary<BuffBase, bool>();
         public static Dictionary<EliteEquipmentBase, bool> EliteEquipmentStatusDictionary = new Dictionary<EliteEquipmentBase, bool>();
+        public static Dictionary<ArtifactBase, bool> ArtifactStatusDictionary = new Dictionary<ArtifactBase, bool>();
         //public static Dictionary<InteractableBase, bool> InteractableStatusDictionary = new Dictionary<InteractableBase, bool>();
         // public static Dictionary<SurvivorBase, bool> SurvivorStatusDictionary = new Dictionary<SurvivorBase, bool>();
 
@@ -247,6 +248,22 @@ namespace BransItems
                 }
             }
 
+            //Artifact Initialization
+            var ArtifactTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(ArtifactBase)));
+
+            ModLogger.LogInfo("-------------ARTIFACTS---------------------");
+
+            foreach (var ArtifactType in ArtifactTypes)
+            {
+                ArtifactBase artifact = (ArtifactBase)System.Activator.CreateInstance(ArtifactType);
+                if (ValidateArtifact(artifact, Artifacts))
+                {
+                    artifact.Init(Config);
+
+                    ModLogger.LogInfo("Artifact: " + artifact.ArtifactName + " Initialized!");
+                }
+            }
+
             //Compatability
             ModLogger.LogInfo("-------------COMPATIBILITY---------------------");
             ValidateModCompatability();
@@ -371,6 +388,20 @@ namespace BransItems
             if (enabled)
             {
                 eliteEquipmentList.Add(eliteEquipment);
+                return true;
+            }
+            return false;
+        }
+
+        public bool ValidateArtifact(ArtifactBase artifact, List<ArtifactBase> artifactList)
+        {
+            var enabled = ConfigManager.ConfigOption<bool>("Artifact: " + artifact.ArtifactName, "Enable Artifact?", true, "Should this artifact appear in the menu? If disabled, the associated artifact will not appear.");
+
+            ArtifactStatusDictionary.Add(artifact, enabled);
+
+            if (enabled)
+            {
+                artifactList.Add(artifact);
                 return true;
             }
             return false;

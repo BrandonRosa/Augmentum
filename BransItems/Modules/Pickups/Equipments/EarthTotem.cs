@@ -95,7 +95,7 @@ namespace BransItems.Modules.Pickups.Equipments
             //ItemBodyModelPrefab.AddComponent<SoulPinDisplayHandler>();
 
             ItemDisplayRuleDict rules = new ItemDisplayRuleDict();
-
+            /*
             rules.Add("mdlCommandoDualies", new RoR2.ItemDisplayRule[]
             {
                 new RoR2.ItemDisplayRule
@@ -216,6 +216,7 @@ namespace BransItems.Modules.Pickups.Equipments
                     localScale = new Vector3(0.1f, 0.1f, 0.1f)
                 }
             });
+            */
             return rules;
         }
 

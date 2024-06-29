@@ -286,7 +286,34 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             TeleporterInteraction.onTeleporterBeginChargingGlobal += TeleporterInteraction_onTeleporterBeginChargingGlobal;
 
             On.RoR2.PickupDisplay.RebuildModel += PickupDisplay_RebuildModel;
-            
+
+            On.RoR2.InfiniteTowerRun.OnWaveAllEnemiesDefeatedServer += InfiniteTowerRun_OnWaveAllEnemiesDefeatedServer;
+
+        }
+
+        private void InfiniteTowerRun_OnWaveAllEnemiesDefeatedServer(On.RoR2.InfiniteTowerRun.orig_OnWaveAllEnemiesDefeatedServer orig, InfiniteTowerRun self, InfiniteTowerWaveController wc)
+        {
+            orig(self, wc);
+            if (NetworkServer.active && self && self.safeWardController && self.safeWardController.transform && self.IsStageTransitionWave())
+            {
+                List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
+                for (int i = 0; i < masterList.Count; i++)
+                {
+                    //If the player isnt dead
+                    if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+                    {
+                        CharacterBody body = masterList[i].master.GetBody();
+                        //if the player has a body and an inventory AND they have the item
+                        if (body && body.isPlayerControlled && body.inventory && body.inventory.GetItemCount(ItemDef) > 0)
+                        {
+                            int count = body.inventory.GetItemCount(ItemDef);
+                            DropMassive(body, count);
+                            GiveMedium(body, count);
+                            BreakItem(body, count);
+                        }
+                    }
+                }
+            }
         }
 
         private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self)

@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 601778359
+CRC: 4061412469
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 96cdcb74cef11da9596b17202a596e39
+    Hash: 98c911ca187fc20884b7de6085ee11a9
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -70,6 +70,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_emissive.jpeg
 - Assets/Textrures/Icons/Temporary/crystal2/textures/normal.png
 - Assets/Textrures/Icons/Temporary/crystal4/model.dae
+- Assets/Models/ArtifactOfConquest/ConquestEnabled.png
 - Assets/Models/CritContact/ContactIcon.png
 - Assets/Models/Meshes/EssenceOfStrength.blend
 - Assets/Models/Piggy/LowPolyPig.prefab
@@ -106,6 +107,7 @@ Assets:
 - Assets/Models/Prefavs/Item/Null Newt/VoidNewt.png
 - Assets/Textrures/Icons/Temporary/crystal2/source/FerocityIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.bmp
+- Assets/Models/ArtifactOfConquest/ConquestDisabled.png
 - Assets/Textrures/Icons/Temporary/crystal6/source/VelocityIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab
 - Assets/Models/Matroyshka/Materials/MassiveMap.mat

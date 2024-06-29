@@ -175,8 +175,11 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         private void ShrineChanceBehavior_AddShrineStack(On.RoR2.ShrineChanceBehavior.orig_AddShrineStack orig, ShrineChanceBehavior self, Interactor activator)
         {
+            
             int purchaseCount = self.successfulPurchaseCount;
             orig(self, activator);
+            if (Conquest.instance.IsSelectedAndInRun())
+                return;
             bool success = purchaseCount < self.successfulPurchaseCount;
 
             float playerScale =(ChanceShrineScalePlayers? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
@@ -200,7 +203,9 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         private void DeathRewards_OnKilledServer(On.RoR2.DeathRewards.orig_OnKilledServer orig, DeathRewards self, DamageReport damageReport)
         {
             orig(self, damageReport);
-            if(damageReport.victimBody.isElite)
+            if (Conquest.instance.IsSelectedAndInRun())
+                return;
+            if (damageReport.victimBody.isElite)
             {
                 float playerScale = (EliteScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
                 if (RoR2Application.rng.RangeFloat(0f, 1f) <= EliteDeathChance*playerScale)
@@ -213,6 +218,8 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         private void BarrelInteraction_CoinDrop(On.RoR2.BarrelInteraction.orig_CoinDrop orig, BarrelInteraction self)
         {
             orig(self);
+            if (Conquest.instance.IsSelectedAndInRun())
+                return;
             float playerScale = (BarrelScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
             if (RoR2Application.rng.RangeFloat(0f, 1f) <= BarrelChance*playerScale)
             {
@@ -223,6 +230,8 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         private void ShrineCombatBehavior_OnDefeatedServer(On.RoR2.ShrineCombatBehavior.orig_OnDefeatedServer orig, ShrineCombatBehavior self)
         {
             orig(self);
+            if (Conquest.instance.IsSelectedAndInRun())
+                return;
             float playerScale = (CombatShrineScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
             if (RoR2Application.rng.RangeFloat(0f, 1f) <= CompatShrineChance*playerScale)
             {
