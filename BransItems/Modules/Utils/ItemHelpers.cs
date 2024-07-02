@@ -208,7 +208,7 @@ namespace BransItems.Modules.Utils
             BossGroup bossGroup = null;
 
             orig(self, damageInfo);
-            if (self.body && self.body.isBoss)
+            if (self.body && self.body.isBoss && self.alive && self.health>0)
             {
                 bossGroup = BossGroup.FindBossGroup(self.body);
                 if (bossGroup != null)
@@ -216,10 +216,10 @@ namespace BransItems.Modules.Utils
                     var cpt = bossGroup.GetComponent<BossGroupDamageTakenTracker>();
                     if (!cpt) cpt = bossGroup.gameObject.AddComponent<BossGroupDamageTakenTracker>();
                     damageTaken = damageInfo.damage;
-                    cpt.UpdateValues(bossGroup, damageInfo, damageTaken);
+                    if(bossGroup.totalObservedHealth>0)
+                        cpt.UpdateValues(bossGroup, damageInfo, damageTaken);
                 }
             }
-
         }
 
         public class BossGroupDamageTakenTracker : MonoBehaviour
@@ -245,51 +245,28 @@ namespace BransItems.Modules.Utils
 
             public void UpdateValues(BossGroup bossGroup, DamageInfo damageInfo, float damageTaken)
             {
-                float healthBefore = bossGroup.totalObservedHealth;
-                float healthAfter = Mathf.Max(bossGroup.totalObservedHealth - damageTaken, 0);
-                float percentBefore=healthBefore/bossGroup.totalMaxObservedMaxHealth;
-                float percentAfter =  healthAfter/ bossGroup.totalMaxObservedMaxHealth;
+                float PreviousTotalDamage = TotalDamageTaken;
+                TotalDamageTaken += damageTaken;
 
                 float[] Keys = PercentLostActionList.Keys.ToArray();
                 for (int di=0;di<PercentLostActionList.Count;di++)
                 {
                     float percent = Keys[di];
-                    int timesTriggered = 0;
-                    /*
-                    for(float health=bossGroup.totalMaxObservedMaxHealth;health>0;health-=percent*bossGroup.totalMaxObservedMaxHealth)
-                    {
-                        BransItems.ModLogger.LogWarning("FLAG1");
-                        if(health<healthBefore)
-                        {
-                            BransItems.ModLogger.LogWarning("FLAG2");
-                            if (health>=healthAfter && health>=0)
-                            {
-                                BransItems.ModLogger.LogWarning("FLAG3");
-                                timesTriggered++;
-                            }
-                            else
-                            {
-                                BransItems.ModLogger.LogWarning("FLAG4");
-                                foreach (Action<BossGroup, DamageInfo, int> action in PercentLostActionList[percent])
-                                    action.Invoke(bossGroup, damageInfo, timesTriggered);
-                                break;
-                            }
-
-                        }
-                    }
-                    */
-                    int timesTriggeredAfter = (int)((TotalDamageTaken + damageTaken) / (percent * bossGroup.totalMaxObservedMaxHealth));
-                    int timesTriggeredBefore = (int)(TotalDamageTaken / (percent * bossGroup.totalMaxObservedMaxHealth));
+                    int timesTriggered;
+                    
+                    int timesTriggeredAfter = (int)(TotalDamageTaken / (percent * bossGroup.totalMaxObservedMaxHealth));
+                    int timesTriggeredBefore = (int)(PreviousTotalDamage / (percent * bossGroup.totalMaxObservedMaxHealth));
                     timesTriggered = timesTriggeredAfter-timesTriggeredBefore;
-                    BransItems.ModLogger.LogWarning(timesTriggeredBefore);
-                    BransItems.ModLogger.LogWarning(timesTriggeredAfter);
-                    BransItems.ModLogger.LogWarning(timesTriggered);
-                    BransItems.ModLogger.LogWarning("---");
+                    //BransItems.ModLogger.LogWarning(timesTriggeredBefore);
+                    //BransItems.ModLogger.LogWarning(timesTriggeredAfter);
+                    //BransItems.ModLogger.LogWarning(timesTriggered);
+                    //BransItems.ModLogger.LogWarning("---"+percent+"---");
                     foreach (Action<BossGroup, DamageInfo, int> action in PercentLostActionList[percent])
                         action.Invoke(bossGroup, damageInfo, timesTriggered);
+                    //BransItems.ModLogger.LogWarning("!!!" + percent + "!!!");
                 }
 
-                TotalDamageTaken += damageTaken;
+                
                 
             }
         }

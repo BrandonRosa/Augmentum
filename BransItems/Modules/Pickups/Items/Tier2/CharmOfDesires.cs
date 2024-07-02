@@ -25,7 +25,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public override string ItemName => "Charm of Desires";
         public override string ItemLangTokenName => "CHARM_OF_DESIRES";
         public override string ItemPickupDesc => "At the start of each stage, discover an Essence.";
-        public override string ItemFullDescription => $"At the start of <style=cIsUtility>each stage</style>, discover <style=cIsUtility>{DropCount}</style><style=cStack>(+{AdditionalDrops} per stack)</style> " + BransItems.EssenceKeyword + ".";
+        public override string ItemFullDescription => $"At the start of <style=cIsUtility>each stage</style>, discover <style=cIsUtility>{DropCount}</style><style=cStack> (+{AdditionalDrops} per stack)</style> " + BransItems.EssenceKeyword + ".";
 
         public override string ItemLore => "";
 

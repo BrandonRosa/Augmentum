@@ -64,6 +64,9 @@
     <Reference Include="HighItemVizability">
       <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Dev\BepInEx\plugins\VizMod-HighItemVizability\HighItemVizability.dll</HintPath>
     </Reference>
+    <Reference Include="Judgement">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\JessicaDev\BepInEx\plugins\Nuxlar-Judgement\Judgement.dll</HintPath>
+    </Reference>
     <Reference Include="KdTreeLib">
       <HintPath>libs\KdTreeLib.dll</HintPath>
       <Private>false</Private>
@@ -125,7 +128,7 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="ZetAspects">
-      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\JessicaDev\BepInEx\plugins\William758-ZetAspects\ZetAspects.dll</HintPath>
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\FunDev\BepInEx\plugins\William758-ZetAspects\ZetAspects.dll</HintPath>
     </Reference>
     <Reference Include="Zio">
       <HintPath>libs\Zio.dll</HintPath>

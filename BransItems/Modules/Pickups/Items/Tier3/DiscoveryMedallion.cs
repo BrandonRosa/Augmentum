@@ -38,7 +38,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override bool CanRemove => false;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.Utility };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.Utility, ItemTag.CannotDuplicate };
 
 
         public static int Choices=2;

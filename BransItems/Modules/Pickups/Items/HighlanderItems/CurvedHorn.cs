@@ -19,7 +19,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Curved Horn";
         public override string ItemLangTokenName => "CURVED_HORN";
         public override string ItemPickupDesc => "Increases damage and primary charges.";
-        public override string ItemFullDescription => $"Increase your <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain*100}%</style>. Increases <style=cIsUtility>Primary skill</style> charges by <style=cIsUtility>{(PrimaryChargeMultiplier-1)*100f}%</style>.";
+        public override string ItemFullDescription => $"Increase your <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain*100}%</style>. Gain <style=cIsUtility>{(PrimaryChargeMultiplier - 1) * 100f}%</style> more <style=cIsUtility>Primary skill</style> charges.";
 
         public override string ItemLore => "";
 

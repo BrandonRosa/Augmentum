@@ -16,7 +16,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
     {
         public override string ItemName => "Essence of Ferocity";
         public override string ItemLangTokenName => "ESSENCE_OF_FEROCITY";
-        public override string ItemPickupDesc => "Slightly increase <style=cIsDamage>attack speed</style>.";
+        public override string ItemPickupDesc => "Slightly increase attack speed.";
         public override string ItemFullDescription => $"Increase <style=cIsDamage>attack speed</style> by <style=cIsDamage>{AttackSpeedGain}% </style><style=cStack>(+{AttackSpeedGain}% per stack)</style>.";
 
         public override string ItemLore => $"Ever since my partner got their hands on that stone, it's like they've become a whirlwind of action. Their attacks hit harder, and it's almost dizzying watching them go." +

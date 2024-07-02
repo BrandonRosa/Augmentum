@@ -139,6 +139,17 @@ namespace BransItems.Modules.Compatability
 
         }
 
+        internal static class JudgementCompat
+        {
+            public static bool IsJudgementInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Nuxlar.Judgement");
+
+            public static bool AddJudgementCompat = true;
+
+            public static bool IsInJudgementRun() => IsJudgementInstalled && AddJudgementCompat && Run.instance.gameModeIndex == GameModeCatalog.FindGameModeIndex("xJudgementRun");
+
+
+        }
+
         internal static class ZetAspectsCompat
         {
             public static bool IsZetAspectsInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.TPDespair.ZetAspects");

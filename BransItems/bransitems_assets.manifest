@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 4061412469
+CRC: 3938240312
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 98c911ca187fc20884b7de6085ee11a9
+    Hash: 17680877944f5265115accaa80ae5d40
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -40,6 +40,7 @@ ClassTypes:
 SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/Models/Matroyshka/Mini.obj
+- Assets/Models/BlazeOfGlory/BlazeOfGloryModel.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem.png
 - Assets/Textrures/Icons/Buff/NovaBandReady.png
 - Assets/Models/GlassVeil/GhostIcon.png
@@ -66,6 +67,7 @@ Assets:
 - Assets/Models/Matroyshka/MassiveIcon.png
 - Assets/Models/Prefavs/Elite/Gills/BothGills.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/lootedbloodburstclam.prefab
+- Assets/Models/ArtifactOfSpoils/SpoilsDisable.png
 - Assets/Textrures/Icons/Buff/NovaBandCooldown.png
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_emissive.jpeg
 - Assets/Textrures/Icons/Temporary/crystal2/textures/normal.png
@@ -110,6 +112,7 @@ Assets:
 - Assets/Models/ArtifactOfConquest/ConquestDisabled.png
 - Assets/Textrures/Icons/Temporary/crystal6/source/VelocityIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.prefab
+- Assets/Models/ArtifactOfConquest/Conquest2Enabled.png
 - Assets/Models/Matroyshka/Materials/MassiveMap.mat
 - Assets/Models/Pacemaker/PacemakerBuff2.png
 - Assets/Textrures/Icons/Temporary/QuadModels/discoveryMedallion.prefab
@@ -118,6 +121,7 @@ Assets:
 - Assets/Models/Matroyshka/ShellIcon.png
 - Assets/Models/CharmOfDesires/Charm.prefab
 - Assets/Models/Matroyshka/MegaIcon.png
+- Assets/Models/ArtifactOfSpoils/SpoilsEnabled.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/airtotem.mat
 - Assets/Models/SafetyBlanket/SafetyBlanket.prefab
 - Assets/Models/Matroyshka/MiniMap2.png
@@ -184,6 +188,7 @@ Assets:
 - Assets/Models/Matroyshka/Mini2.prefab
 - Assets/Models/Pacemaker/Pacemaker.png
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem2.prefab
+- Assets/Models/BlazeOfGlory/GlazeOfGloryIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/4jud1kk6.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.prefab
 - Assets/Models/Prefavs/Elite/Gills/Materials/GillTexture.png
@@ -206,6 +211,7 @@ Assets:
 - Assets/Models/CurvedHorn/HornItem.prefab
 - Assets/Textrures/Icons/Equipment/Reuser/ReuserIcon.png
 - Assets/Models/PlatinumFists/PlatinumFists.fbx
+- Assets/Models/ArtifactOfConquest/Conquest2Disabled.png
 - Assets/Models/Prefavs/Item/HorseLeg/HorseLeg.blend
 - Assets/Models/AdaptiveArmor/ArmorTexture2.png
 - Assets/Textrures/Icons/Temporary/crystal3/source/crystal3.prefab
@@ -216,6 +222,7 @@ Assets:
 - Assets/Textrures/Icons/Item/Essence_of_Strength/EssenceOfStrength.png
 - Assets/Textrures/Icons/Temporary/crystal4/source/TempCrystal4.png
 - Assets/Textrures/Icons/Temporary/crystal6/textures/internal_ground_ao_texture.jpeg
+- Assets/Models/SecondDeath/SecondDeathModel.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/bloodburstclam.png
 - Assets/Models/AdaptiveArmor/AAIcon.png
 - Assets/Textrures/Icons/Temporary/crystal6/source/Velocity.prefab
@@ -225,6 +232,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallion.png
 - Assets/Textrures/Ramps/texRampNullifierOffset3.png
 - Assets/Models/CritContact/CritContact.prefab
+- Assets/Models/SecondDeath/SecondDeath.png
 - Assets/Textrures/Icons/Temporary/QuadModels/discoverymedallion.bmp
 - Assets/Textrures/Icons/Temporary/crystal2/source/TempCrystal2.png
 - Assets/Textrures/Icons/Temporary/crystal2/textures/specular.png

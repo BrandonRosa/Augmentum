@@ -309,6 +309,13 @@ namespace BransItems
                 ModCompatability.ZetAspectsCompat.ForceZetAspectCompat();
             }
 
+            var enabledJudgement = ConfigManager.ConfigOption("Mod Compatability: " + "Judgment", "Enable Compatability Patches?", true, "Attempt to add Judgment compatability (if installed)?");
+            if (ModCompatability.JudgementCompat.IsJudgementInstalled && enabledJudgement)
+            {
+                ModLogger.LogInfo("ModCompatability: " + "Judgment Recognized!");
+                ModCompatability.JudgementCompat.AddJudgementCompat = true;
+            }
+
 
             //var enabledEliteReworks = Config.Bind<bool>("Mod Compatability: " + "EliteReworks", "Enable Compatability Patches?", true, "Attempt to add Elite Reworks compatability (if installed)?").Value;
             //if (ModCompatability.EliteReworksCompat.IsEliteReworksInstalled && enabledProperSave)

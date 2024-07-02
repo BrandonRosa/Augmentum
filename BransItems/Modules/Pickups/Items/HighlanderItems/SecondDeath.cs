@@ -32,8 +32,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
         //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/CritContact/CritContact.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/CritContact/ContactIcon.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/SecondDeath/SecondDeathModel.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/SecondDeath/SecondDeath.png");
 
         //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
         //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
@@ -62,7 +62,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            HealthPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health Percent To Trigger Effects", .1f, "What percent of health must be lost for this effect to trigger?");
+            HealthPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health Percent To Trigger Effects", .25f, "What percent of health must be lost for this effect to trigger?");
             DisableSpleenOnSecondTrigger = ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Disable shatterspleen interaction", true, "Setting this to true will disable this item's additional interactions with shatterspleen.");
         }
 
@@ -292,6 +292,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         private void BossHealthPercentageTrigger(BossGroup bossGroup, DamageInfo damageInfo, int triggerCount)
         {
+            if (!bossGroup || !bossGroup.combatSquad || bossGroup.combatSquad.membersList==null || bossGroup.combatSquad.membersList.Count<=0)
+                return;
             List<CharacterBody> PlayersWithItem = CharacterMaster.instancesList
                     .Select(master => master.GetBody())
                     .Where(body => body && body.teamComponent.teamIndex==TeamIndex.Player && GetCount(body) > 0)
@@ -303,8 +305,10 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
             {
                 for (int i = 0; i < triggerCount; i++)
                 {
-                    foreach(CharacterMaster master in bossGroup.combatSquad.membersList)
-                        MakeFakeDeath(master.GetBody().healthComponent, damageInfo, PlayersWithItem);
+                    List<CharacterMaster> masterList = new List<CharacterMaster>(bossGroup.combatSquad.membersList);
+                    foreach(CharacterMaster master in masterList)
+                        if(master.GetBody() && master.GetBody().healthComponent && master.GetBody().healthComponent.alive && master.GetBody().healthComponent.combinedHealth>0)
+                            MakeFakeDeath(master.GetBody().healthComponent, damageInfo, PlayersWithItem);
                 }
             }
         }
@@ -349,7 +353,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
             {
                 DamageInfo damageInfoFake = new DamageInfo
                 {
-                    attacker = attacker.gameObject,
+                    attacker = attacker?.gameObject,
                     crit = false,
                     damage = damageInfo.damage,
                     position = damageInfo.position,
@@ -360,7 +364,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
                 HealthComponent victim = self;//new HealthComponent();
                 DamageReport damageReport = new DamageReport(damageInfoFake, victim, damageInfo.damage, self.combinedHealth);
                 int SpleenCount = 0;
-                if (DisableSpleenOnSecondTrigger && attacker.inventory)
+                if (DisableSpleenOnSecondTrigger && attacker?.inventory)
                 {
                     SpleenCount = attacker.inventory.itemStacks[(int)RoR2Content.Items.BleedOnHitAndExplode.itemIndex];
                     attacker.inventory.itemStacks[(int)RoR2Content.Items.BleedOnHitAndExplode.itemIndex] = 0;

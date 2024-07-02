@@ -45,7 +45,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public override bool Hidden => false;
 
-        public override bool CanRemove => false;
+        public override bool CanRemove => true;
 
         public override string[] CorruptsItem => new string[] { "ITEM_"+BarrierRing.instance.ItemLangTokenName+"_NAME", "ITEM_"+HealRing.instance.ItemLangTokenName + "_NAME" };
 

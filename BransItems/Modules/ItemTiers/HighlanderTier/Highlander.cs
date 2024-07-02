@@ -241,11 +241,18 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         private void DropItem(Transform location, float height)
         {
-            List<PickupDef> HighList = ItemHelpers.PickupDefsWithTier(this.itemTierDef);
-            int picked = RoR2Application.rng.RangeInt(0, HighList.Count);
+            if (Spoils.instance.IsSelectedAndInRun())
+            {
+                PickupDropletController.CreatePickupDroplet(Spoils.SpoilsPickupInfo(location.position + Vector3.up * height), Vector3.up * 25f);
+            }
+            else
+            {
+                List<PickupDef> HighList = ItemHelpers.PickupDefsWithTier(this.itemTierDef);
+                int picked = RoR2Application.rng.RangeInt(0, HighList.Count);
 
-            PickupDef pickupDef = HighList[picked];
-            PickupDropletController.CreatePickupDroplet(pickupDef.pickupIndex, location.position + Vector3.up * height, Vector3.up * 25f);
+                PickupDef pickupDef = HighList[picked];
+                PickupDropletController.CreatePickupDroplet(pickupDef.pickupIndex, location.position + Vector3.up * height, Vector3.up * 25f);
+            }
             Chat.SendBroadcastChat(new Chat.SimpleChatMessage
             {
                 baseToken = "<color=#FAF7B9><size=120%>" + "You have been rewarded with a gift from the Highlands." + "</color></size>"

@@ -21,7 +21,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
     {
         public override string ItemName => "Blaze of Glory";
         public override string ItemLangTokenName => "BLAZE_OF_GLORY";
-        public override string ItemPickupDesc => $"After a boss loses {HealthPercent * 100}% health, summon {SpawnCount} enite Jellyfish. When your allies die, send them to the afterlife in a blaze of glory dealing massive explosive damage to enemies.";
+        public override string ItemPickupDesc => $"After a boss loses {HealthPercent * 100}% health, summon {SpawnCount} elite Jellyfish. When your allies die, send them to the afterlife in a blaze of glory dealing massive explosive damage to enemies.";
         public override string ItemFullDescription => $"After a boss <style=cIsHealth>loses {HealthPercent * 100}% health</style>, summon {SpawnCount} elite <style=cIsDamage>Jellyfish</style>. When allies <style=cDeath>die</style>, send them to the afterlife in a <style=cIsDamage>blaze of glory</style> dealing <style=cIsDamage>{DamageDealt}% explosive damage</style> to enemies.";
 
         public override string ItemLore => "";
@@ -33,8 +33,8 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         //public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("EssenceOfStrength.prefab");
         //public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("EssenceOfStrength.png");
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/CritContact/CritContact.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/CritContact/ContactIcon.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/BlazeOfGlory/BlazeOfGloryModel.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/BlazeOfGlory/GlazeOfGloryIcon.png");
 
         //public override GameObject ItemModel => Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
         //public override Sprite ItemIcon => Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
