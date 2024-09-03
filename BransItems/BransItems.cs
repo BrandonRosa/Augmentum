@@ -1,6 +1,10 @@
 using BepInEx;
+using BepInEx.Bootstrap;
+using BepInEx.Configuration;
+using BepInEx.Logging;
 using R2API;
 using RoR2;
+using RoR2.ExpansionManagement;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using System.Reflection;
@@ -10,7 +14,6 @@ using BransItems.Modules.Pickups;
 using System.Collections.Generic;
 using BransItems.Modules.ItemTiers;
 using RoR2.ContentManagement;
-//using BransItems.Modules.ColorCatalogEntry;
 using BransItems.Modules.ItemTiers.CoreTier;
 using BransItems.Modules.ItemTiers.HighlanderTier;
 using BransItems.Modules.Utils;
@@ -20,7 +23,6 @@ using BransItems.Modules.Pickups.Equipments;
 using BransItems.Modules.Compatability;
 using BransItems.Modules.Pickups.Items.Essences;
 using BransItems.Modules.Pickups.Items.HighlanderItems;
-using BepInEx.Configuration;
 using HarmonyLib;
 
 namespace BransItems
@@ -41,7 +43,7 @@ namespace BransItems
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.Augmentum"; //Our Package Name
         public const string ModName = "Augmentum";
-        public const string ModVer = "1.1.0";
+        public const string ModVer = "1.1.1";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;

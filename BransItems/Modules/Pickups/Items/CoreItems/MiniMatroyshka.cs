@@ -297,9 +297,9 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
             
         }
 
-        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self)
+        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self, GameObject modelObjectOverride)
         {
-            orig(self);
+            orig(self,modelObjectOverride);
             if (self && self.modelPrefab && self.modelObject && self.modelPrefab.name == ItemModel.name)
             {
                 self.modelObject.transform.localScale *= .7f;
@@ -388,7 +388,7 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
                         rotation = Quaternion.identity,
                         pickupIndex = drops[0]
                     },
-                             val);
+                             dropTransform.position + Vector3.up * 1.5f, val);
                 }
                 else
                 {

@@ -13,7 +13,7 @@ namespace BransItems.Modules.Utils
         {
             if (search.candidatesEnumerable.Any())
             {
-                search.candidatesEnumerable = search.candidatesEnumerable.Where(x => x.hurtBox && x.hurtBox.IsHurtboxAnElite());
+                search.candidatesEnumerable = search.candidatesEnumerable.Where(x => x.hurtBox && x.hurtBox.IsHurtboxAnElite()).ToList();
             }
         }
 
@@ -21,7 +21,7 @@ namespace BransItems.Modules.Utils
         {
             if (search.candidatesEnumerable.Any())
             {
-                search.candidatesEnumerable = search.candidatesEnumerable.Where(x => x.hurtBox && !x.hurtBox.DoesHurtboxHaveItem(item));
+                search.candidatesEnumerable = search.candidatesEnumerable.Where(x => x.hurtBox && !x.hurtBox.DoesHurtboxHaveItem(item)).ToList();
             }
         }
 

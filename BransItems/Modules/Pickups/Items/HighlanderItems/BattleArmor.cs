@@ -76,9 +76,9 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
             MaxSeconds = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Maximum Seconds", 20f, "How long does this effect take to get to max potential?");
             DecelerationRate = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Deceleration Rate", .5f, "How fast does this item lose its stacks of Platinum Surge? (.3=30% as fast as the gain rate, 0 means no stacks are lost)");
 
-            EnableTech= ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Enable Tech", true , "As long as the primary fire button is held, you wont be punished. Keep this behavior enabled?");
+            EnableTech= ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Enable Tech", false , "As long as the primary fire button is held, you wont be punished. Enable this behavior?");
 
-            PunishType = ConfigManager.ConfigOption<PunishTypes>("Item: " + ItemName, "Other Skill Punishment Type", PunishTypes.Reset, "How should the item react when using non-primary abilities?");
+            PunishType = ConfigManager.ConfigOption<PunishTypes>("Item: " + ItemName, "Other Skill Punishment Type", PunishTypes.IncreaseLossRate, "How should the item react when using non-primary abilities?");
 
             PunishSubractSeconds= ConfigManager.ConfigOption<float>("Item: " + ItemName, "Subract Type", 10f, "How many seconds will the Subract Punish Type remove?");
             PunishDivisorValue= ConfigManager.ConfigOption<float>("Item: " + ItemName, "Divide Type", 2f, "How much should the divide punish type divide the current stacks of Platinum Surge?");

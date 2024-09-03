@@ -19,7 +19,7 @@ namespace BransItems.Modules.Utils
             On.RoR2.PickupDisplay.RebuildModel += PickupDisplay_RebuildModel;
         }
 
-        private static void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self)
+        private static void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self, GameObject modelObjectOverride)
         {
             ItemTierPickupVFXHelper ITPVFXHelper = self.gameObject.GetComponent<ItemTierPickupVFXHelper>();
             if(!ITPVFXHelper)
@@ -27,7 +27,7 @@ namespace BransItems.Modules.Utils
                 self.gameObject.AddComponent<ItemTierPickupVFXHelper>();
                 ITPVFXHelper = self.gameObject.GetComponent<ItemTierPickupVFXHelper>();
             }
-            orig(self);
+            orig(self, modelObjectOverride);
             ITPVFXHelper.OnPickupDisplayRebuildModel();
         }
 

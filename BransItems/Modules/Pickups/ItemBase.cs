@@ -129,7 +129,7 @@ namespace BransItems.Modules.Pickups
 					{
 						for (int i = 0; i < item.CorruptsItem.Count(); i++)
 						{
-							var itemToCorrupt = ItemCatalog.itemDefs.Where(x => x.nameToken == item.CorruptsItem[i]).FirstOrDefault();
+							var itemToCorrupt = ItemCatalog.allItemDefs.Where(x => x.nameToken == item.CorruptsItem[i]).FirstOrDefault();
 							if (!itemToCorrupt)
 							{
 								BransItems.ModLogger.LogError($"Tried to add {item.ItemName} in a Void item tier but no relationship was set for what it corrupts or could not be found. Aborting!");

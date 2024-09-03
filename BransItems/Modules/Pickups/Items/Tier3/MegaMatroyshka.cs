@@ -295,15 +295,15 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             On.RoR2.PickupDisplay.RebuildModel += PickupDisplay_RebuildModel;
         }
 
-        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self)
+        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self, GameObject modelObjectOverride)
         {
-            orig(self);
+            orig(self, modelObjectOverride);
             //ModLogger.LogWarning("1!"+ self.modelPrefab.name);
             //ModLogger.LogWarning("2!" + ItemModel.name);
             if (self && self.modelPrefab && self.modelObject && self.modelPrefab.name == ItemModel.name)
             {
                 self.modelObject.transform.localScale *= 1.5f;
-                ModLogger.LogWarning("Bigger!");
+                //ModLogger.LogWarning("Bigger!");
             }
         }
 
@@ -447,7 +447,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                         rotation = Quaternion.identity,
                         pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier3)
                     },
-                             val);
+                             dropTransform.position + Vector3.up * 1.5f, val);
                     //PickupDropletController.CreatePickupDroplet(new GenericPickupController.CreatePickupInfo
                     //{
                     //    pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),

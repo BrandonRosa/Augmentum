@@ -1,6 +1,7 @@
 ﻿using BepInEx.Configuration;
 using BransItems.Modules.StandaloneBuffs;
 using BransItems.Modules.Utils;
+
 using R2API;
 using RoR2;
 using System;
@@ -754,7 +755,9 @@ namespace BransItems.Modules.Pickups.EliteEquipments
                 if (AOT.hasOverlay == true)
                 {
                     AOT.hasOverlay = false;
-                    self.modelLocator.modelTransform.gameObject.GetComponent<RoR2.TemporaryOverlay>().duration = 0;
+                    //self.modelLocator.modelTransform.gameObject.GetComponent<RoR2.TemporaryOverlayInstance>().duration = 0;
+                    AOT.TempOverlay.duration= 0;
+                    
                 }
                 if(AOT.PinkTrail!=null)
                 {
@@ -778,14 +781,21 @@ namespace BransItems.Modules.Pickups.EliteEquipments
                 }
                 if (AOT.hasOverlay == false)
                 {
-                    RoR2.TemporaryOverlay overlay = self.modelLocator.modelTransform.gameObject.AddComponent<RoR2.TemporaryOverlay>();
-                    overlay.duration = float.PositiveInfinity;
-                    overlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
-                    overlay.animateShaderAlpha = true;
-                    overlay.destroyComponentOnEnd = true;
-                    overlay.originalMaterial = AffixAdaptive.instance.EliteMaterial;
-                    overlay.AddToCharacerModel(self.modelLocator.modelTransform.GetComponent<RoR2.CharacterModel>());
-                    //overlay.AddToCharacerModel(self.gameObject.GetComponent<RoR2.CharacterModel>());
+                    //RoR2.TemporaryOverlay overlay = self.modelLocator.modelTransform.gameObject.AddComponent<RoR2.TemporaryOverlay>();
+                    //overlay.duration = float.PositiveInfinity;
+                    //overlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                    //overlay.animateShaderAlpha = true;
+                    //overlay.destroyComponentOnEnd = true;
+                    //overlay.originalMaterial = AffixAdaptive.instance.EliteMaterial;
+                    //overlay.AddToCharacerModel(self.modelLocator.modelTransform.GetComponent<RoR2.CharacterModel>());
+                    TemporaryOverlayInstance temporaryOverlayInstance = TemporaryOverlayManager.AddOverlay(self.modelLocator.modelTransform.gameObject);
+                    temporaryOverlayInstance.duration = float.PositiveInfinity;
+                    temporaryOverlayInstance.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                    temporaryOverlayInstance.animateShaderAlpha = true;
+                    temporaryOverlayInstance.destroyComponentOnEnd = true;
+                    temporaryOverlayInstance.originalMaterial = AffixAdaptive.instance.EliteMaterial;
+                    temporaryOverlayInstance.AddToCharacterModel(self.modelLocator.modelTransform.GetComponent<RoR2.CharacterModel>());
+                    AOT.TempOverlay= temporaryOverlayInstance;
 
                     AOT.hasOverlay = true;
                 }
@@ -876,6 +886,7 @@ namespace BransItems.Modules.Pickups.EliteEquipments
             public bool hasOverlay = false;
             public DamageTrail PinkTrail=null;
 
+            public TemporaryOverlayInstance TempOverlay { get; internal set; }
         }
 
         

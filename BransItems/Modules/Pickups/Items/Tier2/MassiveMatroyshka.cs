@@ -316,9 +316,9 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             }
         }
 
-        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self)
+        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self, GameObject modelObjectOverride)
         {
-            orig(self);
+            orig(self, modelObjectOverride);
             if (self && self.modelPrefab && self.modelObject && self.modelPrefab.name == ItemModel.name)
             {
                 self.modelObject.transform.localScale *= 1.2f;
@@ -423,7 +423,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                         rotation = Quaternion.identity,
                         pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier2)
                     },
-                             val);
+                            dropTransform.position + Vector3.up * 1.5f, val);
                 }
                 else
                 {

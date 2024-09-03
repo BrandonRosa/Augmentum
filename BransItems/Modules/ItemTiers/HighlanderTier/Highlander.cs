@@ -243,7 +243,7 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         {
             if (Spoils.instance.IsSelectedAndInRun())
             {
-                PickupDropletController.CreatePickupDroplet(Spoils.SpoilsPickupInfo(location.position + Vector3.up * height), Vector3.up * 25f);
+                PickupDropletController.CreatePickupDroplet(Spoils.SpoilsPickupInfo(location.position + Vector3.up * height), location.position + Vector3.up * height, Vector3.up * 25f);
             }
             else
             {

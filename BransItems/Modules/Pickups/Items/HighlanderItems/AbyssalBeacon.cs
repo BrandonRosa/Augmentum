@@ -62,7 +62,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         {
             Color color = new Color32(236, 19, 255, 255);
             
-            GameObject TempItemModel = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/bazaar/NewtStatueProp.prefab").WaitForCompletion().InstantiateClone("VoidNewt", false);
+            GameObject TempItemModel = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/bazaar/Bazaar_NewtStatue.prefab").WaitForCompletion().InstantiateClone("VoidNewt", false);
             Material mat = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/bazaar/matNewtStatue.mat").WaitForCompletion());
 
             //All this just incase of of these changes the color.

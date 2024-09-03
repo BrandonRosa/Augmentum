@@ -393,7 +393,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                         rotation = Quaternion.identity,
                         pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier1)
                     },
-                            val);
+                            dropTransform.position + Vector3.up * 1.5f,val);
                 }
                 else
                 {

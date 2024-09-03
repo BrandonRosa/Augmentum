@@ -311,7 +311,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
             TeamsWithItem = new Dictionary<TeamIndex, HashSet<CharacterMaster>>();
         }
 
-        private void HealthComponent_Suicide(On.RoR2.HealthComponent.orig_Suicide orig, HealthComponent self, GameObject killerOverride, GameObject inflictorOverride, DamageType damageType)
+        private void HealthComponent_Suicide(On.RoR2.HealthComponent.orig_Suicide orig, HealthComponent self, GameObject killerOverride, GameObject inflictorOverride, DamageTypeCombo damageType)
         {
 
             if (self && killerOverride == null && inflictorOverride == null)

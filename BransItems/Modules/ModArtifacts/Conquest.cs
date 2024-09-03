@@ -87,7 +87,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
                         baseToken = "<color=#FAF7B9><size=120%>" + "You have been rewarded with a gift from the Highlands." + "</color></size>"
                     });
 
-                    PickupDropletController.CreatePickupDroplet(Spoils.SpoilsPickupInfo(dropPosition.position + Vector3.up * 2f), val);
+                    PickupDropletController.CreatePickupDroplet(Spoils.SpoilsPickupInfo(dropPosition.position + Vector3.up * 2f), dropPosition.position, val);
                     num3++;
                     val = val2 * val;
                 }

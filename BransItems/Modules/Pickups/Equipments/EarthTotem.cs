@@ -225,13 +225,38 @@ namespace BransItems.Modules.Pickups.Equipments
             //On.RoR2.CharacterBody.OnBuffFirstStackGained += RemoveBuffFromNonElites;
             //On.RoR2.GlobalEventManager.OnCharacterDeath += MorphEquipmentIntoAffix;
             //On.RoR2.EquipmentSlot.Update += UpdateTargets;
-            On.RoR2.EquipmentSlot.FixedUpdate += FixedUpdate;
+            On.RoR2.EquipmentSlot.MyFixedUpdate += EquipmentSlot_MyFixedUpdate;
             On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets;
             ModCompatability.FinishedLoadingCompatability += () =>
             {
                 ProperSave.SaveFile.OnGatherSaveData += SaveFile_OnGatherSaveData;
                 ProperSave.Loading.OnLoadingEnded += Loading_OnLoadingStarted;
             };
+        }
+
+        private void EquipmentSlot_MyFixedUpdate(On.RoR2.EquipmentSlot.orig_MyFixedUpdate orig, EquipmentSlot self, float deltaTime)
+        {
+            orig(self,deltaTime);
+            if (self.equipmentIndex == EarthTotem.instance.EquipmentDef.equipmentIndex)
+            {
+                var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
+                if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
+
+                if (cpt.Firing == true)
+                {
+
+                    cpt.FireSequence(self);
+                    //if(fireNext!=null)
+                    //{
+
+                    // }
+                    // else if(cpt.Firing ==false)
+                    // {
+
+                    //cpt.StopFire();
+                    // }
+                }
+            }
         }
 
         private void Loading_OnLoadingStarted(ProperSave.SaveFile obj)
@@ -354,30 +379,30 @@ namespace BransItems.Modules.Pickups.Equipments
             return (280f-45f)*(1f- (float)Math.Exp(-((double)numOfAbsorb-1)/6.6f))+45-(float)instance.Cooldown;
         }
 
-        private void FixedUpdate(On.RoR2.EquipmentSlot.orig_FixedUpdate orig, EquipmentSlot self)
-        {
-            orig(self);
-            if (self.equipmentIndex == EarthTotem.instance.EquipmentDef.equipmentIndex)
-            {
-                var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
-                if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
+        //private void FixedUpdate(On.RoR2.EquipmentSlot.orig_FixedUpdate orig, EquipmentSlot self)
+        //{
+        //    orig(self);
+        //    if (self.equipmentIndex == EarthTotem.instance.EquipmentDef.equipmentIndex)
+        //    {
+        //        var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
+        //        if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
 
-                if (cpt.Firing == true)
-                {
+        //        if (cpt.Firing == true)
+        //        {
 
-                    cpt.FireSequence(self);
-                    //if(fireNext!=null)
-                    //{
+        //            cpt.FireSequence(self);
+        //            //if(fireNext!=null)
+        //            //{
 
-                    // }
-                    // else if(cpt.Firing ==false)
-                    // {
+        //            // }
+        //            // else if(cpt.Firing ==false)
+        //            // {
 
-                    //cpt.StopFire();
-                    // }
-                }
-            }
-        }
+        //            //cpt.StopFire();
+        //            // }
+        //        }
+        //    }
+        //}
 
         protected override bool ActivateEquipment(EquipmentSlot slot)
         {

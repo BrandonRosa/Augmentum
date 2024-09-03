@@ -332,7 +332,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                     rotation = Quaternion.identity,
                     pickupIndex =drops[0]
                 },
-                         val);
+                         transform.position + Vector3.up * 1.5f,val);
                 val = val2 * val;
             }
         }
