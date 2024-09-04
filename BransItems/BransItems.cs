@@ -33,6 +33,7 @@ namespace BransItems
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency(R2API.R2API.PluginGUID)]
     [BepInDependency(R2API.RecalculateStatsAPI.PluginGUID)]
+    [BepInDependency("com.KingEnderBrine.ProperSave", BepInDependency.DependencyFlags.SoftDependency)]
 
     //This is the main declaration of our plugin class. BepInEx searches for all classes inheriting from BaseUnityPlugin to initialize on startup.
     //BaseUnityPlugin itself inherits from MonoBehaviour, so you can use this as a reference for what you can declare and use in your plugin class: https://docs.unity3d.com/ScriptReference/MonoBehaviour.html
@@ -43,7 +44,7 @@ namespace BransItems
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.Augmentum"; //Our Package Name
         public const string ModName = "Augmentum";
-        public const string ModVer = "1.1.1";
+        public const string ModVer = "1.1.2";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;
@@ -61,7 +62,6 @@ namespace BransItems
         public static AssetBundle MainAssets;
 
         //public List<CoreModule> CoreModules = new List<CoreModule>();
-        //public List<ArtifactBase> Artifacts = new List<ArtifactBase>();
         public List<BuffBase> Buffs = new List<BuffBase>();
         public List<ItemBase> Items = new List<ItemBase>();
         public List<EquipmentBase> Equipments = new List<EquipmentBase>();
@@ -86,8 +86,6 @@ namespace BransItems
         //public static Dictionary<InteractableBase, bool> InteractableStatusDictionary = new Dictionary<InteractableBase, bool>();
         // public static Dictionary<SurvivorBase, bool> SurvivorStatusDictionary = new Dictionary<SurvivorBase, bool>();
 
-        //public static ColorCatalog.ColorIndex TempCoreLight = ColorsAPI.RegisterColor(Color.cyan);//new Color32(21, 99, 58, 255));//ColorCatalogUtils.RegisterColor(new Color32(21, 99, 58, 255));
-        //public static ColorCatalog.ColorIndex TempCoreDark = ColorsAPI.RegisterColor(Color.cyan); //new Color32(1, 126, 62, 255)); //ColorCatalogUtils.RegisterColor(new Color32(1, 126, 62, 255));
         public static string EssenceKeyword => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">Essence</color>";
         public static string EssencesKeyword => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">Essences</color>";
 

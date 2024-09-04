@@ -19,6 +19,7 @@ using UnityEngine.Networking;
 using BransItems.Modules.Compatability;
 using System.Runtime.Serialization;
 using UnityEngine.AddressableAssets;
+using System.Runtime.CompilerServices;
 
 namespace BransItems.Modules.Pickups.Equipments
 {
@@ -222,15 +223,28 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public override void Hooks()
         {
+            
             //On.RoR2.CharacterBody.OnBuffFirstStackGained += RemoveBuffFromNonElites;
             //On.RoR2.GlobalEventManager.OnCharacterDeath += MorphEquipmentIntoAffix;
             //On.RoR2.EquipmentSlot.Update += UpdateTargets;
             On.RoR2.EquipmentSlot.MyFixedUpdate += EquipmentSlot_MyFixedUpdate;
+            
             On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets;
+            
+
+            //CompatHook();
+
+        }
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public void CompatHook()
+        {
             ModCompatability.FinishedLoadingCompatability += () =>
             {
-                ProperSave.SaveFile.OnGatherSaveData += SaveFile_OnGatherSaveData;
-                ProperSave.Loading.OnLoadingEnded += Loading_OnLoadingStarted;
+                if (ModCompatability.ProperSaveCompat.IsProperSaveInstalled && ModCompatability.ProperSaveCompat.AddProperSaveFunctionality)
+                {
+                    ProperSave.SaveFile.OnGatherSaveData += SaveFile_OnGatherSaveData;
+                    ProperSave.Loading.OnLoadingEnded += Loading_OnLoadingStarted;
+                }
             };
         }
 
@@ -258,7 +272,7 @@ namespace BransItems.Modules.Pickups.Equipments
                 }
             }
         }
-
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private void Loading_OnLoadingStarted(ProperSave.SaveFile obj)
         {
             string ETTDictKey = "BransExpansion_EarthTotemTrackers";
@@ -284,16 +298,16 @@ namespace BransItems.Modules.Pickups.Equipments
                 
             }
             */
-            List<EarthTotemTrackerSaveStructure> ETTSStructures = obj.GetModdedData<List<EarthTotemTrackerSaveStructure>>(ETTDictKey);
+            List<ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure> ETTSStructures = obj.GetModdedData<List<ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure>>(ETTDictKey);
 
-            foreach (EarthTotemTrackerSaveStructure ETTS in ETTSStructures)
+            foreach (ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure ETTS in ETTSStructures)
             {
                 NetworkUserId NUID = ETTS.userID.Load();
-                CharacterMaster master = NetworkUser.readOnlyInstancesList.FirstOrDefault(Nuser=> Nuser.id.Equals(NUID)).master;//RoR2.Run.instance.GetUserMaster(ETTS.userID.Load());
+                CharacterMaster master = NetworkUser.readOnlyInstancesList.FirstOrDefault(Nuser => Nuser.id.Equals(NUID)).master;//RoR2.Run.instance.GetUserMaster(ETTS.userID.Load());
                 int absorbedCount = ETTS.EarthTotemsAbsorbed;
 
                 List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
-                foreach(string equip in ETTS.EquipList)
+                foreach (string equip in ETTS.EquipList)
                     equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(equip)));
 
                 EarthTotemTracker temp = master.gameObject.AddComponent<EarthTotemTracker>();
@@ -304,7 +318,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
             }
         }
-
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private void SaveFile_OnGatherSaveData(Dictionary<string, object> obj)
         {
             //string will be : BransExpansion_EarthTotemTrackers
@@ -317,7 +331,7 @@ namespace BransItems.Modules.Pickups.Equipments
             //At the end of the string write ENDOFLOADINGEARTHTOTEM
 
             string ETTDictKey = "BransExpansion_EarthTotemTrackers";
-            
+
             //List<CharacterMaster> MastersWithEquipment = CharacterMaster.instancesList.Where(master => master.GetComponent<EarthTotemTracker>() != null).ToList();
             List<EarthTotemTracker> earthTotemTrackers = CharacterMaster.instancesList
             .Select(master => master.GetComponent<EarthTotemTracker>())
@@ -325,8 +339,8 @@ namespace BransItems.Modules.Pickups.Equipments
             .ToList();
 
             //List<string> ETTEntries = new List<string>();
-            List<EarthTotemTrackerSaveStructure> ETTSSList = new List<EarthTotemTrackerSaveStructure>();
-            foreach(EarthTotemTracker ETT in earthTotemTrackers)
+            List<ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure> ETTSSList = new List<ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure>();
+            foreach (EarthTotemTracker ETT in earthTotemTrackers)
             {
                 /*
                 string ID = ETT.Master.playerCharacterMasterController.networkUser+",";
@@ -342,26 +356,18 @@ namespace BransItems.Modules.Pickups.Equipments
                 foreach (EquipmentDef ED in ETT.EquipDefList)
                     ETTEquipList.Add(ED.name);
 
-                ETTSSList.Add(new EarthTotemTrackerSaveStructure
+                ETTSSList.Add(new ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure
                 {
-                    userID =  new ProperSave.Data.UserIDData(ETT.Master.playerCharacterMasterController.networkUser.id),
-                    EarthTotemsAbsorbed=ETT.EarthTotemAbsorbedCount,
-                    EquipList=ETTEquipList
+                    userID = new ProperSave.Data.UserIDData(ETT.Master.playerCharacterMasterController.networkUser.id),
+                    EarthTotemsAbsorbed = ETT.EarthTotemAbsorbedCount,
+                    EquipList = ETTEquipList
                 });
             }
 
             obj.Add(ETTDictKey, ETTSSList);
         }
 
-        public struct EarthTotemTrackerSaveStructure
-        {
-            [DataMember(Name = "UserID")]
-            public ProperSave.Data.UserIDData userID;
-            [DataMember(Name = "EarthTotemsAbsorbed")]
-            public int EarthTotemsAbsorbed;
-            [DataMember(Name = "AbsorbList")]
-            public List<string> EquipList;
-        }
+        
 
         public static float CalcAdditionalCooldownComplex(float numOfAbsorb, float highestCooldown)
         {

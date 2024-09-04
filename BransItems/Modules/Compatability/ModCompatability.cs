@@ -15,6 +15,7 @@ using BransItems.Modules.ItemTiers.HighlanderTier;
 using System.Reflection;
 using MonoMod.RuntimeDetour;
 using BransItems.Modules.Pickups.EliteEquipments;
+using System.Runtime.Serialization;
 
 namespace BransItems.Modules.Compatability
 {
@@ -127,7 +128,15 @@ namespace BransItems.Modules.Compatability
 
             public static bool AddProperSaveFunctionality = false;
 
-
+            public struct EarthTotemTrackerSaveStructure
+            {
+                [DataMember(Name = "UserID")]
+                public ProperSave.Data.UserIDData userID;
+                [DataMember(Name = "EarthTotemsAbsorbed")]
+                public int EarthTotemsAbsorbed;
+                [DataMember(Name = "AbsorbList")]
+                public List<string> EquipList;
+            }
         }
 
         internal static class EliteReworksCompat
@@ -183,7 +192,7 @@ namespace BransItems.Modules.Compatability
 
         public static void FinishedLoading()
         {
-            FinishedLoadingCompatability.Invoke();
+            FinishedLoadingCompatability?.Invoke();
         }
     }
 
