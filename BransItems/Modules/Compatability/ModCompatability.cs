@@ -127,8 +127,8 @@ namespace BransItems.Modules.Compatability
             public static bool IsProperSaveInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.KingEnderBrine.ProperSave");
 
             public static bool AddProperSaveFunctionality = false;
-
-            public struct EarthTotemTrackerSaveStructure
+            
+            public class EarthTotemTrackerSaveStructure
             {
                 [DataMember(Name = "UserID")]
                 public ProperSave.Data.UserIDData userID;
