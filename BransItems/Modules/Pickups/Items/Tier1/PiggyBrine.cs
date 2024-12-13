@@ -120,9 +120,9 @@ namespace BransItems.Modules.Pickups.Items.Tier1
             }
         }
 
-        private void BreakItem(On.RoR2.HealthComponent.orig_UpdateLastHitTime orig, HealthComponent self, float damageValue, Vector3 damagePosition, bool damageIsSilent, GameObject attacker)
+        private void BreakItem(On.RoR2.HealthComponent.orig_UpdateLastHitTime orig, HealthComponent self, float damageValue, Vector3 damagePosition, bool damageIsSilent, GameObject attacker, bool delayedDamage, bool firstHitOfDelayedDamage)
         {
-            orig.Invoke(self, damageValue, damagePosition, damageIsSilent, attacker);
+            orig.Invoke(self, damageValue, damagePosition, damageIsSilent, attacker, delayedDamage, firstHitOfDelayedDamage);
             if (NetworkServer.active && (bool)self && (bool)self.body && GetCount(self.body) > 0 && self.isHealthLow)
             {
                 int count = 1;//GetCount(self.body);
