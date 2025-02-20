@@ -6,16 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 using static RoR2.ItemTag;
-using BransItems.Modules.ItemTiers.HighlanderTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.ItemTiers.HighlanderTier;
+using Augmentum.Modules.Utils;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using RoR2.Projectile;
 
-namespace BransItems.Modules.Pickups.Items.HighlanderItems
+namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 {
     class CooldownBand : ItemBase<CooldownBand>
     {
@@ -351,7 +351,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
             else
             {
                 // Handle the case where the target instruction is not found.
-                BransItems.ModLogger.LogWarning("Could not find the target instruction.");
+                Augmentum.ModLogger.LogWarning("Could not find the target instruction.");
             }
         }
 

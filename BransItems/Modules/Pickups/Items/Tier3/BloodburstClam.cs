@@ -6,15 +6,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 
-namespace BransItems.Modules.Pickups.Items.Tier3
+namespace Augmentum.Modules.Pickups.Items.Tier3
 {
     class BloodburstClam : ItemBase<BloodburstClam>
     {
@@ -22,7 +22,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
         public override string ItemName => "Bloodburst Clam";
         public override string ItemLangTokenName => "BLOODBURST_CLAM";
         public override string ItemPickupDesc => $"On pickup, crack open for {DropCount} essences which boost stats. Future essence drops will come with 1 more.";
-        public override string ItemFullDescription => $"Crack open for <style=cIsDamage>{DropCount}</style> "+BransItems.EssencesKeyword+". Future "+BransItems.EssenceKeyword+ $" drops will come with 1<style=cStack>(+{AdditionalDrops} per stack)</style> more.";
+        public override string ItemFullDescription => $"Crack open for <style=cIsDamage>{DropCount}</style> "+Augmentum.EssencesKeyword+". Future "+Augmentum.EssenceKeyword+ $" drops will come with 1<style=cStack>(+{AdditionalDrops} per stack)</style> more.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." + 
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality."+

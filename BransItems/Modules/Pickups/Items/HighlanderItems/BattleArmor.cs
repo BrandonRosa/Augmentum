@@ -6,14 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 using static RoR2.ItemTag;
-using BransItems.Modules.ItemTiers.HighlanderTier;
-using BransItems.Modules.Utils;
-using BransItems.Modules.StandaloneBuffs;
+using Augmentum.Modules.ItemTiers.HighlanderTier;
+using Augmentum.Modules.Utils;
+using Augmentum.Modules.StandaloneBuffs;
 
-namespace BransItems.Modules.Pickups.Items.HighlanderItems
+namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 {
     class BattleArmor : ItemBase<CurvedHorn>
     {

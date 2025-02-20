@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace BransItems.Modules.Utils
+namespace Augmentum.Modules.Utils
 {
     internal class ItemHelpers
     {
@@ -257,13 +257,13 @@ namespace BransItems.Modules.Utils
                     int timesTriggeredAfter = (int)(TotalDamageTaken / (percent * bossGroup.totalMaxObservedMaxHealth));
                     int timesTriggeredBefore = (int)(PreviousTotalDamage / (percent * bossGroup.totalMaxObservedMaxHealth));
                     timesTriggered = timesTriggeredAfter-timesTriggeredBefore;
-                    //BransItems.ModLogger.LogWarning(timesTriggeredBefore);
-                    //BransItems.ModLogger.LogWarning(timesTriggeredAfter);
-                    //BransItems.ModLogger.LogWarning(timesTriggered);
-                    //BransItems.ModLogger.LogWarning("---"+percent+"---");
+                    //Augmentum.ModLogger.LogWarning(timesTriggeredBefore);
+                    //Augmentum.ModLogger.LogWarning(timesTriggeredAfter);
+                    //Augmentum.ModLogger.LogWarning(timesTriggered);
+                    //Augmentum.ModLogger.LogWarning("---"+percent+"---");
                     foreach (Action<BossGroup, DamageInfo, int> action in PercentLostActionList[percent])
                         action.Invoke(bossGroup, damageInfo, timesTriggered);
-                    //BransItems.ModLogger.LogWarning("!!!" + percent + "!!!");
+                    //Augmentum.ModLogger.LogWarning("!!!" + percent + "!!!");
                 }
 
                 

@@ -10,22 +10,22 @@ using UnityEngine.AddressableAssets;
 using System.Reflection;
 using R2API.Utils;
 using System.Linq;
-using BransItems.Modules.Pickups;
+using Augmentum.Modules.Pickups;
 using System.Collections.Generic;
-using BransItems.Modules.ItemTiers;
+using Augmentum.Modules.ItemTiers;
 using RoR2.ContentManagement;
-using BransItems.Modules.ItemTiers.CoreTier;
-using BransItems.Modules.ItemTiers.HighlanderTier;
-using BransItems.Modules.Utils;
-using BransItems.Modules.StandaloneBuffs;
-using BransItems.Modules.ColorCatalogEntry;
-using BransItems.Modules.Pickups.Equipments;
-using BransItems.Modules.Compatability;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.HighlanderItems;
+using Augmentum.Modules.ItemTiers.CoreTier;
+using Augmentum.Modules.ItemTiers.HighlanderTier;
+using Augmentum.Modules.Utils;
+using Augmentum.Modules.StandaloneBuffs;
+using Augmentum.Modules.ColorCatalogEntry;
+using Augmentum.Modules.Pickups.Equipments;
+using Augmentum.Modules.Compatability;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.HighlanderItems;
 using HarmonyLib;
 
-namespace BransItems
+namespace Augmentum
 {
 
     
@@ -38,13 +38,13 @@ namespace BransItems
     //This is the main declaration of our plugin class. BepInEx searches for all classes inheriting from BaseUnityPlugin to initialize on startup.
     //BaseUnityPlugin itself inherits from MonoBehaviour, so you can use this as a reference for what you can declare and use in your plugin class: https://docs.unity3d.com/ScriptReference/MonoBehaviour.html
     [BepInPlugin(ModGuid, ModName, ModVer)]
-    public class BransItems : BaseUnityPlugin
+    public class Augmentum : BaseUnityPlugin
     {
         //The Plugin GUID should be a unique ID for this plugin, which is human readable (as it is used in places like the config).
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.Augmentum"; //Our Package Name
         public const string ModName = "Augmentum";
-        public const string ModVer = "1.1.2";
+        public const string ModVer = "1.1.3";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;
@@ -112,7 +112,7 @@ namespace BransItems
         private void Start()
         { 
 
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BransItems.bransitems_assets"))
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Augmentum.bransitems_assets"))
             {
                 MainAssets = AssetBundle.LoadFromStream(stream);
             }
@@ -178,7 +178,7 @@ namespace BransItems
                 }
             }
 
-            var disableItems = ConfigManager.ConfigOption<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in BransItems?");
+            var disableItems = ConfigManager.ConfigOption<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in Augmentum?");
             if (!disableItems)
             {
                 //Item Initialization
@@ -212,7 +212,7 @@ namespace BransItems
                 //IL.RoR2.ShopTerminalBehavior.GenerateNewPickupServer_bool += ItemBase.BlacklistFromPrinter;
                 On.RoR2.Items.ContagiousItemManager.Init += ItemBase.RegisterVoidPairings;
             }
-            var disableEquipment = ConfigManager.ConfigOption<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in BransItems?");
+            var disableEquipment = ConfigManager.ConfigOption<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in Augmentum?");
             if (!disableEquipment)
             {
                 //Equipment Initialization

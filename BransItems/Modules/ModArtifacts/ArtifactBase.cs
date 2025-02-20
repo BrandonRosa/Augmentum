@@ -10,7 +10,7 @@ using On.RoR2.Items;
 using System.Linq;
 using HarmonyLib;
 
-namespace BransItems.Modules.Pickups
+namespace Augmentum.Modules.Pickups
 {
 
 	public abstract class ArtifactBase<T> : ArtifactBase where T : ArtifactBase<T>

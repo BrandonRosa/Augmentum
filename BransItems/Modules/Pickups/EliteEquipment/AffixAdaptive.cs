@@ -1,6 +1,6 @@
 ﻿using BepInEx.Configuration;
-using BransItems.Modules.StandaloneBuffs;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.StandaloneBuffs;
+using Augmentum.Modules.Utils;
 
 using R2API;
 using RoR2;
@@ -9,11 +9,11 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 
 
-namespace BransItems.Modules.Pickups.EliteEquipments
+namespace Augmentum.Modules.Pickups.EliteEquipments
 {
     class AffixAdaptive : EliteEquipmentBase<AffixAdaptive>
     {

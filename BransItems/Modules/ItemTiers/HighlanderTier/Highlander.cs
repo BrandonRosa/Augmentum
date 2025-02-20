@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using BransItems.Modules.ColorCatalogEntry;
-//using BransItems.Modules.ColorCatalogEntry.CoreColors;
-using BransItems.Modules.ItemTiers;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.ColorCatalogEntry;
+//using Augmentum.Modules.ColorCatalogEntry.CoreColors;
+using Augmentum.Modules.ItemTiers;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Utils;
 using R2API;
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using static BransItems.BransItems;
+using static Augmentum.Augmentum;
 
-namespace BransItems.Modules.ItemTiers.HighlanderTier
+namespace Augmentum.Modules.ItemTiers.HighlanderTier
 {
     class Highlander : ItemTierBase<Highlander>
     {

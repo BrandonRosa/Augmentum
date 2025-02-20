@@ -1,8 +1,8 @@
 ﻿using BepInEx.Configuration;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Pickups.Items.Tier3;
-using BransItems.Modules.StandaloneBuffs;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.StandaloneBuffs;
+using Augmentum.Modules.Utils;
 using R2API;
 using RoR2;
 using System;
@@ -10,10 +10,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.BransItems;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
 
-namespace BransItems.Modules.Pickups.Items.Lunar
+namespace Augmentum.Modules.Pickups.Items.Lunar
 {
     class GlassVeil : ItemBase<GlassVeil>
     {
@@ -433,7 +433,7 @@ namespace BransItems.Modules.Pickups.Items.Lunar
 
                     List<ItemDef> AllItemsInTier = ItemDefsWithTier(ItemTierCatalog.GetItemTierDef(itemTier));
                     AllItemsInTier.RemoveAll(x => ItemBlacklist.Contains(x));
-                    BransItems.ModLogger.LogWarning("Rerollable to:" + AllItemsInTier.ToString());
+                    Augmentum.ModLogger.LogWarning("Rerollable to:" + AllItemsInTier.ToString());
 
 
                     int WishOptions = DefaultWishOptions + self.inventory.GetItemCount(DiscoveryMedallionConsumed.instance.ItemDef) * DiscoveryMedallion.AdditionalChoices;
@@ -503,11 +503,11 @@ namespace BransItems.Modules.Pickups.Items.Lunar
 
                 var healingItems = ItemCatalog.allItemDefs.Where(itemDef => itemDef.tags.Contains(ItemTag.Healing));
                 HealCatagoryItems.UnionWith(healingItems);
-                BransItems.ModLogger.LogWarning("1:" + HealCatagoryItems.Count);
+                Augmentum.ModLogger.LogWarning("1:" + HealCatagoryItems.Count);
                 blacklist.UnionWith(HealCatagoryItems);
-                BransItems.ModLogger.LogWarning("2:" + blacklist.Count);
+                Augmentum.ModLogger.LogWarning("2:" + blacklist.Count);
                 blacklist.ExceptWith(HealingWhitelist);
-                BransItems.ModLogger.LogWarning("3:" + blacklist.Count);
+                Augmentum.ModLogger.LogWarning("3:" + blacklist.Count);
             }
 
             return blacklist;
@@ -522,10 +522,10 @@ namespace BransItems.Modules.Pickups.Items.Lunar
             {
                 // if (int.TryParse(piece.Trim(), out var itemIndex))
                 //     _items.Add((ItemIndex) itemIndex);
-                BransItems.ModLogger.LogWarning("Name:" + piece);
+                Augmentum.ModLogger.LogWarning("Name:" + piece);
                 var item = ItemCatalog.FindItemIndex(piece);
                 if (item == ItemIndex.None) continue;
-                BransItems.ModLogger.LogWarning("itemIndex" + item);
+                Augmentum.ModLogger.LogWarning("itemIndex" + item);
                 _items.Add(ItemCatalog.GetItemDef(item));
             }
 

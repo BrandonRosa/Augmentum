@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Text;
 using Unity;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 using RoR2;
 using R2API;
 using UnityEngine.AddressableAssets;
 
-namespace BransItems.Modules.StandaloneBuffs
+namespace Augmentum.Modules.StandaloneBuffs
 {
     public class TemporaryShield : BuffBase<TemporaryShield>
     {

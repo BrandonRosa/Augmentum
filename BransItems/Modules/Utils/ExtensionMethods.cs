@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BransItems.Modules.Utils
+namespace Augmentum.Modules.Utils
 {
     public static class ExtensionMethods
     {
@@ -44,7 +44,7 @@ namespace BransItems.Modules.Utils
         {
             if (!hurtbox.healthComponent || !hurtbox.healthComponent.body || !item)
             {
-                BransItems.ModLogger.LogError("Can't check if the hurtbox has the item, some information is missing!");
+                Augmentum.ModLogger.LogError("Can't check if the hurtbox has the item, some information is missing!");
                 return false;
             }
 
@@ -61,7 +61,7 @@ namespace BransItems.Modules.Utils
         {
             if (!hurtbox.healthComponent || !hurtbox.healthComponent.body)
             {
-                BransItems.ModLogger.LogError("Can't check if the hurtbox is an elite, some information is missing!");
+                Augmentum.ModLogger.LogError("Can't check if the hurtbox is an elite, some information is missing!");
                 return false;
             }
 

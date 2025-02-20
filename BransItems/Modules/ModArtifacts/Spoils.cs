@@ -1,9 +1,9 @@
 ﻿using BepInEx.Configuration;
-using BransItems.Modules.Compatability;
-using BransItems.Modules.ItemTiers.CoreTier;
-using BransItems.Modules.ItemTiers.HighlanderTier;
-using BransItems.Modules.Pickups.Items.Tier3;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Compatability;
+using Augmentum.Modules.ItemTiers.CoreTier;
+using Augmentum.Modules.ItemTiers.HighlanderTier;
+using Augmentum.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -13,10 +13,10 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 
-namespace BransItems.Modules.Pickups.Items.Essences
+namespace Augmentum.Modules.Pickups.Items.Essences
 {
     class Spoils : ArtifactBase<Spoils>
     {
@@ -76,6 +76,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
                 rotation = Quaternion.identity,
                 pickupIndex = PickupCatalog.FindPickupIndex(Highlander.instance.itemTierDef._tier)
             };
+            PickupInfo.prefabOverride = DiscoveryMedallion.potentialPrefab;
             return PickupInfo;
         }
     }

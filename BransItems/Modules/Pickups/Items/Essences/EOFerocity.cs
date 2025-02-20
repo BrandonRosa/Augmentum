@@ -1,5 +1,5 @@
 ﻿using BepInEx.Configuration;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -7,10 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 
-namespace BransItems.Modules.Pickups.Items.Essences
+namespace Augmentum.Modules.Pickups.Items.Essences
 {
     class EOFerocity : ItemBase<EOFerocity>
     {

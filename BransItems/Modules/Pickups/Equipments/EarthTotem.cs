@@ -9,19 +9,19 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using BransItems.Modules.Utils;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using Augmentum.Modules.Utils;
 using static RoR2.EquipmentSlot;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using R2API.Networking.Interfaces;
 using UnityEngine.Networking;
-using BransItems.Modules.Compatability;
+using Augmentum.Modules.Compatability;
 using System.Runtime.Serialization;
 using UnityEngine.AddressableAssets;
 using System.Runtime.CompilerServices;
 
-namespace BransItems.Modules.Pickups.Equipments
+namespace Augmentum.Modules.Pickups.Equipments
 {
     class EarthTotem : EquipmentBase<EarthTotem>
     {
@@ -71,8 +71,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
         private void CreateTargetingIndicator()
         {
-            TargetingIndicatorPrefabBase = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/RecyclerIndicator"), "AirTotemIndicator", false); //"SoulPinIndicator", false);
-            //TargetingIndicatorPrefabBase.GetComponentInChildren<SpriteRenderer>().sprite = MainAssets.LoadAsset<Sprite>("SoulPinReticuleIcon.png");
+            TargetingIndicatorPrefabBase = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/RecyclerIndicator"), "AirTotemIndicator", false);
             TargetingIndicatorPrefabBase.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             TargetingIndicatorPrefabBase.GetComponentInChildren<SpriteRenderer>().transform.rotation = Quaternion.identity;
             TargetingIndicatorPrefabBase.GetComponentInChildren<TMPro.TextMeshPro>().color = new Color(0.423f, 1, 0.749f);
@@ -232,20 +231,16 @@ namespace BransItems.Modules.Pickups.Equipments
             On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets;
             
 
-            //CompatHook();
+            CompatHook();
 
         }
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public void CompatHook()
         {
-            ModCompatability.FinishedLoadingCompatability += () =>
+            if (ModCompatability.ProperSaveCompat.IsProperSaveInstalled && ModCompatability.ProperSaveCompat.AddProperSaveFunctionality)
             {
-                if (ModCompatability.ProperSaveCompat.IsProperSaveInstalled && ModCompatability.ProperSaveCompat.AddProperSaveFunctionality)
-                {
-                    ProperSave.SaveFile.OnGatherSaveData += SaveFile_OnGatherSaveData;
-                    ProperSave.Loading.OnLoadingEnded += Loading_OnLoadingStarted;
-                }
-            };
+                ModCompatability.FinishedLoadingCompatability += ModCompatability.ProperSaveCompat.Hooks;
+            }
         }
 
         private void EquipmentSlot_MyFixedUpdate(On.RoR2.EquipmentSlot.orig_MyFixedUpdate orig, EquipmentSlot self, float deltaTime)
@@ -272,100 +267,7 @@ namespace BransItems.Modules.Pickups.Equipments
                 }
             }
         }
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private void Loading_OnLoadingStarted(ProperSave.SaveFile obj)
-        {
-            string ETTDictKey = "BransExpansion_EarthTotemTrackers";
-
-            /*
-            List<string> earthTotemTrackers = obj.GetModdedData<List<string>>(ETTDictKey);
-            BransItems.ModLogger.LogWarning("Flag2");
-            foreach (string ETTS in earthTotemTrackers)
-            {
-                string[] values=ETTS.Split(',');
-                int id = int.Parse(values[0]);
-                int absorbedCount = int.Parse(values[1]);
-                BransItems.ModLogger.LogWarning("Flag3 "+id+" "+absorbedCount);
-                List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
-                for (int i = 2; i < values.Length; i++)
-                    equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(values[i])));
-
-                EarthTotemTracker temp=((GameObject)CharacterMaster.FindObjectFromInstanceID(id)).gameObject.AddComponent<EarthTotemTracker>();
-                BransItems.ModLogger.LogWarning("Flag4");
-                temp.EquipDefList = equipmentDefs;
-                temp.EarthTotemAbsorbedCount = absorbedCount;
-                temp.id = id;
-                
-            }
-            */
-            List<ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure> ETTSStructures = obj.GetModdedData<List<ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure>>(ETTDictKey);
-
-            foreach (ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure ETTS in ETTSStructures)
-            {
-                NetworkUserId NUID = ETTS.userID.Load();
-                CharacterMaster master = NetworkUser.readOnlyInstancesList.FirstOrDefault(Nuser => Nuser.id.Equals(NUID)).master;//RoR2.Run.instance.GetUserMaster(ETTS.userID.Load());
-                int absorbedCount = ETTS.EarthTotemsAbsorbed;
-
-                List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
-                foreach (string equip in ETTS.EquipList)
-                    equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(equip)));
-
-                EarthTotemTracker temp = master.gameObject.AddComponent<EarthTotemTracker>();
-
-                temp.EquipDefList = equipmentDefs;
-                temp.EarthTotemAbsorbedCount = absorbedCount;
-
-
-            }
-        }
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private void SaveFile_OnGatherSaveData(Dictionary<string, object> obj)
-        {
-            //string will be : BransExpansion_EarthTotemTrackers
-            //object will be string with this:
-            //Identifier for the player
-            //Number of absorbed earthTotems
-            //Number of absorbed equipments
-            //List of equipment names
-            //^^ all that in each line
-            //At the end of the string write ENDOFLOADINGEARTHTOTEM
-
-            string ETTDictKey = "BransExpansion_EarthTotemTrackers";
-
-            //List<CharacterMaster> MastersWithEquipment = CharacterMaster.instancesList.Where(master => master.GetComponent<EarthTotemTracker>() != null).ToList();
-            List<EarthTotemTracker> earthTotemTrackers = CharacterMaster.instancesList
-            .Select(master => master.GetComponent<EarthTotemTracker>())
-            .Where(tracker => tracker != null)
-            .ToList();
-
-            //List<string> ETTEntries = new List<string>();
-            List<ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure> ETTSSList = new List<ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure>();
-            foreach (EarthTotemTracker ETT in earthTotemTrackers)
-            {
-                /*
-                string ID = ETT.Master.playerCharacterMasterController.networkUser+",";
-                string ETTAbsorbed = ETT.EarthTotemAbsorbedCount+"";
-                string ETTEquipList = "";
-                foreach (EquipmentDef ED in ETT.EquipDefList)
-                    ETTEquipList += ","+ED.nameToken;
-
-
-                ETTEntries.Add(ID + ETTAbsorbed + ETTEquipList);
-                */
-                List<string> ETTEquipList = new List<string>();
-                foreach (EquipmentDef ED in ETT.EquipDefList)
-                    ETTEquipList.Add(ED.name);
-
-                ETTSSList.Add(new ModCompatability.ProperSaveCompat.EarthTotemTrackerSaveStructure
-                {
-                    userID = new ProperSave.Data.UserIDData(ETT.Master.playerCharacterMasterController.networkUser.id),
-                    EarthTotemsAbsorbed = ETT.EarthTotemAbsorbedCount,
-                    EquipList = ETTEquipList
-                });
-            }
-
-            obj.Add(ETTDictKey, ETTSSList);
-        }
+        
 
         
 

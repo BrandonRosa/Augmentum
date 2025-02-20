@@ -1,8 +1,8 @@
 ﻿using BepInEx.Configuration;
-using BransItems.Modules.Compatability;
-using BransItems.Modules.ItemTiers.CoreTier;
-using BransItems.Modules.ItemTiers.HighlanderTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Compatability;
+using Augmentum.Modules.ItemTiers.CoreTier;
+using Augmentum.Modules.ItemTiers.HighlanderTier;
+using Augmentum.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -11,10 +11,10 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 
-namespace BransItems.Modules.Pickups.Items.Essences
+namespace Augmentum.Modules.Pickups.Items.Essences
 {
     class Conquest : ArtifactBase<Conquest>
     {
@@ -87,7 +87,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
                         baseToken = "<color=#FAF7B9><size=120%>" + "You have been rewarded with a gift from the Highlands." + "</color></size>"
                     });
 
-                    PickupDropletController.CreatePickupDroplet(Spoils.SpoilsPickupInfo(dropPosition.position + Vector3.up * 2f), dropPosition.position, val);
+                    PickupDropletController.CreatePickupDroplet(Spoils.SpoilsPickupInfo(dropPosition.position + Vector3.up * 3f), dropPosition.position, val);
                     num3++;
                     val = val2 * val;
                 }
@@ -102,7 +102,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
                         baseToken = "<color=#FAF7B9><size=120%>" + "You have been rewarded with a gift from the Highlands." + "</color></size>"
                     });
                     PickupIndex pickupIndex = pickupDef.pickupIndex;
-                    PickupDropletController.CreatePickupDroplet(pickupIndex, dropPosition.position + Vector3.up * 2f, val);
+                    PickupDropletController.CreatePickupDroplet(pickupIndex, dropPosition.position + Vector3.up * 3f, val);
                     num3++;
                     val = val2 * val;
                 }

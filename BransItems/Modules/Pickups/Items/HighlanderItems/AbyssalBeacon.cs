@@ -6,14 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 using static RoR2.ItemTag;
-using BransItems.Modules.ItemTiers.HighlanderTier;
+using Augmentum.Modules.ItemTiers.HighlanderTier;
 using UnityEngine.Networking;
 using UnityEngine.AddressableAssets;
 
-namespace BransItems.Modules.Pickups.Items.HighlanderItems
+namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 {
     class AbyssalBeacon : ItemBase<AbyssalBeacon>
     {

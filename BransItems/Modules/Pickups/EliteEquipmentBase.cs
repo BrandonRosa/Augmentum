@@ -9,7 +9,7 @@ using System.Linq;
 using BepInEx.Configuration;
 using UnityEngine.AddressableAssets;
 
-namespace BransItems.Modules.Pickups
+namespace Augmentum.Modules.Pickups
 {
     // This is the base from Aetherium
     // Should probably stop copy pasting this stuff but eh

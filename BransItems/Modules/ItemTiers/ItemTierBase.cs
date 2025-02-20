@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 
-namespace BransItems.Modules.ItemTiers
+namespace Augmentum.Modules.ItemTiers
 {
 
 
@@ -101,13 +101,13 @@ namespace BransItems.Modules.ItemTiers
             if (backgroundTexture)
                 itemTierDef.bgIconTexture = backgroundTexture;
             
-            //BransItems.ModLogger.LogWarning(itemTierDef.tier.ToString());
-            //BransItems.ModLogger.LogWarning("Correct:"+ ItemTier.AssignedAtRuntime.ToString());
-            //BransItems.ModLogger.LogWarning("MyTierName:" + itemTierDef.name);
-           // BransItems.ModLogger.LogWarning("MyTierCanScrap:" + itemTierDef.canScrap);
+            //Augmentum.ModLogger.LogWarning(itemTierDef.tier.ToString());
+            //Augmentum.ModLogger.LogWarning("Correct:"+ ItemTier.AssignedAtRuntime.ToString());
+            //Augmentum.ModLogger.LogWarning("MyTierName:" + itemTierDef.name);
+           // Augmentum.ModLogger.LogWarning("MyTierCanScrap:" + itemTierDef.canScrap);
 
             //if(!itemTierDef.name.Equals(TierName))
-               // BransItems.ModLogger.LogWarning("NAME DIDNT SAVE");
+               // Augmentum.ModLogger.LogWarning("NAME DIDNT SAVE");
             //ItemTierDef.bgIconTexture.
             ContentAddition.AddItemTierDef(itemTierDef);
         }

@@ -1,10 +1,10 @@
-﻿using BransItems.Modules.Compatability;
-using BransItems.Modules.ItemTiers;
+﻿using Augmentum.Modules.Compatability;
+using Augmentum.Modules.ItemTiers;
 using RoR2;
 using System;
 using UnityEngine;
 
-namespace BransItems.Modules.Utils
+namespace Augmentum.Modules.Utils
 {
     /// <summary>
     /// A monobehaviour that displays a custom ItemTier pickup display
@@ -53,7 +53,7 @@ namespace BransItems.Modules.Utils
 
         private void OnPickupDisplayRebuildModel()
         {
-            //BransItems.ModLogger.LogWarning("REBUILD");
+            //Augmentum.ModLogger.LogWarning("REBUILD");
             if (!display)
                 return;
 
@@ -67,7 +67,7 @@ namespace BransItems.Modules.Utils
                 {
                     if (itemTierBase != null && itemTierBase.PickupDisplayVFX)
                     {
-                        //BransItems.ModLogger.LogWarning("Final");
+                        //Augmentum.ModLogger.LogWarning("Final");
                         effectInstance = Instantiate(itemTierBase.PickupDisplayVFX, display.gameObject.transform);
                         effectInstance.transform.position -= Vector3.up*1.5f;
                         effectInstance.SetActive(true);
@@ -101,7 +101,7 @@ namespace BransItems.Modules.Utils
                             lineRender.endWidth = 0f;
                             lineRender.SetPosition(0, lineStartPos);
                             lineRender.SetPosition(1, lineEndPos);
-                            //BransItems.ModLogger.LogWarning("NOTPINK");
+                            //Augmentum.ModLogger.LogWarning("NOTPINK");
                             
                         }
                     }
@@ -111,7 +111,7 @@ namespace BransItems.Modules.Utils
 
         private void OnPickupDisplayDestroyModel()
         {
-            //BransItems.ModLogger.LogWarning("Destroy");
+            //Augmentum.ModLogger.LogWarning("Destroy");
             if (effectInstance)
             {
                 Destroy(effectInstance);

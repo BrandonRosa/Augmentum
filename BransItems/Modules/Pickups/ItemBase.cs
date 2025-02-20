@@ -10,7 +10,7 @@ using On.RoR2.Items;
 using System.Linq;
 using HarmonyLib;
 
-namespace BransItems.Modules.Pickups
+namespace Augmentum.Modules.Pickups
 {
 
 	public abstract class ItemBase<T> : ItemBase where T : ItemBase<T>
@@ -119,7 +119,7 @@ namespace BransItems.Modules.Pickups
 				ItemTier.VoidTier2,
 				ItemTier.VoidTier3};
 
-			foreach (KeyValuePair<ItemBase, bool> itemPair in BransItems.ItemStatusDictionary)
+			foreach (KeyValuePair<ItemBase, bool> itemPair in Augmentum.ItemStatusDictionary)
 			{
 				if (itemPair.Value == true)
 				{
@@ -132,7 +132,7 @@ namespace BransItems.Modules.Pickups
 							var itemToCorrupt = ItemCatalog.allItemDefs.Where(x => x.nameToken == item.CorruptsItem[i]).FirstOrDefault();
 							if (!itemToCorrupt)
 							{
-								BransItems.ModLogger.LogError($"Tried to add {item.ItemName} in a Void item tier but no relationship was set for what it corrupts or could not be found. Aborting!");
+								Augmentum.ModLogger.LogError($"Tried to add {item.ItemName} in a Void item tier but no relationship was set for what it corrupts or could not be found. Aborting!");
 								continue;
 							}
 

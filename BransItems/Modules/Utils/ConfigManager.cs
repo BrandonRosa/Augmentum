@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 
 //100% of this code was stolen from HIFU. <3
-namespace BransItems.Modules.Utils
+namespace Augmentum.Modules.Utils
 {
     public class ConfigManager
     {
@@ -20,7 +20,7 @@ namespace BransItems.Modules.Utils
 
             var backupVal = (ConfigEntryBase)method.Invoke(config, newConfigEntry);
 
-            if (BransItems._preVersioning) entry.BoxedValue = entry.DefaultValue;
+            if (Augmentum._preVersioning) entry.BoxedValue = entry.DefaultValue;
 
             if (!ConfigEqual(backupVal.DefaultValue, backupVal.BoxedValue))
             {
@@ -43,8 +43,8 @@ namespace BransItems.Modules.Utils
 
         public static T ConfigOption<T>(string section, string key, T defaultvalue, string description)
         {
-            var config = BransItems.AugConfig.Bind<T>(section, key, defaultvalue, description);
-            ConfigManager.HandleConfig<T>(config, BransItems.AugBackupConfig, key);
+            var config = Augmentum.AugConfig.Bind<T>(section, key, defaultvalue, description);
+            ConfigManager.HandleConfig<T>(config, Augmentum.AugBackupConfig, key);
 
             return config.Value;
         }

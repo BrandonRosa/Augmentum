@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace BransItems.Modules.StandaloneBuffs
+namespace Augmentum.Modules.StandaloneBuffs
 {
 
     public abstract class BuffBase<T> : BuffBase where T : BuffBase<T>
@@ -42,7 +42,7 @@ namespace BransItems.Modules.StandaloneBuffs
             BuffDef.name = BuffName;
             BuffDef.buffColor = Color;
             BuffDef.canStack = CanStack;
-            //BransItems.ModLogger.LogWarning("CanStack: " + BuffDef.canStack);
+            //Augmentum.ModLogger.LogWarning("CanStack: " + BuffDef.canStack);
             BuffDef.isDebuff = IsDebuff;
             BuffDef.iconSprite = BuffIcon;
             BuffDef.isCooldown = IsCooldown;

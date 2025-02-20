@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using BransItems.Modules;
-using BransItems.Modules.ItemTiers.CoreTier;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using Augmentum.Modules;
+using Augmentum.Modules.ItemTiers.CoreTier;
 
-namespace BransItems.Modules.Pickups.Items.Essences
+namespace Augmentum.Modules.Pickups.Items.Essences
 {
     public static class EssenceHelpers
     {

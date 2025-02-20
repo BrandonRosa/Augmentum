@@ -8,16 +8,17 @@ using R2API;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using BransItems.Modules.ItemTiers.CoreTier;
-using BransItems.Modules.ItemTiers;
-using BransItems.Modules.ColorCatalogEntry;
-using BransItems.Modules.ItemTiers.HighlanderTier;
+using Augmentum.Modules.ItemTiers.CoreTier;
+using Augmentum.Modules.ItemTiers;
+using Augmentum.Modules.ColorCatalogEntry;
+using Augmentum.Modules.ItemTiers.HighlanderTier;
 using System.Reflection;
 using MonoMod.RuntimeDetour;
-using BransItems.Modules.Pickups.EliteEquipments;
+using Augmentum.Modules.Pickups.EliteEquipments;
 using System.Runtime.Serialization;
+using Augmentum.Modules.Pickups.Equipments;
 
-namespace BransItems.Modules.Compatability
+namespace Augmentum.Modules.Compatability
 {
     internal static class ModCompatability
     {
@@ -78,7 +79,7 @@ namespace BransItems.Modules.Compatability
 
             public static bool CoreIsValidPickup(IsValidItemPickupDelegate orig , PickupIndex pickup)
             {
-                //BransItems.ModLogger.LogWarning("IT WORKS");
+                //Augmentum.ModLogger.LogWarning("IT WORKS");
                 bool ans = orig(pickup);
                 if (!ans)
                 {
@@ -127,8 +128,82 @@ namespace BransItems.Modules.Compatability
             public static bool IsProperSaveInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.KingEnderBrine.ProperSave");
 
             public static bool AddProperSaveFunctionality = false;
-            
-            public class EarthTotemTrackerSaveStructure
+
+            [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+            public static void Hooks()
+            {
+                ProperSave.SaveFile.OnGatherSaveData += SaveFile_OnGatherSaveData;
+                ProperSave.Loading.OnLoadingEnded += Loading_OnLoadingStarted;
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+            public static void Loading_OnLoadingStarted(ProperSave.SaveFile obj)
+            {
+                string ETTDictKey = "BransExpansion_EarthTotemTrackers";
+
+                List<EarthTotemTrackerSaveStructure> ETTSStructures = obj.GetModdedData<List<EarthTotemTrackerSaveStructure>>(ETTDictKey);
+
+                foreach (EarthTotemTrackerSaveStructure ETTS in ETTSStructures)
+                {
+                    NetworkUserId NUID = ETTS.userID.Load();
+                    CharacterMaster master = NetworkUser.readOnlyInstancesList.FirstOrDefault(Nuser => Nuser.id.Equals(NUID)).master;//RoR2.Run.instance.GetUserMaster(ETTS.userID.Load());
+                    int absorbedCount = ETTS.EarthTotemsAbsorbed;
+
+                    List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
+                    foreach (string equip in ETTS.EquipList)
+                        equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(equip)));
+
+                    EarthTotemTracker temp = master.gameObject.AddComponent<EarthTotemTracker>();
+
+                    temp.EquipDefList = equipmentDefs;
+                    temp.EarthTotemAbsorbedCount = absorbedCount;
+
+                }
+            }
+            [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+            public static void SaveFile_OnGatherSaveData(Dictionary<string, object> obj)
+            {
+                //string will be : BransExpansion_EarthTotemTrackers
+                //object will be string with this:
+                //Identifier for the player
+                //Number of absorbed earthTotems
+                //Number of absorbed equipments
+                //List of equipment names
+                //^^ all that in each line
+                //At the end of the string write ENDOFLOADINGEARTHTOTEM
+
+                string ETTDictKey = "BransExpansion_EarthTotemTrackers";
+
+                //List<CharacterMaster> MastersWithEquipment = CharacterMaster.instancesList.Where(master => master.GetComponent<EarthTotemTracker>() != null).ToList();
+                List<EarthTotemTracker> earthTotemTrackers = CharacterMaster.instancesList
+                .Select(master => master.GetComponent<EarthTotemTracker>())
+                .Where(tracker => tracker != null)
+                .ToList();
+
+                //List<string> ETTEntries = new List<string>();
+                List<EarthTotemTrackerSaveStructure> ETTSSList = new List<EarthTotemTrackerSaveStructure>();
+                foreach (EarthTotemTracker ETT in earthTotemTrackers)
+                {
+
+                    List<string> ETTEquipList = new List<string>();
+                    foreach (EquipmentDef ED in ETT.EquipDefList)
+                        ETTEquipList.Add(ED.name);
+
+                    ETTSSList.Add(new EarthTotemTrackerSaveStructure
+                    {
+                        userID = new ProperSave.Data.UserIDData(ETT.Master.playerCharacterMasterController.networkUser.id),
+                        EarthTotemsAbsorbed = ETT.EarthTotemAbsorbedCount,
+                        EquipList = ETTEquipList
+                    });
+                }
+
+                obj.Add(ETTDictKey, ETTSSList);
+            }
+
+            /// <summary>
+            /// This in charge of saving/loading absorbed equipments.
+            /// </summary>
+            public struct EarthTotemTrackerSaveStructure
             {
                 [DataMember(Name = "UserID")]
                 public ProperSave.Data.UserIDData userID;
@@ -136,6 +211,8 @@ namespace BransItems.Modules.Compatability
                 public int EarthTotemsAbsorbed;
                 [DataMember(Name = "AbsorbList")]
                 public List<string> EquipList;
+
+
             }
         }
 
@@ -165,9 +242,9 @@ namespace BransItems.Modules.Compatability
 
             public static void ForceZetAspectCompat()
             {
-                ZetAdaptiveDrop.instance.Init(BransItems.AugConfig);
+                ZetAdaptiveDrop.instance.Init(Augmentum.AugConfig);
 
-                BransItems.ModLogger.LogInfo("Item: " + ZetAdaptiveDrop.instance.ItemName + " Initialized!");
+                Augmentum.ModLogger.LogInfo("Item: " + ZetAdaptiveDrop.instance.ItemName + " Initialized!");
 
                 On.RoR2.PickupDropletController.CreatePickupDroplet_PickupIndex_Vector3_Vector3 += (orig, pickupIndex, position, velocity) =>
                 {
