@@ -239,7 +239,8 @@ namespace Augmentum.Modules.Pickups
             {
                 if (!CanAppearInEliteTiers.All(x => baseEliteTierDefs.Contains(x)))
                 {
-                    //if (Plugin.DEBUG)
+                    //if (Plugin
+                    //)
                     //{
                     //    Log.LogInfo("Creating custom elite tier");
                     //}

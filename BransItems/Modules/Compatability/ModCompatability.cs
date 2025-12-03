@@ -236,34 +236,34 @@ namespace Augmentum.Modules.Compatability
 
         }
 
-        internal static class ZetAspectsCompat
-        {
-            public static bool IsZetAspectsInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.TPDespair.ZetAspects");
+        //internal static class ZetAspectsCompat
+        //{
+        //    public static bool IsZetAspectsInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.TPDespair.ZetAspects");
 
-            public static void ForceZetAspectCompat()
-            {
-                ZetAdaptiveDrop.instance.Init(Augmentum.AugConfig);
+        //    public static void ForceZetAspectCompat()
+        //    {
+        //        ZetAdaptiveDrop.instance.Init(Augmentum.AugConfig);
 
-                Augmentum.ModLogger.LogInfo("Item: " + ZetAdaptiveDrop.instance.ItemName + " Initialized!");
+        //        Augmentum.ModLogger.LogInfo("Item: " + ZetAdaptiveDrop.instance.ItemName + " Initialized!");
 
-                On.RoR2.PickupDropletController.CreatePickupDroplet_PickupIndex_Vector3_Vector3 += (orig, pickupIndex, position, velocity) =>
-                {
-                    if (!TPDespair.ZetAspects.DropHooks.CanObtainEquipment())
-                    {
-                        EquipmentIndex equipIndex = PickupCatalog.GetPickupDef(pickupIndex).equipmentIndex;
+        //        On.RoR2.PickupDropletController.CreatePickupDroplet_PickupIndex_Vector3_Vector3 += (orig, pickupIndex, position, velocity) =>
+        //        {
+        //            if (!TPDespair.ZetAspects.DropHooks.CanObtainEquipment())
+        //            {
+        //                EquipmentIndex equipIndex = PickupCatalog.GetPickupDef(pickupIndex).equipmentIndex;
 
-                        if (equipIndex != EquipmentIndex.None && equipIndex==AffixAdaptive.instance.EliteEquipmentDef.equipmentIndex)
-                        {
-                            ItemIndex newIndex = ZetAdaptiveDrop.instance.ItemDef.itemIndex;
+        //                if (equipIndex != EquipmentIndex.None && equipIndex==AffixAdaptive.instance.EliteEquipmentDef.equipmentIndex)
+        //                {
+        //                    ItemIndex newIndex = ZetAdaptiveDrop.instance.ItemDef.itemIndex;
 
-                            if (newIndex != ItemIndex.None) pickupIndex = PickupCatalog.FindPickupIndex(newIndex);
-                        }
-                    }
+        //                    if (newIndex != ItemIndex.None) pickupIndex = PickupCatalog.FindPickupIndex(newIndex);
+        //                }
+        //            }
 
-                    orig(pickupIndex, position, velocity);
-                };
-            }
-        }
+        //            orig(pickupIndex, position, velocity);
+        //        };
+        //    }
+        //}
 
         public static event Action FinishedLoadingCompatability;
 

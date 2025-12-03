@@ -62,7 +62,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            HealthPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health Percent To Trigger Effects", .25f, "What percent of health must be lost for this effect to trigger?");
+            HealthPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health Percent To Trigger Effects", .50f, "What percent of health must be lost for this effect to trigger?");
             DisableSpleenOnSecondTrigger = ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Disable shatterspleen interaction", true, "Setting this to true will disable this item's additional interactions with shatterspleen.");
         }
 
@@ -364,15 +364,21 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
                 HealthComponent victim = self;//new HealthComponent();
                 DamageReport damageReport = new DamageReport(damageInfoFake, victim, damageInfo.damage, self.combinedHealth);
                 int SpleenCount = 0;
+                int tempSpleenCount = 0;
                 if (DisableSpleenOnSecondTrigger && attacker?.inventory)
                 {
-                    SpleenCount = attacker.inventory.itemStacks[(int)RoR2Content.Items.BleedOnHitAndExplode.itemIndex];
-                    attacker.inventory.itemStacks[(int)RoR2Content.Items.BleedOnHitAndExplode.itemIndex] = 0;
+                    SpleenCount = attacker.inventory.permanentItemStacks.GetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex);
+                    attacker.inventory.permanentItemStacks.SetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex, 0);
+
+                    tempSpleenCount = attacker.inventory.tempItemsStorage.tempItemStacks.GetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex);
+                    attacker.inventory.tempItemsStorage.tempItemStacks.SetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex, 0);
                 }
                 GlobalEventManager.instance.OnCharacterDeath(damageReport);
-                if(SpleenCount>0)
+                if(SpleenCount+tempSpleenCount>0)
                 {
-                    attacker.inventory.itemStacks[(int)RoR2Content.Items.BleedOnHitAndExplode.itemIndex] = SpleenCount;
+                    attacker.inventory.permanentItemStacks.SetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex, SpleenCount);
+
+                    attacker.inventory.tempItemsStorage.tempItemStacks.SetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex, tempSpleenCount);
                 }
             }
         }
@@ -407,15 +413,20 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
                     */
 
                     int SpleenCount = 0;
+                    int tempSpleenCount = 0;
                     if (DisableSpleenOnSecondTrigger && damageReport.attackerBody.inventory)
                     {
-                        SpleenCount = damageReport.attackerBody.inventory.itemStacks[(int)RoR2Content.Items.BleedOnHitAndExplode.itemIndex];
-                        damageReport.attackerBody.inventory.itemStacks[(int)RoR2Content.Items.BleedOnHitAndExplode.itemIndex] = 0;
+                        SpleenCount = damageReport.attackerBody.inventory.permanentItemStacks.GetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex);
+                        damageReport.attackerBody.inventory.permanentItemStacks.SetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex, 0);
+
+                        tempSpleenCount = damageReport.attackerBody.inventory.tempItemsStorage.tempItemStacks.GetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex);
+                        damageReport.attackerBody.inventory.tempItemsStorage.tempItemStacks.SetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex, 0);
                     }
                     orig(self, damageReport);
-                    if (SpleenCount > 0)
+                    if (SpleenCount+tempSpleenCount > 0)
                     {
-                        damageReport.attackerBody.inventory.itemStacks[(int)RoR2Content.Items.BleedOnHitAndExplode.itemIndex] = SpleenCount;
+                        damageReport.attackerBody.inventory.permanentItemStacks.SetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex, SpleenCount);
+                        damageReport.attackerBody.inventory.tempItemsStorage.tempItemStacks.SetStackValue(RoR2Content.Items.BleedOnHitAndExplode.itemIndex, tempSpleenCount);
                     }
 
                 }

@@ -113,24 +113,24 @@ namespace Augmentum.Modules.Utils
             }
         }
 
-        public static void AddBuffAndDot(BuffDef buff, float duration, int stackCount, RoR2.CharacterBody body)
-        {
-            RoR2.DotController.DotIndex index = (RoR2.DotController.DotIndex)Array.FindIndex(RoR2.DotController.dotDefs, (dotDef) => dotDef.associatedBuff == buff);
-            for (int y = 0; y < stackCount; y++)
-            {
-                if (index != RoR2.DotController.DotIndex.None)
-                {
-                    RoR2.DotController.InflictDot(body.gameObject, body.gameObject, index, duration, 0.25f);
-                }
-                else
-                {
-                    if (NetworkServer.active)
-                    {
-                        body.AddTimedBuff(buff.buffIndex, duration);
-                    }
-                }
-            }
-        }
+        //public static void AddBuffAndDot(BuffDef buff, float duration, int stackCount, RoR2.CharacterBody body)
+        //{
+        //    RoR2.DotController.DotIndex index = (RoR2.DotController.DotIndex)Array.FindIndex(RoR2.DotController.dotDefs, (dotDef) => dotDef.associatedBuff == buff);
+        //    for (int y = 0; y < stackCount; y++)
+        //    {
+        //        if (index != RoR2.DotController.DotIndex.None)
+        //        {
+        //            RoR2.DotController.InflictDot(body.gameObject, body.gameObject, index, duration, 0.25f);
+        //        }
+        //        else
+        //        {
+        //            if (NetworkServer.active)
+        //            {
+        //                body.AddTimedBuff(buff.buffIndex, duration);
+        //            }
+        //        }
+        //    }
+        //}
 
         public static DotController.DotIndex FindAssociatedDotForBuff(BuffDef buff)
         {

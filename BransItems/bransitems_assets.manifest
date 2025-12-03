@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3938240312
+CRC: 1954299029
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 17680877944f5265115accaa80ae5d40
+    Hash: 93ce2569ae0263cae3b7732d2bf7e3f7
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -155,6 +155,8 @@ Assets:
 - Assets/Models/Matroyshka/MiniIcon.png
 - Assets/Textrures/Icons/Item/HealingBands/BarrierBand.png
 - Assets/Textrures/Icons/Temporary/crystal2/source/Crystal2.prefab
+- Assets/Models/PuzzleBox/puzzlebox.png
+- Assets/Models/PuzzleBox/puzzleboxItem.prefab
 - Assets/Textrures/Icons/Temporary/crystal6/source/TempCrystal6.png
 - Assets/Models/BloodBustClam/ClamLowPoly.png
 - Assets/Textrures/Ramps/texRampAdaptive2.png

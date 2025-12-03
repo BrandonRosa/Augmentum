@@ -517,63 +517,63 @@ namespace Augmentum.Modules.Pickups.Equipments
 
     }
 
-    public class EarthTotemAbsorbHandler : MonoBehaviour
-    {
-        public bool isAbsorbed = false;
-        public bool queuedDeactivate = false;
-        public Dictionary<GameObject, Vector3> auxiliaryPackedObjects = new();
+    //public class EarthTotemAbsorbHandler : MonoBehaviour
+    //{
+    //    public bool isAbsorbed = false;
+    //    public bool queuedDeactivate = false;
+    //    public Dictionary<GameObject, Vector3> auxiliaryPackedObjects = new();
 
-        public void CollectAuxiliary(GameObject[] auxOverride)
-        {
-            auxiliaryPackedObjects.Clear();
+    //    public void CollectAuxiliary(GameObject[] auxOverride)
+    //    {
+    //        auxiliaryPackedObjects.Clear();
 
-            if (auxOverride != null && auxOverride.Length > 0)
-            {
-                foreach (var obj in auxOverride)
-                {
-                    if (!obj) continue;
-                    auxiliaryPackedObjects.Add(obj, obj.transform.position - transform.position);
-                }
-            }
-            else
-            {
-                var shopcpt = gameObject.GetComponent<MultiShopController>();
-                if (shopcpt && shopcpt._terminalGameObjects != null)
-                {
-                    foreach (var terminal in shopcpt._terminalGameObjects)
-                    {
-                        if (!terminal) continue;
-                        auxiliaryPackedObjects.Add(terminal, terminal.transform.position - transform.position);
-                    }
-                }
-                var healcpt = gameObject.GetComponent<ShrineHealingBehavior>();
-                if (healcpt && healcpt.wardInstance != null)
-                {
-                    auxiliaryPackedObjects.Add(healcpt.wardInstance, healcpt.wardInstance.transform.position - transform.position);
-                }
-            }
-        }
+    //        if (auxOverride != null && auxOverride.Length > 0)
+    //        {
+    //            foreach (var obj in auxOverride)
+    //            {
+    //                if (!obj) continue;
+    //                auxiliaryPackedObjects.Add(obj, obj.transform.position - transform.position);
+    //            }
+    //        }
+    //        else
+    //        {
+    //            var shopcpt = gameObject.GetComponent<MultiShopController>();
+    //            if (shopcpt && shopcpt._terminalGameObjects != null)
+    //            {
+    //                foreach (var terminal in shopcpt._terminalGameObjects)
+    //                {
+    //                    if (!terminal) continue;
+    //                    auxiliaryPackedObjects.Add(terminal, terminal.transform.position - transform.position);
+    //                }
+    //            }
+    //            var healcpt = gameObject.GetComponent<ShrineHealingBehavior>();
+    //            if (healcpt && healcpt.wardInstance != null)
+    //            {
+    //                auxiliaryPackedObjects.Add(healcpt.wardInstance, healcpt.wardInstance.transform.position - transform.position);
+    //            }
+    //        }
+    //    }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
-        void LateUpdate()
-        {
-            if (queuedDeactivate)
-            {
-                queuedDeactivate = false;
-                isAbsorbed = true;
-                var loc = gameObject.GetComponentInChildren<ModelLocator>();
-                if (loc)
-                    loc.modelTransform.gameObject.SetActive(false);
-                foreach (var obj in auxiliaryPackedObjects)
-                {
-                    obj.Key.SetActive(false);
-                    loc = obj.Key.GetComponentInChildren<ModelLocator>();
-                    if (loc)
-                        loc.modelTransform.gameObject.SetActive(false);
-                }
-                gameObject.SetActive(false);
-            }
-        }
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
+        //void LateUpdate()
+        //{
+        //    if (queuedDeactivate)
+        //    {
+        //        queuedDeactivate = false;
+        //        isAbsorbed = true;
+        //        var loc = gameObject.GetComponentInChildren<ModelLocator>();
+        //        if (loc)
+        //            loc.modelTransform.gameObject.SetActive(false);
+        //        foreach (var obj in auxiliaryPackedObjects)
+        //        {
+        //            obj.Key.SetActive(false);
+        //            loc = obj.Key.GetComponentInChildren<ModelLocator>();
+        //            if (loc)
+        //                loc.modelTransform.gameObject.SetActive(false);
+        //        }
+        //        gameObject.SetActive(false);
+        //    }
+        //}
 
         /*
         public bool TryFireServer(EarthTotemTracker from, Vector3 pos)
@@ -667,7 +667,7 @@ namespace Augmentum.Modules.Pickups.Equipments
                 AbsorbClient();
         }
         */
-    }
+    //}
 
 
 }

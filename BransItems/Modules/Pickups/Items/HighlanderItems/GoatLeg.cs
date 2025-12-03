@@ -43,11 +43,11 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Utility };
 
-        public static float MovementGain=20f;
+        public static float MovementGain=30f;
 
-        public static float SprintGain=20f;
+        public static float SprintGain=30f;
 
-        public static float JumpPowerGain=25f;
+        public static float JumpPowerGain=30f;
 
 
         public override void Init(ConfigFile config)

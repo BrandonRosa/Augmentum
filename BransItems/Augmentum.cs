@@ -44,7 +44,7 @@ namespace Augmentum
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.Augmentum"; //Our Package Name
         public const string ModName = "Augmentum";
-        public const string ModVer = "1.1.3";
+        public const string ModVer = "1.1.5";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;
@@ -302,12 +302,12 @@ namespace Augmentum
                 ModCompatability.ProperSaveCompat.AddProperSaveFunctionality = true;
             }
 
-            var enabledZetAspects = ConfigManager.ConfigOption("Mod Compatability: " + "ZetAspects", "Enable Compatability Patches?", true, "Attempt to force ZetAspects compatability (if installed)?");
-            if (ModCompatability.ZetAspectsCompat.IsZetAspectsInstalled && enabledZetAspects)
-            {
-                ModLogger.LogInfo("ModCompatability: " + "ZetAspects Recognized!");
-                ModCompatability.ZetAspectsCompat.ForceZetAspectCompat();
-            }
+            //var enabledZetAspects = ConfigManager.ConfigOption("Mod Compatability: " + "ZetAspects", "Enable Compatability Patches?", true, "Attempt to force ZetAspects compatability (if installed)?");
+            //if (ModCompatability.ZetAspectsCompat.IsZetAspectsInstalled && enabledZetAspects)
+            //{
+            //    ModLogger.LogInfo("ModCompatability: " + "ZetAspects Recognized!");
+            //    ModCompatability.ZetAspectsCompat.ForceZetAspectCompat();
+            //}
 
             var enabledJudgement = ConfigManager.ConfigOption("Mod Compatability: " + "Judgment", "Enable Compatability Patches?", true, "Attempt to add Judgment compatability (if installed)?");
             if (ModCompatability.JudgementCompat.IsJudgementInstalled && enabledJudgement)

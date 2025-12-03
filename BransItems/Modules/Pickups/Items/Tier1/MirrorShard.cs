@@ -112,7 +112,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
                     if(ItemCatalog.tier1ItemList.Contains(self.inventory.itemAcquisitionOrder[i]) && self.inventory.itemAcquisitionOrder[i]!=ItemDef.itemIndex)
                     {
                         ItemIndex index = self.inventory.itemAcquisitionOrder[i];
-                        for (int j = 0; j < self.inventory.itemStacks[(int)index];j++)
+                        for (int j = 0; j < self.inventory.effectiveItemStacks.GetStackValue(index);j++)
                             whiteItemsInInventory.Add(index);
                     }
                 }

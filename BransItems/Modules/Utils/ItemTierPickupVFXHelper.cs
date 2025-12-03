@@ -57,7 +57,7 @@ namespace Augmentum.Modules.Utils
             if (!display)
                 return;
 
-            PickupDef pickupDef = PickupCatalog.GetPickupDef(display.pickupIndex);
+            PickupDef pickupDef = PickupCatalog.GetPickupDef(display.GetPickupIndex());
             ItemIndex itemIndex = pickupDef?.itemIndex ?? ItemIndex.None;
             if (itemIndex != ItemIndex.None)
             {
