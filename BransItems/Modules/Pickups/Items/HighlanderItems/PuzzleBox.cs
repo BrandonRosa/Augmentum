@@ -14,6 +14,8 @@ using Augmentum.Modules.Utils;
 using RoR2.ContentManagement;
 using UnityEngine.AddressableAssets;
 using Augmentum.Modules.Pickups.Items.CoreItems;
+using System.Numerics;
+using Vector3 = UnityEngine.Vector3;
 
 namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 {
@@ -60,7 +62,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            LuckGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Luck Gained", .5f, "How much luck should this give the player?");
+            LuckGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Luck Gained", .4f, "How much luck should this give the player?");
             UpgradeChance = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Upgrade Chance", .25f, "Chance that the first chest has to give a higher tier item?");
         }
 
@@ -113,15 +115,18 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
                             {
                                 case ItemTier.Tier1:
                                     newPI = ItemHelpers.GetRandomSelectionFromArray(Run.instance.availableTier2DropList,1,Run.instance.runRNG)[0];
+                                    chestBehavior.currentPickup = new UniquePickup(newPI);
                                     break;
                                 case ItemTier.Tier2:
                                     newPI = ItemHelpers.GetRandomSelectionFromArray(Run.instance.availableTier3DropList, 1, Run.instance.runRNG)[0];
+                                    chestBehavior.currentPickup = new UniquePickup(newPI);
                                     break;
                                 case ItemTier.Tier3:
                                     newPI = ItemHelpers.GetRandomSelectionFromArray(Run.instance.availableBossDropList, 1, Run.instance.runRNG)[0];
+                                    Drop_Yellow(new UniquePickup(newPI), chestBehavior);
                                     break;
                             }
-                            chestBehavior.currentPickup=new UniquePickup(newPI);
+                            
                             mast.inventory.GiveItemPermanent(PuzzleBoxHiddenLuckGain.instance.ItemDef);
                             mast.inventory.GiveItemPermanent(CloverSprout.instance.ItemDef,2);
                             AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_35_0.RoR2_Base_Common_VFX.ShrineChanceDollUseEffect_prefab)).Completed += x => 
@@ -129,7 +134,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
                                 EffectManager.SpawnEffect(x.Result, new EffectData
                                 {
                                     origin = self.transform.position,
-                                    rotation = Quaternion.identity,
+                                    rotation = UnityEngine.Quaternion.identity,
                                     scale = 1f,
                                     color = Color.yellow,
                                 }, transmit: true);
@@ -161,7 +166,17 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             orig(self, activator);
         }
 
-
+        private void Drop_Yellow(UniquePickup uniquePickup, ChestBehavior chestBehavior)
+        {
+            Vector3 velocity = (Vector3.up * chestBehavior.dropUpVelocityStrength + chestBehavior.dropTransform.forward * chestBehavior.dropForwardVelocityStrength)*.9f;
+            GenericPickupController.CreatePickupInfo createPickupInfo = default(GenericPickupController.CreatePickupInfo);
+            createPickupInfo.pickup = uniquePickup;
+            createPickupInfo.position = chestBehavior.dropTransform.position + Vector3.up * 1.5f;
+            createPickupInfo.chest = chestBehavior;
+            createPickupInfo.artifactFlag = (chestBehavior.isCommandChest ? GenericPickupController.PickupArtifactFlag.COMMAND : GenericPickupController.PickupArtifactFlag.NONE);
+            GenericPickupController.CreatePickupInfo pickupInfo = createPickupInfo;
+            PickupDropletController.CreatePickupDroplet(pickupInfo, pickupInfo.position, velocity);
+        }
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
