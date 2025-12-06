@@ -6,18 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
-using BransItems.Modules.Pickups.Items.CoreItems;
-using BransItems.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.Pickups.Items.CoreItems;
+using Augmentum.Modules.Pickups.Items.Tier3;
 
-namespace BransItems.Modules.Pickups.Items.Tier1
+namespace Augmentum.Modules.Pickups.Items.Tier1
 {
     class MirrorShard : ItemBase<MirrorShard>
     {
@@ -104,7 +104,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
         {
             orig(self);
-            if(self && self.inventory && self.inventory.GetItemCount(ItemDef)>0 && self.inventory.GetTotalItemCountOfTier(ItemTier.Tier1)>self.inventory.GetItemCount(ItemDef))
+            if(self && self.isPlayerControlled && self.inventory && self.inventory.GetItemCount(ItemDef)>0 && self.inventory.GetTotalItemCountOfTier(ItemTier.Tier1)>self.inventory.GetItemCount(ItemDef))
             {
                 List<ItemIndex> whiteItemsInInventory = new List<ItemIndex>();
                 for(int i=0;i<self.inventory.itemAcquisitionOrder.Count;i++)
@@ -112,7 +112,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                     if(ItemCatalog.tier1ItemList.Contains(self.inventory.itemAcquisitionOrder[i]) && self.inventory.itemAcquisitionOrder[i]!=ItemDef.itemIndex)
                     {
                         ItemIndex index = self.inventory.itemAcquisitionOrder[i];
-                        for (int j = 0; j < self.inventory.itemStacks[(int)index];j++)
+                        for (int j = 0; j < self.inventory.effectiveItemStacks.GetStackValue(index);j++)
                             whiteItemsInInventory.Add(index);
                     }
                 }

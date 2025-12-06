@@ -6,25 +6,25 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
-using BransItems.Modules.Pickups.Items.CoreItems;
-using BransItems.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.Pickups.Items.CoreItems;
+using Augmentum.Modules.Pickups.Items.Tier3;
 
-namespace BransItems.Modules.Pickups.Items.Tier1
+namespace Augmentum.Modules.Pickups.Items.Tier1
 {
     class MediumMatroyshka : ItemBase<MediumMatroyshka>
     {
         public override string ItemName => "Medium Matroyshka";
         public override string ItemLangTokenName => "MEDIUM_MATROYSHKA";
-        public override string ItemPickupDesc => "The next time you use an equipment, crack open for a white item and a " + BransItems.CoreColorString + "mini surprise</color> .";
-        public override string ItemFullDescription => $"On next <style=cIsUtility>equipment use</style>, cracks open for a white item. Gain "+BransItems.CoreColorString+"Mini Matroyshka</color>.";
+        public override string ItemPickupDesc => "The next time you use an equipment, crack open for a white item and a " + Augmentum.CoreColorString + "mini surprise</color> .";
+        public override string ItemFullDescription => $"On next <style=cIsUtility>equipment use</style>, cracks open for a white item. Gain "+Augmentum.CoreColorString+"Mini Matroyshka</color>.";
 
         public override string ItemLore => "";
 
@@ -39,7 +39,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         public override bool CanRemove => true;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility , ItemTag.CannotDuplicate};
 
 
         public static int DropCount;
@@ -59,8 +59,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of white items dropped", 1, "How many white items should drop from this item?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of white items dropped", 1, "How many white items should drop from this item?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -75,7 +74,11 @@ namespace BransItems.Modules.Pickups.Items.Tier1
             //{
             //    new ItemDisplayRule
             //    {
-            //        ruleType = ItemDisplayRuleType.ParentedPrefab,
+            //        ruleType = ItemDisplayRuleType.
+            //
+            //
+            //
+            //        edPrefab,
             //        followerPrefab = ItemBodyModelPrefab,
             //        childName = "Head",
             //        localPos = new Vector3(0F, 0.42142F, -0.10234F),
@@ -293,58 +296,24 @@ namespace BransItems.Modules.Pickups.Items.Tier1
         {
 
             orig(equipSlot);
-            /*
             if (equipSlot.characterBody)
             {
-                CharacterBody self = equipSlot.characterBody;
-                if (MediumList.Count > 0)
-                {
-                    List<CharacterBody> removelater = new List<CharacterBody>();
-                    foreach (CharacterBody body in MediumList.Keys)
-                    {
-                        if (body != null)
-                        {
-                            if (body.isActiveAndEnabled)
-                            {
-                                if (self == body)
-                                {
-                                    DropMedium(body, MediumList[body]);
-                                    GiveMini(body, MediumList[body]);
-                                    BreakItem(body);
-                                    MediumList.Remove(body);
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                            removelater.Add(body);
-                    }
+                CharacterBody body = equipSlot.characterBody;
 
-                    foreach (CharacterBody body in removelater)
-                        MediumList.Remove(body);
-                }
-            }
-            */
-            if (equipSlot.characterBody)
-            {
-                CharacterBody self = equipSlot.characterBody;
-                List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
-                for (int i = 0; i < masterList.Count; i++)
-                {
                     //If the player isnt dead
-                    if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+                    if (body)
                     {
                         //if the player has a body and an inventory AND they have the item
-                        if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && self== masterList[i].body)
+                        if (body.inventory && body.inventory.GetItemCount(ItemDef) > 0 && body.isPlayerControlled)
                         {
-                            int count = masterList[i].body.inventory.GetItemCount(ItemDef);
-                            DropMedium(masterList[i].body, count*DropCount);
-                            GiveMini(masterList[i].body, count);
-                            BreakItem(masterList[i].body, count);
-                            break;
+                            int count = body.inventory.GetItemCount(ItemDef);
+                            DropMedium(body, count*DropCount);
+                            GiveMini(body, count);
+                            BreakItem(body, count);
+
                         }
                     }
-                }
+                
             }
         }
 
@@ -420,11 +389,11 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                     {
                         pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),
                         prefabOverride = potentialPrefab,
-                        position = body.transform.position,
+                        position = dropTransform.position + Vector3.up * 1.5f,
                         rotation = Quaternion.identity,
                         pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier1)
                     },
-                            dropTransform.position + Vector3.up * 1.5f, val);
+                            dropTransform.position + Vector3.up * 1.5f,val);
                 }
                 else
                 {

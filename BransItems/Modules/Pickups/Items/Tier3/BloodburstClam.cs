@@ -6,22 +6,23 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 
-namespace BransItems.Modules.Pickups.Items.Tier3
+namespace Augmentum.Modules.Pickups.Items.Tier3
 {
     class BloodburstClam : ItemBase<BloodburstClam>
     {
         //ADD SHARESUITE BLACKLIST
-        public override string ItemName => "Bloodbust Clam";
+        public override string ItemName => "Bloodburst Clam";
         public override string ItemLangTokenName => "BLOODBURST_CLAM";
         public override string ItemPickupDesc => $"On pickup, crack open for {DropCount} essences which boost stats. Future essence drops will come with 1 more.";
-        public override string ItemFullDescription => $"Crack open for <style=cIsDamage>{DropCount}</style> "+BransItems.EssencesKeyword+". Future "+BransItems.EssenceKeyword+ $" drops will come with 1<style=cStack>(+{AdditionalDrops} per stack)</style> more.";
+        public override string ItemFullDescription => $"Crack open for <style=cIsDamage>{DropCount}</style> "+Augmentum.EssencesKeyword+". Future "+Augmentum.EssenceKeyword+ $" drops will come with 1<style=cStack>(+{AdditionalDrops} per stack)</style> more.";
 
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." + 
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality."+
@@ -57,9 +58,8 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of essences dropped", 15, "How many essences should drop from this item?").Value;
-            AdditionalDrops = config.Bind<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of essences dropped", 15, "How many essences should drop from this item?");
+            AdditionalDrops = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -303,8 +303,11 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             if (!self || !NetworkServer.active) return;
             if (self.inventory.GetItemCount(ItemDef.itemIndex)<=0 ) return;
 
-            DropEssences(self);
-            BreakItem(self);
+            if (self && self.isPlayerControlled)
+            {
+                DropEssences(self);
+                BreakItem(self);
+            }
         }
         /*
         private void CharacterMaster_OnItemAddedClient(On.RoR2.CharacterMaster.orig_OnItemAddedClient orig, CharacterMaster self, ItemIndex itemIndex)

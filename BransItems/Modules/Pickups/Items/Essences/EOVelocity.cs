@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using Augmentum.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -6,10 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 
-namespace BransItems.Modules.Pickups.Items.Essences
+namespace Augmentum.Modules.Pickups.Items.Essences
 {
     class EOVelocity : ItemBase<EOVelocity>
     {
@@ -51,8 +52,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            MoveSpeedGain = config.Bind<float>("Item: " + ItemName, "Move Speed given to character", 8, "How much movement speed should Essense of Velocity grant?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            MoveSpeedGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Move Speed given to character", 8, "How much movement speed should Essense of Velocity grant?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

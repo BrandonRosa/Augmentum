@@ -6,19 +6,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
-using BransItems.Modules.Pickups.Items.CoreItems;
-using BransItems.Modules.Pickups.Items.Tier1;
-using BransItems.Modules.Pickups.Items.Tier2;
+using Augmentum.Modules.Pickups.Items.CoreItems;
+using Augmentum.Modules.Pickups.Items.Tier1;
+using Augmentum.Modules.Pickups.Items.Tier2;
 
-namespace BransItems.Modules.Pickups.Items.Tier3
+namespace Augmentum.Modules.Pickups.Items.Tier3
 {
     class MegaMatroyshka : ItemBase<MegaMatroyshka>
     {
@@ -40,7 +40,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override bool CanRemove => true;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility, ItemTag.CannotDuplicate };
 
 
         public static int DropCount;
@@ -62,9 +62,9 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of red items dropped", 1, "How many red items should drop from this item?").Value;
-            AdditionalChoices = config.Bind<int>("Item: " + ItemName, "Number of additional wish options in Matroyshka drops", 1, "How additional choices should this provide in future Matroyshka drops?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of red items dropped", 1, "How many red items should drop from this item?");
+            AdditionalChoices = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of additional wish options in Matroyshka drops", 1, "How additional choices should this provide in future Matroyshka drops?");
+            
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -295,15 +295,15 @@ namespace BransItems.Modules.Pickups.Items.Tier3
             On.RoR2.PickupDisplay.RebuildModel += PickupDisplay_RebuildModel;
         }
 
-        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self)
+        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self, GameObject modelObjectOverride)
         {
-            orig(self);
+            orig(self, modelObjectOverride);
             //ModLogger.LogWarning("1!"+ self.modelPrefab.name);
             //ModLogger.LogWarning("2!" + ItemModel.name);
             if (self && self.modelPrefab && self.modelObject && self.modelPrefab.name == ItemModel.name)
             {
                 self.modelObject.transform.localScale *= 1.5f;
-                ModLogger.LogWarning("Bigger!");
+                //ModLogger.LogWarning("Bigger!");
             }
         }
 
@@ -353,23 +353,20 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                 if (killer)
                 {
                     CharacterBody self = killer;
-                    List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
+
                         //If the player isnt dead
-                        if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+                        if (self)
                         {
                             //if the player has a body and an inventory AND they have the item
-                            if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0 && masterList[i].body==self)
+                            if (self.inventory && self.inventory.GetItemCount(ItemDef) > 0 &&  self.isPlayerControlled)
                             {
-                                int count = masterList[i].body.inventory.GetItemCount(ItemDef);
-                                DropMega(masterList[i].body, count);
-                                GiveMassive(masterList[i].body, count);
-                                BreakItem(masterList[i].body, count);
-                                break;
+                                int count = self.inventory.GetItemCount(ItemDef);
+                                DropMega(self, count);
+                                GiveMassive(self, count);
+                                BreakItem(self, count);
                             }
                         }
-                    }
+                    
                 }
             }
         }
@@ -446,11 +443,20 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                     {
                         pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),
                         prefabOverride = potentialPrefab,
-                        position = body.transform.position,
+                        position = dropTransform.position + Vector3.up * 1.5f,
                         rotation = Quaternion.identity,
                         pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier3)
                     },
-                            dropTransform.position + Vector3.up * 1.5f, val);
+                             dropTransform.position + Vector3.up * 1.5f, val);
+                    //PickupDropletController.CreatePickupDroplet(new GenericPickupController.CreatePickupInfo
+                    //{
+                    //    pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),
+                    //    prefabOverride = potentialPrefab,
+                    //    position = body.transform.position,
+                    //    rotation = Quaternion.identity,
+                    //    pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier3)
+                    //},
+                    //        dropTransform.position + Vector3.up * 1.5f, val);
                 }
                 else
                 {

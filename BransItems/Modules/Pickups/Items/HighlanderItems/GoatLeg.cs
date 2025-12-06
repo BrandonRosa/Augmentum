@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 using static RoR2.ItemTag;
-using BransItems.Modules.ItemTiers.HighlanderTier;
+using Augmentum.Modules.ItemTiers.HighlanderTier;
 
-namespace BransItems.Modules.Pickups.Items.HighlanderItems
+namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 {
     class GoatLeg : ItemBase<GoatLeg>
     {
@@ -41,13 +41,13 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
 
         public override bool CanRemove => false;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Utility };
 
-        public static float MovementGain=20f;
+        public static float MovementGain=30f;
 
-        public static float SprintGain=20f;
+        public static float SprintGain=30f;
 
-        public static float JumpPowerGain=25f;
+        public static float JumpPowerGain=30f;
 
 
         public override void Init(ConfigFile config)
@@ -64,7 +64,7 @@ namespace BransItems.Modules.Pickups.Items.HighlanderItems
         public void CreateConfig(ConfigFile config)
         {
             //MovementGain = config.Bind<float>("Item: " + ItemName, "Move Speed given to character", 20, "How much movement speed should Goat Leg grant?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

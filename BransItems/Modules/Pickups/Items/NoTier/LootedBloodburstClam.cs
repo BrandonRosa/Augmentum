@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.Pickups.Items.Tier3;
 
-namespace BransItems.Modules.Pickups.Items.NoTier
+namespace Augmentum.Modules.Pickups.Items.NoTier
 {
     class LootedBloodburstClam : ItemBase<LootedBloodburstClam>
     {
@@ -52,9 +52,6 @@ namespace BransItems.Modules.Pickups.Items.NoTier
 
         public void CreateConfig(ConfigFile config)
         {
-            //DropCount = config.Bind<int>("Item: " + ItemName, "Number of essences dropped", 20, "How many essences should drop from this item?").Value;
-            //AdditionalDrops = config.Bind<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

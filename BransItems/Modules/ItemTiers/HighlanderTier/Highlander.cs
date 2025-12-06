@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using BransItems.Modules.ColorCatalogEntry;
-//using BransItems.Modules.ColorCatalogEntry.CoreColors;
-using BransItems.Modules.ItemTiers;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.ColorCatalogEntry;
+//using Augmentum.Modules.ColorCatalogEntry.CoreColors;
+using Augmentum.Modules.ItemTiers;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Utils;
 using R2API;
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using static BransItems.BransItems;
+using static Augmentum.Augmentum;
 
-namespace BransItems.Modules.ItemTiers.HighlanderTier
+namespace Augmentum.Modules.ItemTiers.HighlanderTier
 {
     class Highlander : ItemTierBase<Highlander>
     {
@@ -72,10 +72,7 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
             //itemTierDef.highlightPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
             //itemTierDef.dropletDisplayPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
             SetHooks();
-            //BransItems.ModLogger.LogWarning(itemTierDef.tier.ToString());
-            //BransItems.ModLogger.LogWarning("Correct:" + ItemTier.AssignedAtRuntime.ToString());
-            //BransItems.ModLogger.LogWarning("MyTierName:" + itemTierDef.name);
-            //BransItems.ModLogger.LogWarning("MyTierCanScrap:" + itemTierDef.canScrap);
+
 
         }
         private void CreateDropletPrefab()
@@ -178,8 +175,11 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         private void ShrineChanceBehavior_AddShrineStack(On.RoR2.ShrineChanceBehavior.orig_AddShrineStack orig, ShrineChanceBehavior self, Interactor activator)
         {
+            
             int purchaseCount = self.successfulPurchaseCount;
             orig(self, activator);
+            if (Conquest.instance.IsSelectedAndInRun())
+                return;
             bool success = purchaseCount < self.successfulPurchaseCount;
 
             float playerScale =(ChanceShrineScalePlayers? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
@@ -203,7 +203,9 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         private void DeathRewards_OnKilledServer(On.RoR2.DeathRewards.orig_OnKilledServer orig, DeathRewards self, DamageReport damageReport)
         {
             orig(self, damageReport);
-            if(damageReport.victimBody.isElite)
+            if (Conquest.instance.IsSelectedAndInRun())
+                return;
+            if (damageReport.victimBody.isElite)
             {
                 float playerScale = (EliteScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
                 if (RoR2Application.rng.RangeFloat(0f, 1f) <= EliteDeathChance*playerScale)
@@ -216,6 +218,8 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         private void BarrelInteraction_CoinDrop(On.RoR2.BarrelInteraction.orig_CoinDrop orig, BarrelInteraction self)
         {
             orig(self);
+            if (Conquest.instance.IsSelectedAndInRun())
+                return;
             float playerScale = (BarrelScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
             if (RoR2Application.rng.RangeFloat(0f, 1f) <= BarrelChance*playerScale)
             {
@@ -226,6 +230,8 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
         private void ShrineCombatBehavior_OnDefeatedServer(On.RoR2.ShrineCombatBehavior.orig_OnDefeatedServer orig, ShrineCombatBehavior self)
         {
             orig(self);
+            if (Conquest.instance.IsSelectedAndInRun())
+                return;
             float playerScale = (CombatShrineScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
             if (RoR2Application.rng.RangeFloat(0f, 1f) <= CompatShrineChance*playerScale)
             {
@@ -235,11 +241,18 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         private void DropItem(Transform location, float height)
         {
-            List<PickupDef> HighList = ItemHelpers.PickupDefsWithTier(this.itemTierDef);
-            int picked = RoR2Application.rng.RangeInt(0, HighList.Count);
-            //BransItems.ModLogger.LogWarning("Item#"+picked+"   Count:"+HighList.Count+"    Name"+ItemCatalog.GetItemDef(HighList[picked].itemIndex).nameToken+"     index"+ HighList[picked].itemIndex);
-            PickupDef pickupDef = HighList[picked];
-            PickupDropletController.CreatePickupDroplet(pickupDef.pickupIndex, location.position + Vector3.up * height, Vector3.up * 25f);
+            if (Spoils.instance.IsSelectedAndInRun())
+            {
+                PickupDropletController.CreatePickupDroplet(Spoils.SpoilsPickupInfo(location.position + Vector3.up * height), location.position + Vector3.up * height, Vector3.up * 25f);
+            }
+            else
+            {
+                List<PickupDef> HighList = ItemHelpers.PickupDefsWithTier(this.itemTierDef);
+                int picked = RoR2Application.rng.RangeInt(0, HighList.Count);
+
+                PickupDef pickupDef = HighList[picked];
+                PickupDropletController.CreatePickupDroplet(pickupDef.pickupIndex, location.position + Vector3.up * height, Vector3.up * 25f);
+            }
             Chat.SendBroadcastChat(new Chat.SimpleChatMessage
             {
                 baseToken = "<color=#FAF7B9><size=120%>" + "You have been rewarded with a gift from the Highlands." + "</color></size>"
@@ -248,21 +261,20 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
         private void CharacterMaster_OnItemAddedClient(On.RoR2.CharacterMaster.orig_OnItemAddedClient orig, CharacterMaster self, ItemIndex itemIndex)
         {
-            //BransItems.ModLogger.LogWarning("Indexed Pickup" + itemIndex.ToString());
-            //BransItems.ModLogger.LogWarning("All Highlander" + Highlander.instance.ItemsWithThisTier.Count);
+            
             orig(self, itemIndex); //JUST ADDED, adjust if it breaks stuff
             if (ItemCatalog.GetItemDef(itemIndex)._itemTierDef==itemTierDef)
             {
                 int count = self.inventory.GetTotalItemCountOfTier(itemTierDef.tier);
-                BransItems.ModLogger.LogWarning("IN LIST, Count:"+count);
+               
                 
                 if (count >= 2)
                 {
-                    BransItems.ModLogger.LogWarning("Inventory Count" + self.inventory.itemAcquisitionOrder.Count);
+
                     for (int i = 0; i < self.inventory.itemAcquisitionOrder.Count; i++)
                     {
                         ItemIndex temp = self.inventory.itemAcquisitionOrder[i];
-                        BransItems.ModLogger.LogWarning("i:" + i + "    index" + temp.ToString());
+
                         if ((ItemCatalog.GetItemDef(temp)._itemTierDef == itemTierDef))
                         {
                             ItemIndex toss = self.inventory.itemAcquisitionOrder[i];
@@ -270,7 +282,7 @@ namespace BransItems.Modules.ItemTiers.HighlanderTier
 
                             Vector3 val = Vector3.up * 25f; //dropTransform.forward * dropForwardVelocityStrength;
                             PickupIndex pickupIndex = PickupCatalog.FindPickupIndex(toss);
-                            BransItems.ModLogger.LogWarning("DropIndex:" + pickupIndex);
+
                             PickupDropletController.CreatePickupDroplet(pickupIndex, self.GetBody().transform.position + Vector3.up * 1.5f, val);
                             break;
                         }
