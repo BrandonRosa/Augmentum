@@ -6,20 +6,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
-using BransItems.Modules.Pickups.Items.CoreItems;
-using BransItems.Modules.Pickups.Items.Tier1;
-using BransItems.Modules.Pickups.Items.Tier3;
-using BransItems.Modules.StandaloneBuffs;
+using Augmentum.Modules.Pickups.Items.CoreItems;
+using Augmentum.Modules.Pickups.Items.Tier1;
+using Augmentum.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.StandaloneBuffs;
+using Augmentum.Modules.Pickups.Items.HighlanderItems;
 
-namespace BransItems.Modules.Pickups.Items.Tier2
+namespace Augmentum.Modules.Pickups.Items.Tier2
 {
     class HealRing : ItemBase<HealRing>
     {
@@ -29,7 +30,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also <style=cIsHealing>heal</style> you for <style=cIsHealing>{InitialPercent*100}%</style> <style=cStack>(+{AdditionalPercent*100}% per stack)</style> of the TOTAL damage" +
             $" up to <style=cIsHealing>{InitialMaxHealing*100}%</style> <style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max health. Recharges every <style=cIsUtility>{HealRing.HealingRingsCooldownTime}</style> seconds.";
 
-        public override string ItemLore => "";
+        public override string ItemLore => $"Should sickness overtake you,\nShould death draw near,\nI will heal you.\nI will be there.";
 
         public override ItemTier Tier => ItemTier.Tier2;
 
@@ -48,7 +49,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public static float AdditionalPercent;
         public static float InitialMaxHealing;
         public static float AdditionalMaxHealing;
-        public static float HealingRingsCooldownTime = 15f;
+        public static float HealingRingsCooldownTime = 10f;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
 
@@ -91,12 +92,11 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public void CreateConfig(ConfigFile config)
         {
             //string ConfigItemName = ItemName.Replace("\'", "");
-            InitialPercent = config.Bind<float>("Item: " + ConfigItemName, "Percent of total damage heal", .20f, "What percent of total damage should be healed from the first stack of this item?").Value;
-            AdditionalPercent = config.Bind<float>("Item: " + ConfigItemName, "Percent of additional damage heal", .05f, "What percent of total damage should be healed from additional stacks of this item?").Value;
-            InitialMaxHealing = config.Bind<float>("Item: " + ConfigItemName, "Max percent of max health you can heal", .15f, "What is the maximum percent of your health you can heal from this item from the first stack?").Value;
-            AdditionalMaxHealing = config.Bind<float>("Item: " + ConfigItemName, "Additional percent of max health you can heal", .15f, "What is the maximum percent of your health you can heal from this item from additional stacks?").Value;
+            InitialPercent = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Percent of total damage heal", .20f, "What percent of total damage should be healed from the first stack of this item?");
+            AdditionalPercent = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Percent of additional damage heal", .05f, "What percent of total damage should be healed from additional stacks of this item?");
+            InitialMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Max percent of max health you can heal", .15f, "What is the maximum percent of your health you can heal from this item from the first stack?");
+            AdditionalMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Additional percent of max health you can heal", .15f, "What is the maximum percent of your health you can heal from this item from additional stacks?");
 
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -149,7 +149,8 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                         triggered = true;
                         if (itemCount > 0)
                         {
-                            component2.healthComponent.Heal(Math.Min(damageInfo.damage * (InitialPercent + AdditionalPercent * ((float)itemCount - 1f)), component2.healthComponent.fullHealth * (InitialMaxHealing + AdditionalMaxHealing * ((float)itemCount - 1f))), damageInfo.procChainMask);
+                            for (int i = 0; i <= component2.inventory.GetItemCount(DoubleBand.instance.ItemDef); i++)
+                                component2.healthComponent.Heal(Math.Min(damageInfo.damage * (InitialPercent + AdditionalPercent * ((float)itemCount - 1f)), component2.healthComponent.fullHealth * (InitialMaxHealing + AdditionalMaxHealing * ((float)itemCount - 1f))), damageInfo.procChainMask);
                         }
                     }
                 }
@@ -159,7 +160,10 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             if(safe && component2 != null && triggered && component2.HasBuff(HealingRingsReady.instance.BuffDef))
             {
                 component2.RemoveBuff(HealingRingsReady.instance.BuffDef);
-                for (int k = 1; (float)k <= HealingRingsCooldownTime; k++)
+                float cooldown = HealRing.HealingRingsCooldownTime;
+                if (component2.inventory.GetItemCount(HighlanderItems.CooldownBand.instance.ItemDef) > 0)
+                    cooldown *= HighlanderItems.CooldownBand.CooldownReduction;
+                for (int k = 1; (float)k <= cooldown; k++)
                 {
                     component2.AddTimedBuff(HealingRingsCooldown.instance.BuffDef, k);
                 }

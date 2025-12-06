@@ -6,19 +6,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
-using BransItems.Modules.Pickups.Items.CoreItems;
-using BransItems.Modules.Pickups.Items.Tier1;
-using BransItems.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.Pickups.Items.CoreItems;
+using Augmentum.Modules.Pickups.Items.Tier1;
+using Augmentum.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.Pickups.Items.HighlanderItems;
 
-namespace BransItems.Modules.Pickups.Items.Tier2
+namespace Augmentum.Modules.Pickups.Items.Tier2
 {
     class BarrierRing : ItemBase<BarrierRing>
     {
@@ -28,7 +29,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also grant a <style=cIsHealing>temporary barrier</style> for <style=cIsHealing>{InitialPercent*100}%</style><style=cStack>(+{AdditionalPercent*100}% per stack)</style> of the TOTAL damage" +
             $" up to <style=cIsHealing>{InitialMaxHealing*100}%</style><style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max combined health. Recharges every <style=cIsUtility>{HealRing.HealingRingsCooldownTime}</style> seconds.";
 
-        public override string ItemLore => "";
+        public override string ItemLore => $"Should you become weak,\nShould harm come to you,\nI will protect you.\nI will be there.";
 
         public override ItemTier Tier => ItemTier.Tier2;
 
@@ -63,12 +64,10 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public void CreateConfig(ConfigFile config)
         {
             string ConfigItemName = ItemName.Replace("\'", "");
-            InitialPercent = config.Bind<float>("Item: " + ConfigItemName, "Percent of total damage heal", .25f, "What percent of total damage should be healed from the first stack of this item?").Value;
-            AdditionalPercent = config.Bind<float>("Item: " + ConfigItemName, "Percent of additional damage heal", .0725f, "What percent of total damage should be healed from additional stacks of this item?").Value;
-            InitialMaxHealing = config.Bind<float>("Item: " + ConfigItemName, "Max percent of max health you can gain in barrier", .20f, "What is the maximum percent of your health you can gain in barrier from this item from the first stack?").Value;
-            AdditionalMaxHealing = config.Bind<float>("Item: " + ConfigItemName, "Additional percent of max health you can gain in barrier", .125f, "What is the maximum percent of your health you can gain in barrier from this item from additional stacks?").Value;
-
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            InitialPercent = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Percent of total damage heal", .25f, "What percent of total damage should be healed from the first stack of this item?");
+            AdditionalPercent = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Percent of additional damage heal", .0725f, "What percent of total damage should be healed from additional stacks of this item?");
+            InitialMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Max percent of max health you can gain in barrier", .20f, "What is the maximum percent of your health you can gain in barrier from this item from the first stack?");
+            AdditionalMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Additional percent of max health you can gain in barrier", .125f, "What is the maximum percent of your health you can gain in barrier from this item from additional stacks?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -151,7 +150,8 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                         triggered = true;
                         if (itemCount > 0)
                         {
-                            component2.healthComponent.AddBarrier(Math.Min(damageInfo.damage * (InitialPercent + AdditionalPercent * ((float)itemCount - 1f)), component2.healthComponent.fullCombinedHealth * (InitialMaxHealing + AdditionalMaxHealing * ((float)itemCount - 1f))));
+                            for(int i=0;i<=component2.inventory.GetItemCount(DoubleBand.instance.ItemDef);i++)
+                                component2.healthComponent.AddBarrier(Math.Min(damageInfo.damage * (InitialPercent + AdditionalPercent * ((float)itemCount - 1f)), component2.healthComponent.fullCombinedHealth * (InitialMaxHealing + AdditionalMaxHealing * ((float)itemCount - 1f))));
                         }
                     }
                 }
@@ -161,7 +161,10 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             if (triggered && component2.HasBuff(HealingRingsReady.instance.BuffDef))
             {
                 component2.RemoveBuff(HealingRingsReady.instance.BuffDef);
-                for (int k = 1; (float)k <= HealRing.HealingRingsCooldownTime; k++)
+                float cooldown = HealRing.HealingRingsCooldownTime;
+                if (component2.inventory.GetItemCount(HighlanderItems.CooldownBand.instance.ItemDef) > 0)
+                    cooldown *= HighlanderItems.CooldownBand.CooldownReduction;
+                for (int k = 1; (float)k <= cooldown; k++)
                 {
                     component2.AddTimedBuff(HealingRingsCooldown.instance.BuffDef, k);
                 }

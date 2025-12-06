@@ -6,25 +6,25 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
-using BransItems.Modules.ItemTiers.CoreTier;
-using BransItems.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.ItemTiers.CoreTier;
+using Augmentum.Modules.Pickups.Items.Tier3;
 
-namespace BransItems.Modules.Pickups.Items.CoreItems
+namespace Augmentum.Modules.Pickups.Items.CoreItems
 {
     class MiniMatroyshka : ItemBase<MiniMatroyshka>
     {
         public override string ItemName => "Mini Matroyshka";
         public override string ItemLangTokenName => "MINI_MATROYSHKA";
-        public override string ItemPickupDesc => "The next time you open a chest, crack open for an " + BransItems.EssenceKeyword + ".";
-        public override string ItemFullDescription => $"On next <style=cisUtility>chest purchase</style>, cracks open for an "+BransItems.EssenceKeyword+". \n<style=cMono>There is nothing left.</style>";
+        public override string ItemPickupDesc => "The next time you open a chest, crack open for an " + Augmentum.EssenceKeyword + ".";
+        public override string ItemFullDescription => $"On next <style=cisUtility>chest purchase</style>, cracks open for an "+Augmentum.EssenceKeyword+". \n<style=cMono>There is nothing left.</style>";
 
         public override string ItemLore => "";
 
@@ -63,8 +63,7 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of essence items dropped", 1, "How many essence items should drop from this item?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of essence items dropped", 1, "How many essence items should drop from this item?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -298,9 +297,9 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
             
         }
 
-        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self)
+        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self, GameObject modelObjectOverride)
         {
-            orig(self);
+            orig(self,modelObjectOverride);
             if (self && self.modelPrefab && self.modelObject && self.modelPrefab.name == ItemModel.name)
             {
                 self.modelObject.transform.localScale *= .7f;
@@ -389,7 +388,7 @@ namespace BransItems.Modules.Pickups.Items.CoreItems
                         rotation = Quaternion.identity,
                         pickupIndex = drops[0]
                     },
-                             val);
+                             dropTransform.position + Vector3.up * 1.5f, val);
                 }
                 else
                 {

@@ -10,7 +10,7 @@ using On.RoR2.Items;
 using System.Linq;
 using HarmonyLib;
 
-namespace BransItems.Modules.Pickups
+namespace Augmentum.Modules.Pickups
 {
 
 	public abstract class ItemBase<T> : ItemBase where T : ItemBase<T>
@@ -51,6 +51,8 @@ namespace BransItems.Modules.Pickups
 		public virtual bool Hidden { get; } = false;
         public bool AIBlacklisted { get; internal set; }
         public bool PrinterBlacklisted { get; internal set; }
+
+		public virtual bool BlacklistFromPreLoad { get; internal set; } = false;
 
 		public virtual string[] CorruptsItem { get; set; } = null;
 
@@ -117,7 +119,7 @@ namespace BransItems.Modules.Pickups
 				ItemTier.VoidTier2,
 				ItemTier.VoidTier3};
 
-			foreach (KeyValuePair<ItemBase, bool> itemPair in BransItems.ItemStatusDictionary)
+			foreach (KeyValuePair<ItemBase, bool> itemPair in Augmentum.ItemStatusDictionary)
 			{
 				if (itemPair.Value == true)
 				{
@@ -127,10 +129,10 @@ namespace BransItems.Modules.Pickups
 					{
 						for (int i = 0; i < item.CorruptsItem.Count(); i++)
 						{
-							var itemToCorrupt = ItemCatalog.itemDefs.Where(x => x.nameToken == item.CorruptsItem[i]).FirstOrDefault();
+							var itemToCorrupt = ItemCatalog.allItemDefs.Where(x => x.nameToken == item.CorruptsItem[i]).FirstOrDefault();
 							if (!itemToCorrupt)
 							{
-								BransItems.ModLogger.LogError($"Tried to add {item.ItemName} in a Void item tier but no relationship was set for what it corrupts or could not be found. Aborting!");
+								Augmentum.ModLogger.LogError($"Tried to add {item.ItemName} in a Void item tier but no relationship was set for what it corrupts or could not be found. Aborting!");
 								continue;
 							}
 

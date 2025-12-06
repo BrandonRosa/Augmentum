@@ -9,7 +9,7 @@ using System.Linq;
 using BepInEx.Configuration;
 using UnityEngine.AddressableAssets;
 
-namespace BransItems.Modules.Pickups
+namespace Augmentum.Modules.Pickups
 {
     // This is the base from Aetherium
     // Should probably stop copy pasting this stuff but eh
@@ -80,6 +80,8 @@ namespace BransItems.Modules.Pickups
 
         public virtual int VanillaTier { get; set; } = 0;
 
+        public virtual float DropChance { get; set; } = .00025f;
+
         public static Color AffixColor { get; set; } = Color.grey; // = new Color32(192, 119, 189, 255);
 
         public static Color AffixLightColor { get; set; } = Color.white;// new Color32(250, 155, 245, 255);
@@ -120,6 +122,7 @@ namespace BransItems.Modules.Pickups
             EliteEquipmentDef.isBoss = IsBoss;
             EliteEquipmentDef.isLunar = IsLunar;
             EliteEquipmentDef.passiveBuffDef = EliteBuffDef;
+            EliteEquipmentDef.dropOnDeathChance = DropChance;
 
             elites.Add(this);
 
@@ -236,10 +239,12 @@ namespace BransItems.Modules.Pickups
             {
                 if (!CanAppearInEliteTiers.All(x => baseEliteTierDefs.Contains(x)))
                 {
-                    //if (Plugin.DEBUG)
+                    //if (Plugin
+                    //)
                     //{
                     //    Log.LogInfo("Creating custom elite tier");
                     //}
+
                     var distinctEliteTierDefs = CanAppearInEliteTiers.Except(baseEliteTierDefs);
                     //if (Plugin.DEBUG)
                     //{
@@ -251,15 +256,22 @@ namespace BransItems.Modules.Pickups
                         if (indexToInsertAt >= 0)
                         {
                             EliteAPI.AddCustomEliteTier(eliteTierDef, indexToInsertAt);
+
                         }
                         else
                         {
                             EliteAPI.AddCustomEliteTier(eliteTierDef);
+
                         }
                         baseEliteTierDefs = EliteAPI.GetCombatDirectorEliteTiers();
                     }
                 }
-                EliteAPI.Add(new CustomElite(EliteDef, CanAppearInEliteTiers));
+                
+                {
+                    EliteAPI.Add(new CustomElite(EliteDef, CanAppearInEliteTiers));
+
+                }
+
             }
 
             

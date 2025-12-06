@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using BransItems.Modules.ColorCatalogEntry;
-//using BransItems.Modules.ColorCatalogEntry.CoreColors;
-using BransItems.Modules.ItemTiers;
-using BransItems.Modules.Pickups.Items.Essences;
-using static BransItems.BransItems;
+using Augmentum.Modules.ColorCatalogEntry;
+//using Augmentum.Modules.ColorCatalogEntry.CoreColors;
+using Augmentum.Modules.ItemTiers;
+using Augmentum.Modules.Pickups.Items.Essences;
+using static Augmentum.Augmentum;
 using R2API;
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace BransItems.Modules.ItemTiers.CoreTier
+namespace Augmentum.Modules.ItemTiers.CoreTier
 {
     class Core : ItemTierBase<Core>
     {

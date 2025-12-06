@@ -6,16 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
 
-namespace BransItems.Modules.Pickups.Items.Tier3
+namespace Augmentum.Modules.Pickups.Items.Tier3
 {
     class DiscoveryMedallion : ItemBase<DiscoveryMedallion>
     {
@@ -38,7 +38,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public override bool CanRemove => false;
 
-        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.Utility };
+        public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.Utility, ItemTag.CannotDuplicate };
 
 
         public static int Choices=2;
@@ -59,7 +59,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            AdditionalChoices = config.Bind<int>("Item: " + ItemName, "Extra choices in future wishes", 1, "How many extra options should DiscoveryMedallion give?").Value;
+            AdditionalChoices = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Extra choices in future wishes", 1, "How many extra options should DiscoveryMedallion give?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -343,7 +343,7 @@ namespace BransItems.Modules.Pickups.Items.Tier3
                 rotation = Quaternion.identity,
                 pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier3)
             },
-                             Vector3.up * dropUpVelocityStrength); //+ self.dropTransform.forward * self.dropForwardVelocityStrength);
+                             self.transform.position, Vector3.up * dropUpVelocityStrength); //+ self.dropTransform.forward * self.dropForwardVelocityStrength);
         }
     }
 }

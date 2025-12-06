@@ -9,18 +9,19 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using BransItems.Modules.Utils;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using Augmentum.Modules.Utils;
 using static RoR2.EquipmentSlot;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using R2API.Networking.Interfaces;
 using UnityEngine.Networking;
-using BransItems.Modules.Compatability;
+using Augmentum.Modules.Compatability;
 using System.Runtime.Serialization;
 using UnityEngine.AddressableAssets;
+using System.Runtime.CompilerServices;
 
-namespace BransItems.Modules.Pickups.Equipments
+namespace Augmentum.Modules.Pickups.Equipments
 {
     class EarthTotem : EquipmentBase<EarthTotem>
     {
@@ -70,8 +71,7 @@ namespace BransItems.Modules.Pickups.Equipments
 
         private void CreateTargetingIndicator()
         {
-            TargetingIndicatorPrefabBase = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/RecyclerIndicator"), "AirTotemIndicator", false); //"SoulPinIndicator", false);
-            //TargetingIndicatorPrefabBase.GetComponentInChildren<SpriteRenderer>().sprite = MainAssets.LoadAsset<Sprite>("SoulPinReticuleIcon.png");
+            TargetingIndicatorPrefabBase = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/RecyclerIndicator"), "AirTotemIndicator", false);
             TargetingIndicatorPrefabBase.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             TargetingIndicatorPrefabBase.GetComponentInChildren<SpriteRenderer>().transform.rotation = Quaternion.identity;
             TargetingIndicatorPrefabBase.GetComponentInChildren<TMPro.TextMeshPro>().color = new Color(0.423f, 1, 0.749f);
@@ -95,7 +95,7 @@ namespace BransItems.Modules.Pickups.Equipments
             //ItemBodyModelPrefab.AddComponent<SoulPinDisplayHandler>();
 
             ItemDisplayRuleDict rules = new ItemDisplayRuleDict();
-
+            /*
             rules.Add("mdlCommandoDualies", new RoR2.ItemDisplayRule[]
             {
                 new RoR2.ItemDisplayRule
@@ -216,146 +216,36 @@ namespace BransItems.Modules.Pickups.Equipments
                     localScale = new Vector3(0.1f, 0.1f, 0.1f)
                 }
             });
+            */
             return rules;
         }
 
         public override void Hooks()
         {
+            
             //On.RoR2.CharacterBody.OnBuffFirstStackGained += RemoveBuffFromNonElites;
             //On.RoR2.GlobalEventManager.OnCharacterDeath += MorphEquipmentIntoAffix;
             //On.RoR2.EquipmentSlot.Update += UpdateTargets;
-            On.RoR2.EquipmentSlot.FixedUpdate += FixedUpdate;
-            On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets;
-            ModCompatability.FinishedLoadingCompatability += () =>
-            {
-                ProperSave.SaveFile.OnGatherSaveData += SaveFile_OnGatherSaveData;
-                ProperSave.Loading.OnLoadingEnded += Loading_OnLoadingStarted;
-            };
-        }
-
-        private void Loading_OnLoadingStarted(ProperSave.SaveFile obj)
-        {
-            string ETTDictKey = "BransExpansion_EarthTotemTrackers";
-            BransItems.ModLogger.LogWarning("Flag1");
-            /*
-            List<string> earthTotemTrackers = obj.GetModdedData<List<string>>(ETTDictKey);
-            BransItems.ModLogger.LogWarning("Flag2");
-            foreach (string ETTS in earthTotemTrackers)
-            {
-                string[] values=ETTS.Split(',');
-                int id = int.Parse(values[0]);
-                int absorbedCount = int.Parse(values[1]);
-                BransItems.ModLogger.LogWarning("Flag3 "+id+" "+absorbedCount);
-                List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
-                for (int i = 2; i < values.Length; i++)
-                    equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(values[i])));
-
-                EarthTotemTracker temp=((GameObject)CharacterMaster.FindObjectFromInstanceID(id)).gameObject.AddComponent<EarthTotemTracker>();
-                BransItems.ModLogger.LogWarning("Flag4");
-                temp.EquipDefList = equipmentDefs;
-                temp.EarthTotemAbsorbedCount = absorbedCount;
-                temp.id = id;
-                
-            }
-            */
-            List<EarthTotemTrackerSaveStructure> ETTSStructures = obj.GetModdedData<List<EarthTotemTrackerSaveStructure>>(ETTDictKey);
-            BransItems.ModLogger.LogWarning("Flag2");
-            foreach (EarthTotemTrackerSaveStructure ETTS in ETTSStructures)
-            {
-                NetworkUserId NUID = ETTS.userID.Load();
-                CharacterMaster master = NetworkUser.readOnlyInstancesList.FirstOrDefault(Nuser=> Nuser.id.Equals(NUID)).master;//RoR2.Run.instance.GetUserMaster(ETTS.userID.Load());
-                int absorbedCount = ETTS.EarthTotemsAbsorbed;
-                BransItems.ModLogger.LogWarning("Flag3 " + absorbedCount);
-                List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
-                foreach(string equip in ETTS.EquipList)
-                    equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(equip)));
-
-                EarthTotemTracker temp = master.gameObject.AddComponent<EarthTotemTracker>();
-                BransItems.ModLogger.LogWarning("Flag4");
-                temp.EquipDefList = equipmentDefs;
-                temp.EarthTotemAbsorbedCount = absorbedCount;
-
-
-            }
-        }
-
-        private void SaveFile_OnGatherSaveData(Dictionary<string, object> obj)
-        {
-            //string will be : BransExpansion_EarthTotemTrackers
-            //object will be string with this:
-            //Identifier for the player
-            //Number of absorbed earthTotems
-            //Number of absorbed equipments
-            //List of equipment names
-            //^^ all that in each line
-            //At the end of the string write ENDOFLOADINGEARTHTOTEM
-
-            string ETTDictKey = "BransExpansion_EarthTotemTrackers";
+            On.RoR2.EquipmentSlot.MyFixedUpdate += EquipmentSlot_MyFixedUpdate;
             
-            //List<CharacterMaster> MastersWithEquipment = CharacterMaster.instancesList.Where(master => master.GetComponent<EarthTotemTracker>() != null).ToList();
-            List<EarthTotemTracker> earthTotemTrackers = CharacterMaster.instancesList
-            .Select(master => master.GetComponent<EarthTotemTracker>())
-            .Where(tracker => tracker != null)
-            .ToList();
+            On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets;
+            
 
-            //List<string> ETTEntries = new List<string>();
-            List<EarthTotemTrackerSaveStructure> ETTSSList = new List<EarthTotemTrackerSaveStructure>();
-            foreach(EarthTotemTracker ETT in earthTotemTrackers)
+            CompatHook();
+
+        }
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public void CompatHook()
+        {
+            if (ModCompatability.ProperSaveCompat.IsProperSaveInstalled && ModCompatability.ProperSaveCompat.AddProperSaveFunctionality)
             {
-                /*
-                string ID = ETT.Master.playerCharacterMasterController.networkUser+",";
-                string ETTAbsorbed = ETT.EarthTotemAbsorbedCount+"";
-                string ETTEquipList = "";
-                foreach (EquipmentDef ED in ETT.EquipDefList)
-                    ETTEquipList += ","+ED.nameToken;
-
-
-                ETTEntries.Add(ID + ETTAbsorbed + ETTEquipList);
-                */
-                List<string> ETTEquipList = new List<string>();
-                foreach (EquipmentDef ED in ETT.EquipDefList)
-                    ETTEquipList.Add(ED.name);
-
-                ETTSSList.Add(new EarthTotemTrackerSaveStructure
-                {
-                    userID =  new ProperSave.Data.UserIDData(ETT.Master.playerCharacterMasterController.networkUser.id),
-                    EarthTotemsAbsorbed=ETT.EarthTotemAbsorbedCount,
-                    EquipList=ETTEquipList
-                });
+                ModCompatability.FinishedLoadingCompatability += ModCompatability.ProperSaveCompat.Hooks;
             }
-
-            obj.Add(ETTDictKey, ETTSSList);
         }
 
-        public struct EarthTotemTrackerSaveStructure
+        private void EquipmentSlot_MyFixedUpdate(On.RoR2.EquipmentSlot.orig_MyFixedUpdate orig, EquipmentSlot self, float deltaTime)
         {
-            [DataMember(Name = "UserID")]
-            public ProperSave.Data.UserIDData userID;
-            [DataMember(Name = "EarthTotemsAbsorbed")]
-            public int EarthTotemsAbsorbed;
-            [DataMember(Name = "AbsorbList")]
-            public List<string> EquipList;
-        }
-
-        public static float CalcAdditionalCooldownComplex(float numOfAbsorb, float highestCooldown)
-        {
-            //For Number of Items Y=MaxCooldownFromNumberOfAbsorbtions*(1-e^(-x/3))
-            //For Highest Cooldown Y=HighestCooldown/3
-            float numOfItemsCooldown = (float)(45 * (1 - Math.Exp(-(double)numOfAbsorb / 4)));
-            float highestCooldownCooldown = (float)highestCooldown / 1.25f;
-            return numOfItemsCooldown + highestCooldownCooldown;
-        }
-
-        public static float CalcAdditionalCooldownByAbsorb(float numOfAbsorb)
-        {
-            //Y=(140-35)(1-exp(-(x-1)/5.3))+35-Cooldown;
-            //y=(180-45)(1-exp(-(x-1)/10))+45-cooldown
-            return (280f-45f)*(1f- (float)Math.Exp(-((double)numOfAbsorb-1)/6.6f))+45-(float)instance.Cooldown;
-        }
-
-        private void FixedUpdate(On.RoR2.EquipmentSlot.orig_FixedUpdate orig, EquipmentSlot self)
-        {
-            orig(self);
+            orig(self,deltaTime);
             if (self.equipmentIndex == EarthTotem.instance.EquipmentDef.equipmentIndex)
             {
                 var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
@@ -377,6 +267,50 @@ namespace BransItems.Modules.Pickups.Equipments
                 }
             }
         }
+        
+
+        
+
+        public static float CalcAdditionalCooldownComplex(float numOfAbsorb, float highestCooldown)
+        {
+            //For Number of Items Y=MaxCooldownFromNumberOfAbsorbtions*(1-e^(-x/3))
+            //For Highest Cooldown Y=HighestCooldown/3
+            float numOfItemsCooldown = (float)(45 * (1 - Math.Exp(-(double)numOfAbsorb / 4)));
+            float highestCooldownCooldown = (float)highestCooldown / 1.25f;
+            return numOfItemsCooldown + highestCooldownCooldown;
+        }
+
+        public static float CalcAdditionalCooldownByAbsorb(float numOfAbsorb)
+        {
+            //Y=(140-35)(1-exp(-(x-1)/5.3))+35-Cooldown;
+            //y=(180-45)(1-exp(-(x-1)/10))+45-cooldown
+            return (280f-45f)*(1f- (float)Math.Exp(-((double)numOfAbsorb-1)/6.6f))+45-(float)instance.Cooldown;
+        }
+
+        //private void FixedUpdate(On.RoR2.EquipmentSlot.orig_FixedUpdate orig, EquipmentSlot self)
+        //{
+        //    orig(self);
+        //    if (self.equipmentIndex == EarthTotem.instance.EquipmentDef.equipmentIndex)
+        //    {
+        //        var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
+        //        if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
+
+        //        if (cpt.Firing == true)
+        //        {
+
+        //            cpt.FireSequence(self);
+        //            //if(fireNext!=null)
+        //            //{
+
+        //            // }
+        //            // else if(cpt.Firing ==false)
+        //            // {
+
+        //            //cpt.StopFire();
+        //            // }
+        //        }
+        //    }
+        //}
 
         protected override bool ActivateEquipment(EquipmentSlot slot)
         {
@@ -583,63 +517,63 @@ namespace BransItems.Modules.Pickups.Equipments
 
     }
 
-    public class EarthTotemAbsorbHandler : MonoBehaviour
-    {
-        public bool isAbsorbed = false;
-        public bool queuedDeactivate = false;
-        public Dictionary<GameObject, Vector3> auxiliaryPackedObjects = new();
+    //public class EarthTotemAbsorbHandler : MonoBehaviour
+    //{
+    //    public bool isAbsorbed = false;
+    //    public bool queuedDeactivate = false;
+    //    public Dictionary<GameObject, Vector3> auxiliaryPackedObjects = new();
 
-        public void CollectAuxiliary(GameObject[] auxOverride)
-        {
-            auxiliaryPackedObjects.Clear();
+    //    public void CollectAuxiliary(GameObject[] auxOverride)
+    //    {
+    //        auxiliaryPackedObjects.Clear();
 
-            if (auxOverride != null && auxOverride.Length > 0)
-            {
-                foreach (var obj in auxOverride)
-                {
-                    if (!obj) continue;
-                    auxiliaryPackedObjects.Add(obj, obj.transform.position - transform.position);
-                }
-            }
-            else
-            {
-                var shopcpt = gameObject.GetComponent<MultiShopController>();
-                if (shopcpt && shopcpt._terminalGameObjects != null)
-                {
-                    foreach (var terminal in shopcpt._terminalGameObjects)
-                    {
-                        if (!terminal) continue;
-                        auxiliaryPackedObjects.Add(terminal, terminal.transform.position - transform.position);
-                    }
-                }
-                var healcpt = gameObject.GetComponent<ShrineHealingBehavior>();
-                if (healcpt && healcpt.wardInstance != null)
-                {
-                    auxiliaryPackedObjects.Add(healcpt.wardInstance, healcpt.wardInstance.transform.position - transform.position);
-                }
-            }
-        }
+    //        if (auxOverride != null && auxOverride.Length > 0)
+    //        {
+    //            foreach (var obj in auxOverride)
+    //            {
+    //                if (!obj) continue;
+    //                auxiliaryPackedObjects.Add(obj, obj.transform.position - transform.position);
+    //            }
+    //        }
+    //        else
+    //        {
+    //            var shopcpt = gameObject.GetComponent<MultiShopController>();
+    //            if (shopcpt && shopcpt._terminalGameObjects != null)
+    //            {
+    //                foreach (var terminal in shopcpt._terminalGameObjects)
+    //                {
+    //                    if (!terminal) continue;
+    //                    auxiliaryPackedObjects.Add(terminal, terminal.transform.position - transform.position);
+    //                }
+    //            }
+    //            var healcpt = gameObject.GetComponent<ShrineHealingBehavior>();
+    //            if (healcpt && healcpt.wardInstance != null)
+    //            {
+    //                auxiliaryPackedObjects.Add(healcpt.wardInstance, healcpt.wardInstance.transform.position - transform.position);
+    //            }
+    //        }
+    //    }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
-        void LateUpdate()
-        {
-            if (queuedDeactivate)
-            {
-                queuedDeactivate = false;
-                isAbsorbed = true;
-                var loc = gameObject.GetComponentInChildren<ModelLocator>();
-                if (loc)
-                    loc.modelTransform.gameObject.SetActive(false);
-                foreach (var obj in auxiliaryPackedObjects)
-                {
-                    obj.Key.SetActive(false);
-                    loc = obj.Key.GetComponentInChildren<ModelLocator>();
-                    if (loc)
-                        loc.modelTransform.gameObject.SetActive(false);
-                }
-                gameObject.SetActive(false);
-            }
-        }
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used by UnityEngine")]
+        //void LateUpdate()
+        //{
+        //    if (queuedDeactivate)
+        //    {
+        //        queuedDeactivate = false;
+        //        isAbsorbed = true;
+        //        var loc = gameObject.GetComponentInChildren<ModelLocator>();
+        //        if (loc)
+        //            loc.modelTransform.gameObject.SetActive(false);
+        //        foreach (var obj in auxiliaryPackedObjects)
+        //        {
+        //            obj.Key.SetActive(false);
+        //            loc = obj.Key.GetComponentInChildren<ModelLocator>();
+        //            if (loc)
+        //                loc.modelTransform.gameObject.SetActive(false);
+        //        }
+        //        gameObject.SetActive(false);
+        //    }
+        //}
 
         /*
         public bool TryFireServer(EarthTotemTracker from, Vector3 pos)
@@ -733,7 +667,7 @@ namespace BransItems.Modules.Pickups.Equipments
                 AbsorbClient();
         }
         */
-    }
+    //}
 
 
 }

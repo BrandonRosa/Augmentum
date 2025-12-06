@@ -6,26 +6,26 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
-using BransItems.Modules.Pickups.Items.CoreItems;
-using BransItems.Modules.Pickups.Items.Tier1;
-using BransItems.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.Pickups.Items.CoreItems;
+using Augmentum.Modules.Pickups.Items.Tier1;
+using Augmentum.Modules.Pickups.Items.Tier3;
 
-namespace BransItems.Modules.Pickups.Items.Tier2
+namespace Augmentum.Modules.Pickups.Items.Tier2
 {
     class CharmOfDesires : ItemBase<CharmOfDesires>
     {
         public override string ItemName => "Charm of Desires";
         public override string ItemLangTokenName => "CHARM_OF_DESIRES";
         public override string ItemPickupDesc => "At the start of each stage, discover an Essence.";
-        public override string ItemFullDescription => $"At the start of <style=cIsUtility>each stage</style>, discover <style=cIsUtility>{DropCount}</style><style=cStack>(+{AdditionalDrops} per stack)</style> " + BransItems.EssenceKeyword + ".";
+        public override string ItemFullDescription => $"At the start of <style=cIsUtility>each stage</style>, discover <style=cIsUtility>{DropCount}</style><style=cStack> (+{AdditionalDrops} per stack)</style> " + Augmentum.EssenceKeyword + ".";
 
         public override string ItemLore => "";
 
@@ -324,16 +324,19 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             for (int i = 0; i < count; i++)
             {
                 PickupIndex[] drops = EssenceHelpers.GetEssenceDropsWithoutRepeating(RoR2Application.rng, BaseChoices+DiscoveryMedallionCount*DiscoveryMedallion.AdditionalChoices);
-                PickupDropletController.CreatePickupDroplet(new GenericPickupController.CreatePickupInfo
+                GenericPickupController.CreatePickupInfo pickupInfo = new GenericPickupController.CreatePickupInfo
                 {
                     pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),
                     prefabOverride = potentialPrefab,
                     position = transform.position + Vector3.up * 1.5f,
                     rotation = Quaternion.identity,
-                    pickupIndex =drops[0]
-                },
-                         val);
+                    pickupIndex = drops[0]
+                };
+                //pickupInfo.prefabOverride = (choices.Length > 3) ? commandCubePrefab : voidPotentialPrefab;
+                pickupInfo.prefabOverride = potentialPrefab;
+                PickupDropletController.CreatePickupDroplet(pickupInfo,transform.position + Vector3.up * 1.5f, val);
                 val = val2 * val;
+
             }
         }
     }

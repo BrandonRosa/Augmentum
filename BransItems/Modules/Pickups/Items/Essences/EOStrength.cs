@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using Augmentum.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -6,11 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 using static RoR2.ItemTag;
 
-namespace BransItems.Modules.Pickups.Items.Essences
+namespace Augmentum.Modules.Pickups.Items.Essences
 {
     class EOStrength : ItemBase<EOStrength>
     {
@@ -69,7 +70,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 		public void CreateConfig(ConfigFile config)
 		{
             //DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 1.25f, "How much base damage should Essense of Strength grant?").Value;
-            DamageGain = config.Bind<float>("Item: " + ItemName, "Percent damage given to character", .04f, "How much percent damage should Essense of Strength grant?").Value;
+            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent damage given to character", .04f, "How much percent damage should Essense of Strength grant?");
             
         }
 

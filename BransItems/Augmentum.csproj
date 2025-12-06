@@ -1,0 +1,145 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="libs\**" />
+    <Compile Remove="Modules\ColorCatalogEntry\CoreColors\**" />
+    <EmbeddedResource Remove="libs\**" />
+    <EmbeddedResource Remove="Modules\ColorCatalogEntry\CoreColors\**" />
+    <None Remove="libs\**" />
+    <None Remove="Modules\ColorCatalogEntry\CoreColors\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Modules\ColorCatalogEntry\ColorCatalogEntryBase.cs" />
+  </ItemGroup>
+
+
+  
+
+  <ItemGroup>
+    <None Remove="bransitems_assets" />
+    <None Remove="bransitems_assets.manifest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="bransitems_assets" />
+    <EmbeddedResource Include="bransitems_assets.manifest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+    <PackageReference Include="R2API.Colors" Version="1.0.3" />
+    <PackageReference Include="R2API.Core" Version="5.2.0" />
+    <PackageReference Include="R2API.Elites" Version="1.0.7" />
+    <PackageReference Include="R2API.Items" Version="1.0.7" />
+    <PackageReference Include="R2API.Language" Version="1.0.1" />
+    <PackageReference Include="R2API.Networking" Version="1.0.4" />
+    <PackageReference Include="R2API.Prefab" Version="1.1.1" />
+    <PackageReference Include="MMHOOK.RoR2" Version="2025.11.19">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
+    <PackageReference Include="R2API.RecalculateStats" Version="1.6.5" />
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.0-r.0" />
+    <PackageReference Include="RoR2BepInExPack" Version="1.36.0" />
+    <PackageReference Include="UnityEngine.Modules" Version="2021.3.33" />
+      
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BetterUI">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Dev\BepInEx\plugins\XoXFaby-BetterUI\BetterUI\BetterUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Facepunch.Steamworks">
+      <HintPath>libs\Facepunch.Steamworks.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="HighItemVizability">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Dev\BepInEx\plugins\VizMod-HighItemVizability\HighItemVizability.dll</HintPath>
+    </Reference>
+    <Reference Include="Judgement">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\JessicaDev\BepInEx\plugins\Nuxlar-Judgement\Judgement.dll</HintPath>
+    </Reference>
+    <Reference Include="KdTreeLib">
+      <HintPath>libs\KdTreeLib.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>libs\Mono.Security.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="pb_Stl">
+      <HintPath>libs\pb_Stl.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Poly2Tri">
+      <HintPath>libs\Poly2Tri.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ProBuilderCore">
+      <HintPath>libs\ProBuilderCore.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ProBuilderMeshOps">
+      <HintPath>libs\ProBuilderMeshOps.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ProperSave">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Dev\BepInEx\plugins\KingEnderBrine-ProperSave\ProperSave\ProperSave.dll</HintPath>
+    </Reference>
+    <Reference Include="R2API.Colors">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Dev\BepInEx\plugins\RiskofThunder-R2API_Colors\R2API.Colors\R2API.Colors.dll</HintPath>
+    </Reference>
+    <Reference Include="R2API.Items">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Dev\BepInEx\plugins\RiskofThunder-R2API_Items\R2API.Items\R2API.Items.dll</HintPath>
+    </Reference>
+    <Reference Include="R2API.RecalculateStats">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Dev\BepInEx\plugins\RiskofThunder-R2API_RecalculateStats\R2API.RecalculateStats\R2API.RecalculateStats.dll</HintPath>
+    </Reference>
+    <Reference Include="Rewired_Windows_Lib">
+      <HintPath>libs\Rewired_Windows_Lib.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="RoR2">
+      <HintPath>C:\Users\bjbra\.nuget\packages\riskofrain2.gamelibs\1.2.4-r.0\lib\netstandard2.0\RoR2.dll</HintPath>
+    </Reference>
+    <Reference Include="ShareSuite">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Dev\BepInEx\plugins\FunkFrog-and-Sipondo-ShareSuite\ShareSuite\ShareSuite.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleJSON">
+      <HintPath>libs\SimpleJSON.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Risk of Rain 2\Risk of Rain 2_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Risk of Rain 2\Risk of Rain 2_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Wwise">
+      <HintPath>libs\Wwise.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ZetAspects">
+      <HintPath>C:\Users\bjbra\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\FunDev\BepInEx\plugins\William758-ZetAspects\ZetAspects.dll</HintPath>
+    </Reference>
+    <Reference Include="Zio">
+      <HintPath>libs\Zio.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ReadmeAssets\Items\" />
+  </ItemGroup>
+
+</Project>

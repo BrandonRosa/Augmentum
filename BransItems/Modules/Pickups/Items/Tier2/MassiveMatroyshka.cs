@@ -6,19 +6,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
-using BransItems.Modules.Pickups.Items.CoreItems;
-using BransItems.Modules.Pickups.Items.Tier1;
-using BransItems.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.Pickups.Items.CoreItems;
+using Augmentum.Modules.Pickups.Items.Tier1;
+using Augmentum.Modules.Pickups.Items.Tier3;
 
-namespace BransItems.Modules.Pickups.Items.Tier2
+namespace Augmentum.Modules.Pickups.Items.Tier2
 {
     class MassiveMatroyshka : ItemBase<MassiveMatroyshka>
     {
@@ -60,8 +60,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of white items dropped", 1, "How many white items should drop from this item?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of white items dropped", 1, "How many white items should drop from this item?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -287,12 +286,39 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             TeleporterInteraction.onTeleporterBeginChargingGlobal += TeleporterInteraction_onTeleporterBeginChargingGlobal;
 
             On.RoR2.PickupDisplay.RebuildModel += PickupDisplay_RebuildModel;
-            
+
+            On.RoR2.InfiniteTowerRun.OnWaveAllEnemiesDefeatedServer += InfiniteTowerRun_OnWaveAllEnemiesDefeatedServer;
+
         }
 
-        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self)
+        private void InfiniteTowerRun_OnWaveAllEnemiesDefeatedServer(On.RoR2.InfiniteTowerRun.orig_OnWaveAllEnemiesDefeatedServer orig, InfiniteTowerRun self, InfiniteTowerWaveController wc)
         {
-            orig(self);
+            orig(self, wc);
+            if (NetworkServer.active && self && self.safeWardController && self.safeWardController.transform && self.IsStageTransitionWave())
+            {
+                List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
+                for (int i = 0; i < masterList.Count; i++)
+                {
+                    //If the player isnt dead
+                    if (!masterList[i].master.IsDeadAndOutOfLivesServer())
+                    {
+                        CharacterBody body = masterList[i].master.GetBody();
+                        //if the player has a body and an inventory AND they have the item
+                        if (body && body.isPlayerControlled && body.inventory && body.inventory.GetItemCount(ItemDef) > 0)
+                        {
+                            int count = body.inventory.GetItemCount(ItemDef);
+                            DropMassive(body, count);
+                            GiveMedium(body, count);
+                            BreakItem(body, count);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self, GameObject modelObjectOverride)
+        {
+            orig(self, modelObjectOverride);
             if (self && self.modelPrefab && self.modelObject && self.modelPrefab.name == ItemModel.name)
             {
                 self.modelObject.transform.localScale *= 1.2f;
@@ -397,7 +423,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
                         rotation = Quaternion.identity,
                         pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier2)
                     },
-                             val);
+                            dropTransform.position + Vector3.up * 1.5f, val);
                 }
                 else
                 {

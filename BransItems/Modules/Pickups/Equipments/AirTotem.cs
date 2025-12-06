@@ -8,16 +8,16 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using BransItems.Modules.Utils;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using Augmentum.Modules.Utils;
 using static RoR2.EquipmentSlot;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Pickups.Items.Tier3;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Pickups.Items.Tier3;
 using UnityEngine.AddressableAssets;
 
-namespace BransItems.Modules.Pickups.Equipments
+namespace Augmentum.Modules.Pickups.Equipments
 {
     class AirTotem : EquipmentBase<AirTotem>
     {
@@ -25,9 +25,9 @@ namespace BransItems.Modules.Pickups.Equipments
 
         public override string EquipmentLangTokenName => "Reducer";
 
-        public override string EquipmentPickupDesc => "Transform an item to its "+BransItems.EssencesKeyword+".";
+        public override string EquipmentPickupDesc => "Transform an item to its "+Augmentum.EssencesKeyword+".";
 
-        public override string EquipmentFullDescription => "<style=cIsUtility>Transform</style> an item to an " + BransItems.EssenceKeyword + " which gives a slight <style=cIsUtility>stat boost</style>.<style=cIsUtility> Scales with item rarity</style>.";
+        public override string EquipmentFullDescription => "<style=cIsUtility>Transform</style> an item to an " + Augmentum.EssenceKeyword + " which gives a slight <style=cIsUtility>stat boost</style>.<style=cIsUtility> Scales with item rarity</style>.";
 
         public override string EquipmentLore =>
             $"";
@@ -89,7 +89,7 @@ namespace BransItems.Modules.Pickups.Equipments
             //ItemBodyModelPrefab.AddComponent<SoulPinDisplayHandler>();
 
             ItemDisplayRuleDict rules = new ItemDisplayRuleDict();
-
+            /*
             rules.Add("mdlCommandoDualies", new RoR2.ItemDisplayRule[]
             {
                 new RoR2.ItemDisplayRule
@@ -210,6 +210,7 @@ namespace BransItems.Modules.Pickups.Equipments
                     localScale = new Vector3(0.1f, 0.1f, 0.1f)
                 }
             });
+            */
             return rules;
         }
 

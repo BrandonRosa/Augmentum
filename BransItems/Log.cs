@@ -1,6 +1,6 @@
 ﻿using BepInEx.Logging;
 
-namespace BransItems
+namespace Augmentum
 {
     internal static class Log
     {

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Text;
 using Unity;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 using RoR2;
 using UnityEngine.AddressableAssets;
 
-namespace BransItems.Modules.StandaloneBuffs
+namespace Augmentum.Modules.StandaloneBuffs
 {
     public class Laceration : BuffBase<Laceration>
     {
@@ -42,7 +42,6 @@ namespace BransItems.Modules.StandaloneBuffs
             {
                 if (self.body && self.body.GetBuffCount(BuffDef) > 0)
                 {
-                    ModLogger.LogWarning("Damage:" + damageInfo.damage);
                     damageInfo.damage += (float)self.body.GetBuffCount(BuffDef)*.1f; //Multiply by 2 cuz damage is wierd???
                     orig(self, damageInfo);
                     usedOrig = true;

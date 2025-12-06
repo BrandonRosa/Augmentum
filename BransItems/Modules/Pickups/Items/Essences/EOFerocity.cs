@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using Augmentum.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -6,16 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 
-namespace BransItems.Modules.Pickups.Items.Essences
+namespace Augmentum.Modules.Pickups.Items.Essences
 {
     class EOFerocity : ItemBase<EOFerocity>
     {
         public override string ItemName => "Essence of Ferocity";
         public override string ItemLangTokenName => "ESSENCE_OF_FEROCITY";
-        public override string ItemPickupDesc => "Slightly increase <style=cIsDamage>attack speed</style>.";
+        public override string ItemPickupDesc => "Slightly increase attack speed.";
         public override string ItemFullDescription => $"Increase <style=cIsDamage>attack speed</style> by <style=cIsDamage>{AttackSpeedGain}% </style><style=cStack>(+{AttackSpeedGain}% per stack)</style>.";
 
         public override string ItemLore => $"Ever since my partner got their hands on that stone, it's like they've become a whirlwind of action. Their attacks hit harder, and it's almost dizzying watching them go." +
@@ -55,8 +56,7 @@ namespace BransItems.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            AttackSpeedGain = config.Bind<float>("Item: " + ItemName, "Attack speed given to character", 7f, "How much attack speed should Essense of Ferocity grant?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            AttackSpeedGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack speed given to character", 7f, "How much attack speed should Essense of Ferocity grant?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

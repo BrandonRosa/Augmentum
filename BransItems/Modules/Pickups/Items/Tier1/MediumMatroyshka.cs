@@ -6,25 +6,25 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
-using BransItems.Modules.Pickups.Items.CoreItems;
-using BransItems.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.Pickups.Items.CoreItems;
+using Augmentum.Modules.Pickups.Items.Tier3;
 
-namespace BransItems.Modules.Pickups.Items.Tier1
+namespace Augmentum.Modules.Pickups.Items.Tier1
 {
     class MediumMatroyshka : ItemBase<MediumMatroyshka>
     {
         public override string ItemName => "Medium Matroyshka";
         public override string ItemLangTokenName => "MEDIUM_MATROYSHKA";
-        public override string ItemPickupDesc => "The next time you use an equipment, crack open for a white item and a " + BransItems.CoreColorString + "mini surprise</color> .";
-        public override string ItemFullDescription => $"On next <style=cIsUtility>equipment use</style>, cracks open for a white item. Gain "+BransItems.CoreColorString+"Mini Matroyshka</color>.";
+        public override string ItemPickupDesc => "The next time you use an equipment, crack open for a white item and a " + Augmentum.CoreColorString + "mini surprise</color> .";
+        public override string ItemFullDescription => $"On next <style=cIsUtility>equipment use</style>, cracks open for a white item. Gain "+Augmentum.CoreColorString+"Mini Matroyshka</color>.";
 
         public override string ItemLore => "";
 
@@ -59,8 +59,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = config.Bind<int>("Item: " + ItemName, "Number of white items dropped", 1, "How many white items should drop from this item?").Value;
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of white items dropped", 1, "How many white items should drop from this item?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -394,7 +393,7 @@ namespace BransItems.Modules.Pickups.Items.Tier1
                         rotation = Quaternion.identity,
                         pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Tier1)
                     },
-                            val);
+                            dropTransform.position + Vector3.up * 1.5f,val);
                 }
                 else
                 {

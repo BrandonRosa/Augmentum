@@ -8,14 +8,17 @@ using R2API;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using BransItems.Modules.ItemTiers.CoreTier;
-using BransItems.Modules.ItemTiers;
-using BransItems.Modules.ColorCatalogEntry;
-using BransItems.Modules.ItemTiers.HighlanderTier;
+using Augmentum.Modules.ItemTiers.CoreTier;
+using Augmentum.Modules.ItemTiers;
+using Augmentum.Modules.ColorCatalogEntry;
+using Augmentum.Modules.ItemTiers.HighlanderTier;
 using System.Reflection;
 using MonoMod.RuntimeDetour;
+using Augmentum.Modules.Pickups.EliteEquipments;
+using System.Runtime.Serialization;
+using Augmentum.Modules.Pickups.Equipments;
 
-namespace BransItems.Modules.Compatability
+namespace Augmentum.Modules.Compatability
 {
     internal static class ModCompatability
     {
@@ -76,7 +79,7 @@ namespace BransItems.Modules.Compatability
 
             public static bool CoreIsValidPickup(IsValidItemPickupDelegate orig , PickupIndex pickup)
             {
-                //BransItems.ModLogger.LogWarning("IT WORKS");
+                //Augmentum.ModLogger.LogWarning("IT WORKS");
                 bool ans = orig(pickup);
                 if (!ans)
                 {
@@ -126,7 +129,91 @@ namespace BransItems.Modules.Compatability
 
             public static bool AddProperSaveFunctionality = false;
 
+            [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+            public static void Hooks()
+            {
+                ProperSave.SaveFile.OnGatherSaveData += SaveFile_OnGatherSaveData;
+                ProperSave.Loading.OnLoadingEnded += Loading_OnLoadingStarted;
+            }
 
+            [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+            public static void Loading_OnLoadingStarted(ProperSave.SaveFile obj)
+            {
+                string ETTDictKey = "BransExpansion_EarthTotemTrackers";
+
+                List<EarthTotemTrackerSaveStructure> ETTSStructures = obj.GetModdedData<List<EarthTotemTrackerSaveStructure>>(ETTDictKey);
+
+                foreach (EarthTotemTrackerSaveStructure ETTS in ETTSStructures)
+                {
+                    NetworkUserId NUID = ETTS.userID.Load();
+                    CharacterMaster master = NetworkUser.readOnlyInstancesList.FirstOrDefault(Nuser => Nuser.id.Equals(NUID)).master;//RoR2.Run.instance.GetUserMaster(ETTS.userID.Load());
+                    int absorbedCount = ETTS.EarthTotemsAbsorbed;
+
+                    List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
+                    foreach (string equip in ETTS.EquipList)
+                        equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(equip)));
+
+                    EarthTotemTracker temp = master.gameObject.AddComponent<EarthTotemTracker>();
+
+                    temp.EquipDefList = equipmentDefs;
+                    temp.EarthTotemAbsorbedCount = absorbedCount;
+
+                }
+            }
+            [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+            public static void SaveFile_OnGatherSaveData(Dictionary<string, object> obj)
+            {
+                //string will be : BransExpansion_EarthTotemTrackers
+                //object will be string with this:
+                //Identifier for the player
+                //Number of absorbed earthTotems
+                //Number of absorbed equipments
+                //List of equipment names
+                //^^ all that in each line
+                //At the end of the string write ENDOFLOADINGEARTHTOTEM
+
+                string ETTDictKey = "BransExpansion_EarthTotemTrackers";
+
+                //List<CharacterMaster> MastersWithEquipment = CharacterMaster.instancesList.Where(master => master.GetComponent<EarthTotemTracker>() != null).ToList();
+                List<EarthTotemTracker> earthTotemTrackers = CharacterMaster.instancesList
+                .Select(master => master.GetComponent<EarthTotemTracker>())
+                .Where(tracker => tracker != null)
+                .ToList();
+
+                //List<string> ETTEntries = new List<string>();
+                List<EarthTotemTrackerSaveStructure> ETTSSList = new List<EarthTotemTrackerSaveStructure>();
+                foreach (EarthTotemTracker ETT in earthTotemTrackers)
+                {
+
+                    List<string> ETTEquipList = new List<string>();
+                    foreach (EquipmentDef ED in ETT.EquipDefList)
+                        ETTEquipList.Add(ED.name);
+
+                    ETTSSList.Add(new EarthTotemTrackerSaveStructure
+                    {
+                        userID = new ProperSave.Data.UserIDData(ETT.Master.playerCharacterMasterController.networkUser.id),
+                        EarthTotemsAbsorbed = ETT.EarthTotemAbsorbedCount,
+                        EquipList = ETTEquipList
+                    });
+                }
+
+                obj.Add(ETTDictKey, ETTSSList);
+            }
+
+            /// <summary>
+            /// This in charge of saving/loading absorbed equipments.
+            /// </summary>
+            public struct EarthTotemTrackerSaveStructure
+            {
+                [DataMember(Name = "UserID")]
+                public ProperSave.Data.UserIDData userID;
+                [DataMember(Name = "EarthTotemsAbsorbed")]
+                public int EarthTotemsAbsorbed;
+                [DataMember(Name = "AbsorbList")]
+                public List<string> EquipList;
+
+
+            }
         }
 
         internal static class EliteReworksCompat
@@ -138,11 +225,51 @@ namespace BransItems.Modules.Compatability
 
         }
 
+        internal static class JudgementCompat
+        {
+            public static bool IsJudgementInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Nuxlar.Judgement");
+
+            public static bool AddJudgementCompat = true;
+
+            public static bool IsInJudgementRun() => IsJudgementInstalled && AddJudgementCompat && Run.instance.gameModeIndex == GameModeCatalog.FindGameModeIndex("xJudgementRun");
+
+
+        }
+
+        //internal static class ZetAspectsCompat
+        //{
+        //    public static bool IsZetAspectsInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.TPDespair.ZetAspects");
+
+        //    public static void ForceZetAspectCompat()
+        //    {
+        //        ZetAdaptiveDrop.instance.Init(Augmentum.AugConfig);
+
+        //        Augmentum.ModLogger.LogInfo("Item: " + ZetAdaptiveDrop.instance.ItemName + " Initialized!");
+
+        //        On.RoR2.PickupDropletController.CreatePickupDroplet_PickupIndex_Vector3_Vector3 += (orig, pickupIndex, position, velocity) =>
+        //        {
+        //            if (!TPDespair.ZetAspects.DropHooks.CanObtainEquipment())
+        //            {
+        //                EquipmentIndex equipIndex = PickupCatalog.GetPickupDef(pickupIndex).equipmentIndex;
+
+        //                if (equipIndex != EquipmentIndex.None && equipIndex==AffixAdaptive.instance.EliteEquipmentDef.equipmentIndex)
+        //                {
+        //                    ItemIndex newIndex = ZetAdaptiveDrop.instance.ItemDef.itemIndex;
+
+        //                    if (newIndex != ItemIndex.None) pickupIndex = PickupCatalog.FindPickupIndex(newIndex);
+        //                }
+        //            }
+
+        //            orig(pickupIndex, position, velocity);
+        //        };
+        //    }
+        //}
+
         public static event Action FinishedLoadingCompatability;
 
         public static void FinishedLoading()
         {
-            FinishedLoadingCompatability.Invoke();
+            FinishedLoadingCompatability?.Invoke();
         }
     }
 

@@ -1,10 +1,10 @@
-﻿using BransItems.Modules.Utils;
+﻿using Augmentum.Modules.Utils;
 using R2API;
 using RoR2;
 using UnityEngine;
 //[assembly: HG.Reflection.SearchableAttribute.OptIn]
 
-namespace BransItems.Modules.ColorCatalogEntry
+namespace Augmentum.Modules.ColorCatalogEntry
 {
     internal static class Colors
     {

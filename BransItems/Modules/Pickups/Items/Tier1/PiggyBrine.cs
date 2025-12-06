@@ -3,16 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using BransItems.Modules.Utils;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using Augmentum.Modules.Utils;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 using BepInEx.Configuration;
 using R2API;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Pickups.Items.NoTier;
 
-namespace BransItems.Modules.Pickups.Items.Tier1
+namespace Augmentum.Modules.Pickups.Items.Tier1
 {
     class PiggyBrine : ItemBase<PiggyBrine>
     {
@@ -120,9 +120,9 @@ namespace BransItems.Modules.Pickups.Items.Tier1
             }
         }
 
-        private void BreakItem(On.RoR2.HealthComponent.orig_UpdateLastHitTime orig, HealthComponent self, float damageValue, Vector3 damagePosition, bool damageIsSilent, GameObject attacker)
+        private void BreakItem(On.RoR2.HealthComponent.orig_UpdateLastHitTime orig, HealthComponent self, float damageValue, Vector3 damagePosition, bool damageIsSilent, GameObject attacker, bool delayedDamage, bool firstHitOfDelayedDamage)
         {
-            orig.Invoke(self, damageValue, damagePosition, damageIsSilent, attacker);
+            orig.Invoke(self, damageValue, damagePosition, damageIsSilent, attacker, delayedDamage, firstHitOfDelayedDamage);
             if (NetworkServer.active && (bool)self && (bool)self.body && GetCount(self.body) > 0 && self.isHealthLow)
             {
                 int count = 1;//GetCount(self.body);

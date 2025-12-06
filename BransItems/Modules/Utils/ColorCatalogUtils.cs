@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace BransItems.Modules.Utils
+namespace Augmentum.Modules.Utils
 {
     public static partial class ColorCatalogUtils
     {

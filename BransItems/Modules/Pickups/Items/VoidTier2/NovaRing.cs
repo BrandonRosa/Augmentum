@@ -6,21 +6,22 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
-using static BransItems.Modules.Pickups.Items.Essences.EssenceHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
+using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Essences;
-using BransItems.Modules.Pickups.Items.NoTier;
-using BransItems.Modules.Utils;
+using Augmentum.Modules.Pickups.Items.Essences;
+using Augmentum.Modules.Pickups.Items.NoTier;
+using Augmentum.Modules.Utils;
 using UnityEngine.AddressableAssets;
-using BransItems.Modules.Pickups.Items.CoreItems;
-using BransItems.Modules.Pickups.Items.Tier1;
-using BransItems.Modules.Pickups.Items.Tier3;
-using BransItems.Modules.StandaloneBuffs;
+using Augmentum.Modules.Pickups.Items.CoreItems;
+using Augmentum.Modules.Pickups.Items.Tier1;
+using Augmentum.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.StandaloneBuffs;
 using RoR2.ExpansionManagement;
+using Augmentum.Modules.Pickups.Items.HighlanderItems;
 
-namespace BransItems.Modules.Pickups.Items.Tier2
+namespace Augmentum.Modules.Pickups.Items.Tier2
 {
     class NovaRing : ItemBase<NovaRing>
     {
@@ -31,7 +32,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             //$"<style=cIsHealing>{InitialRange}m</style> <style=cStack>(+{AdditionalRange}m per stack)</style> " +
             $"<style=cIsHealing>shielding nova</style>" +
             $" which gives <style=cIsHealing>{InitialPercent*100}%</style> <style=cStack>(+{AdditionalPercent*100}% per stack)</style> TOTAL damage as <style=cIsHealing>temporary shield</style> up to <style=cIsHealing>{InitialMaxHealing*100}%</style> <style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max health. " +
-            $"Give <style=cIsHealing>{(AllyBonus)*100}% more shield</style> per Ally in range. Recharges every <style=cIsUtility>20</style> seconds. <style=cIsVoid>Corrupts all {HealRing.instance.ItemName.Replace(" Band","")} and {BarrierRing.instance.ItemName.Replace(" Band", "")} Bands.</style> "; //Lasts <style=cIsHealing>{TempShieldDuration}</style> seconds. 
+            $"Give <style=cIsHealing>{(AllyBonus)*100}% more shield</style> per Ally in range. Recharges every <style=cIsUtility>{CooldownDuration}</style> seconds. <style=cIsVoid>Corrupts all {HealRing.instance.ItemName.Replace(" Band","")} and {BarrierRing.instance.ItemName.Replace(" Band", "")} Bands.</style> "; //Lasts <style=cIsHealing>{TempShieldDuration}</style> seconds. 
 
         public override string ItemLore => "";
 
@@ -44,7 +45,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public override bool Hidden => false;
 
-        public override bool CanRemove => false;
+        public override bool CanRemove => true;
 
         public override string[] CorruptsItem => new string[] { "ITEM_"+BarrierRing.instance.ItemLangTokenName+"_NAME", "ITEM_"+HealRing.instance.ItemLangTokenName + "_NAME" };
 
@@ -58,6 +59,7 @@ namespace BransItems.Modules.Pickups.Items.Tier2
         public static float AdditionalRange;
         public static float TempShieldDuration;
         public static float AllyBonus;
+        public static float CooldownDuration;
         public static bool AllyBonusAfterCalculation = true;
         public static bool AccountForPreexistingTempShield = true;
 
@@ -165,16 +167,15 @@ namespace BransItems.Modules.Pickups.Items.Tier2
 
         public void CreateConfig(ConfigFile config)
         {
-            InitialPercent = config.Bind<float>("Item: " + ItemName, "Percent of total damage converted to shield", .10f, "What percent of total damage should be healed from the first stack of this item?").Value;
-            AdditionalPercent = config.Bind<float>("Item: " + ItemName, "Percent of additional damage converted to shield", .05f, "What percent of total damage should be healed from additional stacks of this item?").Value;
-            InitialMaxHealing = config.Bind<float>("Item: " + ItemName, "Max percent of max health you can gain in shield", .20f, "What is the maximum percent of your health you can heal from this item from the first stack?").Value;
-            AdditionalMaxHealing = config.Bind<float>("Item: " + ItemName, "Additional percent of max health you can heal", .10f, "What is the maximum percent of your health you can heal from this item from additional stacks?").Value;
-            AllyBonus = config.Bind<float>("Item: " + ItemName, "Bonus Percent of shield from allies", .4f, "What is the bonus shield gained from giving shields to allies?").Value;
-            InitialRange = config.Bind<float>("Item: " + ItemName, "Range of nova on first stack", 15f, "What is the initial range of the nova from the first stack of this item?").Value;
-            AdditionalRange = config.Bind<float>("Item: " + ItemName, "Range of nova on additional stacks", 4f, "What is the additional range of the nova from additional stacks of this item?").Value;
-            TempShieldDuration= config.Bind<float>("Item: " + ItemName, "Duration in seconds", 15f, "What is the duration of the temporary shields?").Value;
-
-            //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
+            CooldownDuration = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Duration of cooldown", 20f, "What should be the duration of the cooldown for this tiem?");
+            InitialPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent of total damage converted to shield", .10f, "What percent of total damage should be healed from the first stack of this item?");
+            AdditionalPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent of additional damage converted to shield", .05f, "What percent of total damage should be healed from additional stacks of this item?");
+            InitialMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Max percent of max health you can gain in shield", .20f, "What is the maximum percent of your health you can heal from this item from the first stack?");
+            AdditionalMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Additional percent of max health you can heal", .10f, "What is the maximum percent of your health you can heal from this item from additional stacks?");
+            AllyBonus = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Bonus Percent of shield from allies", .4f, "What is the bonus shield gained from giving shields to allies?");
+            InitialRange = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Range of nova on first stack", 15f, "What is the initial range of the nova from the first stack of this item?");
+            AdditionalRange = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Range of nova on additional stacks", 4f, "What is the additional range of the nova from additional stacks of this item?");
+            TempShieldDuration = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Duration in seconds", 15f, "What is the duration of the temporary shields?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -440,10 +441,14 @@ namespace BransItems.Modules.Pickups.Items.Tier2
             if (safe && component2!=null && triggered && component2.HasBuff(NovaRingReady.instance.BuffDef))
             {
                 component2.RemoveBuff(NovaRingReady.instance.BuffDef);
-                for (int k = 1; (float)k <= 20f; k++)
-                {
-                    component2.AddTimedBuff(NovaRingCooldown.instance.BuffDef, k);
-                }
+                float cooldown = NovaRing.CooldownDuration;
+                if (component2.inventory.GetItemCount(HighlanderItems.CooldownBand.instance.ItemDef) > 0)
+                    cooldown *= HighlanderItems.CooldownBand.CooldownReduction;
+                for (int i = 0; i <= component2.inventory.GetItemCount(DoubleBand.instance.ItemDef); i++)
+                    for (int k = 1; (float)k <= cooldown; k++)
+                    {
+                        component2.AddTimedBuff(NovaRingCooldown.instance.BuffDef, k);
+                    }
             }
         }
 

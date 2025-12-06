@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static BransItems.BransItems;
-using static BransItems.Modules.Utils.ItemHelpers;
+using static Augmentum.Augmentum;
+using static Augmentum.Modules.Utils.ItemHelpers;
 using UnityEngine.Networking;
-using BransItems.Modules.Pickups.Items.Tier3;
+using Augmentum.Modules.Pickups.Items.Tier3;
 
-namespace BransItems.Modules.Pickups.Items.NoTier
+namespace Augmentum.Modules.Pickups.Items.NoTier
 {
     class ShatteredPiggyBrine : ItemBase<ShatteredPiggyBrine>
     {
