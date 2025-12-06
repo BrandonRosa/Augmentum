@@ -72,7 +72,7 @@ namespace Augmentum.Modules.Pickups
 
 		public bool IsSelectedAndInRun()
         {
-			return RunArtifactManager.instance && RunArtifactManager.instance.IsArtifactEnabled(ArtifactDef);
+			return Augmentum.ArtifactStatusDictionary.GetValueOrDefault(this,false) && RunArtifactManager.instance && RunArtifactManager.instance.IsArtifactEnabled(ArtifactDef);
 
 		}
 

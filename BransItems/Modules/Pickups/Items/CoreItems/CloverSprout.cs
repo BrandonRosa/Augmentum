@@ -17,15 +17,15 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
         public override string ItemName => "Clover Sprout";
         public override string ItemLangTokenName => "CLOVER_SPROUT";
         public override string ItemPickupDesc => "Slightly increase your Luck.";
-        public override string ItemFullDescription => $"Increase your <style=cIsUtility>Luck</style> by <style=cIsUtility>{LuckGain} </style><style=cStack>(+{LuckGain} per stack)</style>.";
+        public override string ItemFullDescription => $"Increase your <style=cIsUtility>Luck</style> by <style=cIsUtility>{LuckGain*100f}% </style><style=cStack>(+{LuckGain*100f}% per stack)</style>.";
 
         public override string ItemLore => $"Im telling you dude, this clover is my charm! My luck is turning around! \n \n ...? \n \n What? \n \n Man, you JUST told me that you got food poisoning at the sloppy joe truck, you got stuck in traffic, you stubbed your toe, AND your date canceled on you." +
-            $"\n I mean yeah. BUT, after showering I dropped my phone face down from chest height onto the tile... and IT SURVIVED UNSCATHED! This clover is my new personal good luck magnet! \n \n ... Let me see that. Dude its not even a 4 leaf clover, its just a regular 3 leaf one... One of the leafs has a nibble on it! Its like a 2.85 leaf clover AT BEST!";
+            $"\n \n I mean yeah. BUT, after showering I dropped my phone face down from chest height onto the tile... and IT SURVIVED UNSCATHED! This clover is my new personal good luck magnet! \n \n ... Let me see that. Dude its not even a 4 leaf clover, its just a regular 3 leaf one... One of the leafs has a nibble on it! Its like a 2.85 leaf clover AT BEST!";
 
         public override ItemTierDef ModdedTierDef => EssenceHelpers.essenceTierDef; //ItemTier.AssignedAtRuntime;
 
-        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Textrures/Icons/Temporary/crystal3/source/Ferocity.prefab");//("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
-        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Textrures/Icons/Temporary/crystal3/source/AcuityIcon.png");
+        public override GameObject ItemModel => MainAssets.LoadAsset<GameObject>("Assets/Models/CloverSprout/CloverSprout_2.prefab");//("Assets/Models/Prefavs/Item/Essence_of_Strength/EssenceOfStrength.prefab");
+        public override Sprite ItemIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/CloverSprout/CloverSprout.png");
 
         public static GameObject ItemBodyModelPrefab;
 

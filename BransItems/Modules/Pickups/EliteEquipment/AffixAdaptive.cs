@@ -47,9 +47,13 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public override Sprite EliteBuffIcon => AffixAdaptiveBuff.instance.BuffIcon;
 
-        public override float HealthMultiplier => 4f;
+        public override float HealthMultiplier => _healthMult;
 
-        public override float DamageMultiplier => 2f;
+        public static float _healthMult = 4f;
+
+        public override float DamageMultiplier => _damageMult;
+
+        public static float _damageMult = 2f;
 
         public override int VanillaTier => 1;
 
@@ -201,6 +205,8 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
         {
             CostMultiplierOfElite = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cost Multiplier", 6f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more.");
             EnableInvisibility =  ConfigManager.ConfigOption<bool>("Elite: " + EliteModifier, "Enable Invisibility", true, "Enable Adaptive Elites to be invisible.");
+            _healthMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Health Multiplier", 4f, "Multiplies the health of the elite by this amount.");
+            _damageMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Multiplier", 2f, "Multiplies the damage of the elite by this amount.");
 
         }
 

@@ -1,5 +1,6 @@
 ﻿using RoR2;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -269,6 +270,20 @@ namespace Augmentum.Modules.Utils
                 
                 
             }
+        }
+
+        public static void DelayChatMessage(string message, float delay)
+        {
+            Run.instance.StartCoroutine(DelayedChatMessageCoroutine(message, delay));
+        }
+
+        public static IEnumerator DelayedChatMessageCoroutine(string message, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            Chat.SendBroadcastChat(new Chat.SimpleChatMessage
+            {
+                baseToken = message
+            });
         }
     }
 }

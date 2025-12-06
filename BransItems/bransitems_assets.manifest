@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1954299029
+CRC: 1183064382
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 93ce2569ae0263cae3b7732d2bf7e3f7
+    Hash: 7692043ccf4a2a0af03a823061e21194
   TypeTreeHash:
     serializedVersion: 2
     Hash: d907fb6b0c5c92292d51d30886bf62aa
@@ -81,8 +81,10 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal4/textures/default_metallic.jpeg
 - Assets/Textrures/Ramps/texRampNullifier3.png
 - Assets/Models/CurvedHorn/HornIcon.png
+- Assets/Models/CloverSprout/CloverSprout.blend
 - Assets/Models/Matroyshka/MediumMap.png
 - Assets/Models/AdaptiveArmor/everytexture.com-stock-metal-texture-00011-normal-1024.jpg
+- Assets/Models/PuzzleBox/pb_correct.prefab
 - Assets/Textrures/Icons/Temporary/crystal/source/LifeIcon.png
 - Assets/Models/PlatinumFists/PlatinumFistsIcon.png
 - Assets/Models/HighlanderBands/CooldownBand.png
@@ -92,6 +94,7 @@ Assets:
 - Assets/Models/Matroyshka/MediumIcon.png
 - Assets/Textrures/Icons/Temporary/crystal/Materials/TEX_crystal.mat
 - Assets/Models/DiscoveryMedallion/HearthstoneMedallion.prefab
+- Assets/Models/CloverSprout/CloverSprout_2.prefab
 - Assets/Textrures/Icons/Equipment/Reducer/ReducerTexture.png
 - Assets/Textrures/Ramps/texRampAdaptive3.png
 - Assets/Textrures/Icons/Temporary/crystal3/Materials/crystal_dif.mat
@@ -147,6 +150,7 @@ Assets:
 - Assets/Models/CurvedHorn/LowResHorn_normal.png
 - Assets/Textrures/Icons/Temporary/crystal6/source/crystal6.prefab
 - Assets/Models/Pacemaker/ArcReactor2.prefab
+- Assets/Models/CloverSprout/CloverSprout.png
 - Assets/Textrures/Icons/Temporary/crystal/source/Crystal1.prefab
 - Assets/Textrures/Icons/Buff/Fortified.png
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem.bmp
@@ -174,6 +178,7 @@ Assets:
 - Assets/Textrures/Icons/Temporary/crystal5/source/TempCrystal5.png
 - Assets/Textrures/Icons/Temporary/crystal4/Materials/default_albedo.mat
 - Assets/Textrures/Icons/Temporary/crystal/source/TempCrystal1.prefab
+- Assets/Models/CloverSprout/CloverSprout.mat
 - Assets/Models/Matroyshka/Materials/MediumMap.mat
 - Assets/Models/BloodBustClam/BBClam.prefab
 - Assets/Textrures/Icons/Temporary/QuadModels/lootedbloodburstclam2.png
@@ -190,6 +195,7 @@ Assets:
 - Assets/Models/Matroyshka/Mini2.prefab
 - Assets/Models/Pacemaker/Pacemaker.png
 - Assets/Textrures/Icons/Temporary/QuadModels/airtotem2.prefab
+- Assets/Models/CloverSprout/CloverSprout_model.prefab
 - Assets/Models/BlazeOfGlory/GlazeOfGloryIcon.png
 - Assets/Textrures/Icons/Temporary/QuadModels/Materials/4jud1kk6.mat
 - Assets/Textrures/Icons/Temporary/QuadModels/earthtotem.prefab
