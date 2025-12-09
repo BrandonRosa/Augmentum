@@ -163,7 +163,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public enum PresetChoice
         {
-            Default, OldBehavior, OldButT1_5,Custom
+            Default, OldBehavior, OldButT1_5, BluJaysFav,Custom
         }
 
         private static AdaptivePresetConfig OldPresetConfig = new AdaptivePresetConfig
@@ -266,6 +266,56 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
             EnableInvisibility = true
         };
+        private static AdaptivePresetConfig BJsFavConfig= new AdaptivePresetConfig
+        {
+            Configtier = TierChoice.T1,
+
+            Healthmult = 4,
+
+            Damagemult = 2,
+
+            Costmultiplier = 6,
+
+            PreHitArmorAdd = 150,
+
+            CooldownReductionPreHit = 1,
+
+            CooldownReductionAfterHit = 1.5f,
+
+            AttackSpeedPreHit = .15f,
+
+            AttackSpeedAfterHit = .40f,
+
+            MoveSpeedAfterHit = .50f,
+
+            MoveSpeedInvisible = 2.25f,
+
+            AdaptiveCooldownTimer = 25f,
+
+            AdaptiveBoostTimer = 12f,
+
+            StacksOfRepulsionArmorPerHealth = 1f / 450f,
+
+            SafeGaurdPercent = .20f,
+
+            MinimumStacksofRepulsionArmor = 2f,
+
+            MaxStacksofRepulsionArmor = 12f,
+
+            DamageTakenModifierTimer = 8f,
+
+            InvisibleTimer = 3.5f,
+
+            LacerationCount = 20,
+
+            LacerationDuration = 7.5f,
+
+            MaxLaceration = 50,
+
+            ProcIsChance = true,
+
+            EnableInvisibility = true
+        };
 
         public static AdaptivePresetConfig GetCurrentConfigOptions()
         {
@@ -277,12 +327,17 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
                 case PresetChoice.Default:
                     config = DefaultPresetConfig;
                     break;
+                case PresetChoice.BluJaysFav:
+                    config = BJsFavConfig;
+                    break;
                 case PresetChoice.OldBehavior:
                     config = OldPresetConfig;
                     break;
                 case PresetChoice.OldButT1_5:
                     config = OldPresetConfig;
                     config.Configtier = TierChoice.T1_5;
+                    config.Healthmult = 4.5f;
+                    config.Damagemult = 2.25f;
                     break;
                 case PresetChoice.Custom:
                     config.Configtier = tierChoice;
