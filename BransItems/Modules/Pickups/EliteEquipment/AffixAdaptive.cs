@@ -24,7 +24,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
         public override string EliteEquipmentPickupDesc => "Become an aspect of evolution.";
 
         public override string EliteEquipmentFullDescription => EliteEquipmentPickupDesc+$"\nWhen hit, gain a <style=cIsHealing>defensive boost</style> for <style=cIsHealing>{AdaptiveBoostTimer}</style> seconds, become <style=cIsUtility>invisible</style> for <style=cIsUtility>{InvisibleTimer}</style> , and gain a massive speed boost. Recharges after {AdaptiveCooldownTimer} seconds.\n" +
-            $"Attacks apply 20 <style=cIsDamage>laceration</style> on hit for <style=cIsDamage>{LacerationDuration}</style> seconds, every 10 stacks increases <style=cIsDamage>incoming damage</style> by <style=cIsDamage>1</style>.";
+            ((LacerationCount==0||MaxLaceration==0)?"":$"Attacks apply 20 <style=cIsDamage>laceration</style> on hit for <style=cIsDamage>{LacerationDuration}</style> seconds, every 10 stacks increases <style=cIsDamage>incoming damage</style> by <style=cIsDamage>1</style>.");
 
         public override string EliteEquipmentLore => "";
 
@@ -58,6 +58,8 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
         public override int VanillaTier => 1;
 
         public override float CostMultiplierOfElite { get; set; } = 6;
+
+        public static float _costMult = 6f;
 
         public static int PreHitArmorAdd=150;
 
@@ -97,15 +99,231 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public static bool EnableInvisibility = true;
 
-        
+        public static PresetChoice SelectedPreset = PresetChoice.Default;
+
+        public static TierChoice tierChoice=TierChoice.T1;
+
+        private static AdaptivePresetConfig? _currentConfig = null;
+
+        public struct AdaptivePresetConfig
+        {
+            public TierChoice Configtier;
+
+            public float Healthmult;
+
+            public float Damagemult;
+
+            public float Costmultiplier;
+
+            public float PreHitArmorAdd;
+
+            public float CooldownReductionPreHit;
+
+            public float CooldownReductionAfterHit;
+
+            public float AttackSpeedPreHit;
+
+            public float AttackSpeedAfterHit;
+
+            public float MoveSpeedAfterHit;
+
+            public float MoveSpeedInvisible;
+
+            public float AdaptiveCooldownTimer;
+
+            public float AdaptiveBoostTimer;
+
+            public float StacksOfRepulsionArmorPerHealth;
+
+            public float SafeGaurdPercent;
+
+            public float MinimumStacksofRepulsionArmor;
+
+            public float MaxStacksofRepulsionArmor;
+
+            public float DamageTakenModifierTimer;
+
+            public float InvisibleTimer;
+
+            public int LacerationCount;
+
+            public float LacerationDuration;
+
+            public int MaxLaceration;
+
+            public bool ProcIsChance;
+
+            public bool EnableInvisibility;
+        }
+
+        public enum TierChoice
+        {
+          T1,T1_5,CustomTier
+        }
+
+        public enum PresetChoice
+        {
+            Default, OldCustom, OldCustomButT1_5,Custom
+        }
+
+        private static AdaptivePresetConfig OldPresetConfig = new AdaptivePresetConfig
+        {
+            Configtier=TierChoice.CustomTier,
+
+            Healthmult=4,
+
+            Damagemult= 2,
+
+            Costmultiplier=6,
+
+            PreHitArmorAdd=150,
+
+            CooldownReductionPreHit=1,
+
+            CooldownReductionAfterHit=1.5f,
+
+            AttackSpeedPreHit=.15f,
+
+            AttackSpeedAfterHit= .40f,
+
+            MoveSpeedAfterHit = .50f,
+
+            MoveSpeedInvisible = 2f,
+
+            AdaptiveCooldownTimer = 25f,
+
+            AdaptiveBoostTimer = 12f,
+
+            StacksOfRepulsionArmorPerHealth= 1f / 450f,
+
+            SafeGaurdPercent = .20f,
+
+            MinimumStacksofRepulsionArmor = 2f,
+
+            MaxStacksofRepulsionArmor = 10f,
+
+            DamageTakenModifierTimer = 8f,
+
+            InvisibleTimer = 3f,
+
+            LacerationCount = 20,
+
+            LacerationDuration = 7.5f,
+
+            MaxLaceration = 50,
+
+            ProcIsChance = true,
+
+            EnableInvisibility = true
+        };
+        private static AdaptivePresetConfig DefaultPresetConfig = new AdaptivePresetConfig
+        {
+            Configtier = TierChoice.T1,
+
+            Healthmult = 4,
+
+            Damagemult = 2,
+
+            Costmultiplier = 6,
+
+            PreHitArmorAdd = 120,
+
+            CooldownReductionPreHit = 1,
+
+            CooldownReductionAfterHit = 1.5f,
+
+            AttackSpeedPreHit = .15f,
+
+            AttackSpeedAfterHit = .30f,
+
+            MoveSpeedAfterHit = .50f,
+
+            MoveSpeedInvisible = 1.8f,
+
+            AdaptiveCooldownTimer = 25f,
+
+            AdaptiveBoostTimer = 10f,
+
+            StacksOfRepulsionArmorPerHealth = 1f / 500f,
+
+            SafeGaurdPercent = .35f,
+
+            MinimumStacksofRepulsionArmor = 2f,
+
+            MaxStacksofRepulsionArmor = 8f,
+
+            DamageTakenModifierTimer = 4f,
+
+            InvisibleTimer = 2.5f,
+
+            LacerationCount = 0,
+
+            LacerationDuration = 7.5f,
+
+            MaxLaceration = 0,
+
+            ProcIsChance = true,
+
+            EnableInvisibility = true
+        };
+
+        public static AdaptivePresetConfig GetCurrentConfigOptions()
+        {
+            if(_currentConfig != null) return _currentConfig.Value;
+
+            AdaptivePresetConfig config = new AdaptivePresetConfig();
+            switch (SelectedPreset)
+            {
+                case PresetChoice.Default:
+                    config = DefaultPresetConfig;
+                    break;
+                case PresetChoice.OldCustom:
+                    config = OldPresetConfig;
+                    break;
+                case PresetChoice.OldCustomButT1_5:
+                    config = OldPresetConfig;
+                    config.Configtier = TierChoice.T1_5;
+                    break;
+                case PresetChoice.Custom:
+                    config.Configtier = tierChoice;
+                    config.Healthmult = _healthMult;
+                    config.Damagemult = _damageMult;
+                    config.Costmultiplier = _costMult;
+                    config.PreHitArmorAdd = PreHitArmorAdd;
+                    config.CooldownReductionPreHit = CooldownReductionPreHit;
+                    config.CooldownReductionAfterHit = CooldownReductionAfterHit;
+                    config.AttackSpeedPreHit = AttackSpeedPreHit;
+                    config.AttackSpeedAfterHit = AttackSpeedAfterHit;
+                    config.MoveSpeedAfterHit = MoveSpeedAfterHit;
+                    config.MoveSpeedInvisible = MoveSpeedInvisible;
+                    config.AdaptiveCooldownTimer = AdaptiveCooldownTimer;
+                    config.AdaptiveBoostTimer = AdaptiveBoostTimer;
+                    config.StacksOfRepulsionArmorPerHealth = StacksOfRepulsionArmorPerHealth;
+                    config.SafeGaurdPercent = SafeGaurdPercent;
+                    config.MinimumStacksofRepulsionArmor = MinimumStacksofRepulsionArmor;
+                    config.MaxStacksofRepulsionArmor = MaxStacksofRepulsionArmor;
+                    config.DamageTakenModifierTimer = DamageTakenModifierTimer;
+                    config.InvisibleTimer = InvisibleTimer;
+                    config.LacerationCount = LacerationCount;
+                    config.LacerationDuration = LacerationDuration;
+                    config.MaxLaceration = MaxLaceration;
+                    config.ProcIsChance = ProcIsChance;
+                    config.EnableInvisibility = EnableInvisibility;
+                    break;
+            }
+            _currentConfig = config;
+            return config;
+        }
+
+
 
         /// <summary>
-        /// SafegaurdPercent is equal to:SafegaurdPercent * MaxCombinedHealth =MaxDamageTakenInOneAttack
+        /// SafeGaurdPercent is equal to:SafeGaurdPercent * MaxCombinedHealth =MaxDamageTakenInOneAttack
         /// </summary>
         /// <value>
         /// The Safegaurd Percent Should be in the range [0f, 1f]. The lower the vale the more protection.
         /// </value>
-        public static float SafegaurdPercent = .20f;
+        public static float SafeGaurdPercent = .20f;
 
        // public override Color EliteBuffColor { get => base.EliteBuffColor; set => base.EliteBuffColor = value; }
 
@@ -203,10 +421,32 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         private void CreateConfig(ConfigFile config)
         {
-            CostMultiplierOfElite = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cost Multiplier", 6f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more.");
-            EnableInvisibility =  ConfigManager.ConfigOption<bool>("Elite: " + EliteModifier, "Enable Invisibility", true, "Enable Adaptive Elites to be invisible.");
-            _healthMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Health Multiplier", 4f, "Multiplies the health of the elite by this amount.");
-            _damageMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Multiplier", 2f, "Multiplies the damage of the elite by this amount.");
+            SelectedPreset = ConfigManager.ConfigOption<PresetChoice>("Elite: " + EliteModifier, "Preset Choice", PresetChoice.Default, "Choose a preset configuration for the Adaptive Elite. Custom allows you to manually adjust each setting.");
+            tierChoice = ConfigManager.ConfigOption<TierChoice>("Elite: " + EliteModifier, "Tier Choice", TierChoice.T1, "Choose the tier of the Adaptive Elite. Only used if Preset Choice is set to Custom.");
+            _healthMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Health Multiplier", 4f, "Multiplies the health of the elite by this amount. Only used if Preset Choice is set to Custom.");
+            _damageMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Multiplier", 2f, "Multiplies the damage of the elite by this amount. Only used if Preset Choice is set to Custom.");
+            CostMultiplierOfElite = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cost Multiplier", 6f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more. Only used if Preset Choice is set to Custom. AND TierChoice is CustomTier");
+            PreHitArmorAdd = ConfigManager.ConfigOption<int>("Elite: " + EliteModifier, "Pre-Hit Armor Addition", 120, "Amount of armor added when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            CooldownReductionPreHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cooldown Reduction Pre-Hit", 1f, "Cooldown reduction multiplier applied when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            CooldownReductionAfterHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cooldown Reduction After Hit", 1.5f, "Cooldown reduction multiplier applied after the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            AttackSpeedPreHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Attack Speed Pre-Hit", .15f, "Attack speed bonus applied when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            AttackSpeedAfterHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Attack Speed After Hit", .30f, "Attack speed bonus applied after the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            MoveSpeedAfterHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Move Speed After Hit", .50f, "Movement speed bonus applied after the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            MoveSpeedInvisible = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Move Speed Invisible", 1.8f, "Movement speed multiplier applied when invisible. Only used if Preset Choice is set to Custom.");
+            AdaptiveCooldownTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Adaptive Cooldown Timer", 25f, "Cooldown time in seconds before the adaptive boost can activate again. Only used if Preset Choice is set to Custom.");
+            AdaptiveBoostTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Adaptive Boost Timer", 10f, "Duration in seconds of the adaptive boost after being hit. Only used if Preset Choice is set to Custom.");
+            StacksOfRepulsionArmorPerHealth = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Stacks Of Repulsion Armor Per Health", 1f / 500f, "Amount of armor gained per point of health for the repulsion effect. Only used if Preset Choice is set to Custom.");
+            MinimumStacksofRepulsionArmor = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Minimum Stacks of Repulsion Armor", 2f, "Minimum stacks of repulsion armor gained. Only used if Preset Choice is set to Custom.");
+            SafeGaurdPercent = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Safe Gaurd Percent", .35f, "Percentage of max combined health that is the maximum damage that can be taken in one attack. Only used if Preset Choice is set to Custom.");
+            MaxStacksofRepulsionArmor = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Maximum Stacks of Repulsion Armor", 8f, "Maximum stacks of repulsion armor gained. Only used if Preset Choice is set to Custom.");
+            DamageTakenModifierTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Taken Modifier Timer", 4f, "Duration in seconds of the damage taken modifier after being hit. Only used if Preset Choice is set to Custom.");
+            InvisibleTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Invisible Timer", 2.5f, "Duration in seconds of invisibility after being hit. Only used if Preset Choice is set to Custom.");
+            LacerationCount = ConfigManager.ConfigOption<int>("Elite: " + EliteModifier, "Laceration Count", 0, "Amount of laceration applied on hit. Only used if Preset Choice is set to Custom.");
+            LacerationDuration = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Laceration Duration", 7.5f, "Duration in seconds of laceration applied on hit. Only used if Preset Choice is set to Custom.");
+            MaxLaceration = ConfigManager.ConfigOption<int>("Elite: " + EliteModifier, "Max Laceration", 0, "Maximum stacks of laceration that can be applied. Only used if Preset Choice is set to Custom.");
+            ProcIsChance = ConfigManager.ConfigOption<bool>("Elite: " + EliteModifier, "Proc Is Chance", true, "If true, the laceration proc is chance based. If false, it is guaranteed on hit. Only used if Preset Choice is set to Custom.");
+            EnableInvisibility = ConfigManager.ConfigOption<bool>("Elite: " + EliteModifier, "Enable Invisibility", true, "Enable Adaptive Elites to be invisible.");
+            
 
         }
 
@@ -646,17 +886,20 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
                 CharacterBody attacker= damageInfo.attacker.GetComponent<CharacterBody>();
                 if (body != null &&  attacker!= null && attacker.HasBuff(BuffDef))
                 {
+                    //variables to check
+                    AffixAdaptive.AdaptivePresetConfig config= AffixAdaptive.GetCurrentConfigOptions();
+
                     float chance = 1;
-                    if (AffixAdaptive.ProcIsChance)
+                    if (config.ProcIsChance)
                         chance = damageInfo.procCoefficient;
 
                     if (Util.CheckRoll(chance*100f, attacker.master))
                     {
-                        int stackCount = AffixAdaptive.LacerationCount;
-                        float duration = AffixAdaptive.LacerationDuration * damageInfo.procCoefficient;
+                        int stackCount = config.LacerationCount;
+                        float duration = config.LacerationDuration * damageInfo.procCoefficient;
 
                         for (int i = 0; i < stackCount; i++)
-                            body.AddTimedBuff(Laceration.instance.BuffDef, duration, AffixAdaptive.MaxLaceration);
+                            body.AddTimedBuff(Laceration.instance.BuffDef, duration, config.MaxLaceration);
                     }
                 }
             }
@@ -694,18 +937,21 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
             //if you have adaptive boost and no cooldown, give cooldown and put adaptive boost on a timer and give cooldown
             if(self!=null && damageInfo!=null && self.body && self.body.HasBuff(AdaptiveBoost.instance.BuffDef) && !self.body.HasBuff(AdaptiveCooldown.instance.BuffDef))
             {
+                //variables to check
+                AffixAdaptive.AdaptivePresetConfig config = AffixAdaptive.GetCurrentConfigOptions();
+
                 self.body.RemoveBuff(AdaptiveBoost.instance.BuffDef);
 
-                for (int i = 0; i < AffixAdaptive.AdaptiveBoostTimer; i++)
+                for (int i = 0; i < config.AdaptiveBoostTimer; i++)
                     self.body.AddTimedBuff(AdaptiveBoost.instance.BuffDef, i);//10f
 
 
                 //for (int i = 0; i < 4; i++)
                 //    self.body.AddTimedBuff(Fortified.instance.BuffDef, 5f);
-                if(AffixAdaptive.EnableInvisibility)
-                    self.body.AddTimedBuff(RoR2Content.Buffs.AffixHauntedRecipient, AffixAdaptive.InvisibleTimer);
+                if(config.EnableInvisibility)
+                    self.body.AddTimedBuff(RoR2Content.Buffs.AffixHauntedRecipient, config.InvisibleTimer);
 
-                for (int i = 0; i < AffixAdaptive.AdaptiveCooldownTimer; i++)
+                for (int i = 0; i < config.AdaptiveCooldownTimer; i++)
                     self.body.AddTimedBuff(AdaptiveCooldown.instance.BuffDef, i);
 
                 EffectManager.SimpleEffect(AffixAdaptive.instance.InvisibleEffect, self.body.transform.position, Quaternion.identity, transmit: true);
@@ -823,25 +1069,28 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
         {
             if (sender.HasBuff(BuffDef))
             {
+                //variables to check
+                AffixAdaptive.AdaptivePresetConfig config = AffixAdaptive.GetCurrentConfigOptions();
+
                 int count = 1;//sender.GetBuffCount(BuffDef);
                 bool isInvisible = sender.HasBuff(RoR2Content.Buffs.AffixHauntedRecipient);
                 bool startedCooldown = sender.HasBuff(AdaptiveCooldown.instance.BuffDef);
 
                 if (!startedCooldown)
                 {
-                    args.armorAdd += AffixAdaptive.PreHitArmorAdd;
-                    args.cooldownReductionAdd += AffixAdaptive.CooldownReductionPreHit * count;
-                    args.attackSpeedMultAdd += AffixAdaptive.AttackSpeedPreHit * count;
+                    args.armorAdd += config.PreHitArmorAdd;
+                    args.cooldownReductionAdd += config.CooldownReductionPreHit * count;
+                    args.attackSpeedMultAdd += config.AttackSpeedPreHit * count;
                 }
                 else
                 {
-                    args.cooldownReductionAdd += AffixAdaptive.CooldownReductionAfterHit * count;
-                    args.attackSpeedMultAdd += AffixAdaptive.AttackSpeedAfterHit * count;
+                    args.cooldownReductionAdd += config.CooldownReductionAfterHit * count;
+                    args.attackSpeedMultAdd += config.AttackSpeedAfterHit * count;
 
                     if (!isInvisible)
-                        args.moveSpeedMultAdd += AffixAdaptive.MoveSpeedAfterHit * count;
+                        args.moveSpeedMultAdd += config.MoveSpeedAfterHit * count;
                     else
-                        args.moveSpeedMultAdd += AffixAdaptive.MoveSpeedInvisible;
+                        args.moveSpeedMultAdd += config.MoveSpeedInvisible;
                 }
             }
         }
@@ -853,18 +1102,20 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
             {
                 if (self.body && self.body.HasBuff(BuffDef))
                 {
+                    //variables to check
+                    AffixAdaptive.AdaptivePresetConfig config = AffixAdaptive.GetCurrentConfigOptions();
 
                     int buffCount = Math.Max(self.body.GetBuffCount(BuffDef), 1);
                     //IF the cooldown is above AdaptiveBoostTimer-DamageTakenModifierTimer     OR     the buff is on AND they dont have the cooldown
-                    if (buffCount > (AffixAdaptive.AdaptiveBoostTimer - AffixAdaptive.DamageTakenModifierTimer) || (buffCount == 1 && !self.body.HasBuff(AdaptiveCooldown.instance.BuffDef)))
+                    if (buffCount > (config.AdaptiveBoostTimer - config.DamageTakenModifierTimer) || (buffCount == 1 && !self.body.HasBuff(AdaptiveCooldown.instance.BuffDef)))
                     {
                         //Repultion Armor Stacks
-                        int stacks = (int)Math.Ceiling(Math.Max(AffixAdaptive.MinimumStacksofRepulsionArmor, AffixAdaptive.StacksOfRepulsionArmorPerHealth * self.combinedHealth));
-                        stacks = (int) Math.Min(AffixAdaptive.MaxStacksofRepulsionArmor, stacks);
+                        int stacks = (int)Math.Ceiling(Math.Max(config.MinimumStacksofRepulsionArmor, config.StacksOfRepulsionArmorPerHealth * self.combinedHealth));
+                        stacks = (int) Math.Min(config.MaxStacksofRepulsionArmor, stacks);
                         self.itemCounts.armorPlate += stacks;
 
                         //Max Damage per Attack
-                        float maxDamage = AffixAdaptive.SafegaurdPercent * self.fullCombinedHealth;
+                        float maxDamage = config.SafeGaurdPercent * self.fullCombinedHealth;
                         if (damageInfo.damage > maxDamage)
                             damageInfo.damage = maxDamage;
 
