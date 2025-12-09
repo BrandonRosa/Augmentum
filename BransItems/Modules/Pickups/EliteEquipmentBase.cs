@@ -8,6 +8,7 @@ using UnityEngine;
 using System.Linq;
 using BepInEx.Configuration;
 using UnityEngine.AddressableAssets;
+using System.Runtime.CompilerServices;
 
 namespace Augmentum.Modules.Pickups
 {
@@ -47,9 +48,13 @@ namespace Augmentum.Modules.Pickups
 
         public virtual bool IsLunar { get; } = false;
 
+        public virtual bool AllowHonor { get; } = true;
+
         public abstract GameObject EliteEquipmentModel { get; }
 
         public virtual GameObject EliteBodyModel { get; } = null;
+
+        public virtual Texture2D RampTexture { get; } = null;
         public abstract Sprite EliteEquipmentIcon { get; }
 
         public EquipmentDef EliteEquipmentDef;
@@ -70,15 +75,23 @@ namespace Augmentum.Modules.Pickups
 
         public virtual Material EliteMaterial { get; set; } = null;
 
-        public EliteDef EliteDef;
+        public CustomElite CustomEliteDef;
+
+        public CustomElite CustomEliteDefHonor;
+
+        public EliteDef EliteDef=>CustomEliteDef.EliteDef;
 
         public virtual float HealthMultiplier { get; set; } = 1;
 
         public virtual float DamageMultiplier { get; set; } = 1;
 
+        public virtual float HonorHealthMultiplier { get; set; } = 1;
+
+        public virtual float HonorDamageMultiplier { get; set; } = 1;
+
         public virtual float CostMultiplierOfElite { get; set; } = 1;
 
-        public virtual int VanillaTier { get; set; } = 0;
+        public virtual VanillaEliteTier VanillaTier { get; set; } = VanillaEliteTier.BaseTier1;
 
         public virtual float DropChance { get; set; } = .00025f;
 
@@ -149,22 +162,22 @@ namespace Augmentum.Modules.Pickups
         private void CombatDirector_Init(On.RoR2.CombatDirector.orig_Init orig)
         {
             orig();
-            foreach (EliteEquipmentBase customElite in elites)
-            {
-                switch (customElite.VanillaTier)
-                {
-                    case 1:
-                        HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[1].eliteTypes, customElite.EliteDef);
-                        break;
-                    case 2:
-                        HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[3].eliteTypes, customElite.EliteDef);
-                        break;
-                }
-                //if (customElite.isHonor)
-                //{
-                //    HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[2].eliteTypes, customElite.EliteDef);
-                //}
-            }
+            //foreach (EliteEquipmentBase customElite in elites)
+            //{
+            //    switch (customElite.VanillaTier)
+            //    {
+            //        case 1:
+            //            HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[1].eliteTypes, customElite.EliteDef);
+            //            break;
+            //        case 2:
+            //            HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[3].eliteTypes, customElite.EliteDef);
+            //            break;
+            //    }
+            //    //if (customElite.isHonor)
+            //    //{
+            //    //    HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[2].eliteTypes, customElite.EliteDef);
+            //    //}
+            //}
         }
 
         protected void CreateAffixBuffDef()
@@ -175,6 +188,8 @@ namespace Augmentum.Modules.Pickups
             EliteBuffDef.buffColor = EliteBuffColor;
             EliteBuffDef.canStack = false;
             EliteBuffDef.iconSprite = EliteBuffIcon;
+
+            ContentAddition.AddBuffDef(EliteBuffDef);
         }
 
         private void DefaultTexture()
@@ -226,17 +241,32 @@ namespace Augmentum.Modules.Pickups
 
         protected void CreateElite()
         {
-            EliteDef = ScriptableObject.CreateInstance<EliteDef>();
+            IEnumerable<CombatDirector.EliteTierDef> tierDefs = EliteAPI.GetEliteTierEnumerable(this.VanillaTier);
+            if (tierDefs is null) return;
+
+            CustomEliteDef = new CustomElite($"Elite{this.EliteEquipmentName}",this.EliteEquipmentDef,this.EliteBuffColor,this.EliteModifier,tierDefs,this.RampTexture);
             EliteDef.name = "BRANS_ELITE_" + EliteAffixToken;
             EliteDef.modifierToken = "BRANS_ELITE_" + EliteAffixToken + "_MODIFIER";
             EliteDef.eliteEquipmentDef = EliteEquipmentDef;
             EliteDef.healthBoostCoefficient = HealthMultiplier;
             EliteDef.damageBoostCoefficient = DamageMultiplier;
+            EliteBuffDef.eliteDef = EliteDef;
 
+            EliteAPI.Add(this.CustomEliteDef);
+
+
+        IEnumerable <CombatDirector.EliteTierDef> honorTierDefs = EliteAPI.GetHonorEliteTierEnumerable(this.VanillaTier);
+            if (AllowHonor && honorTierDefs is not null)
+            {
+                this.CustomEliteDefHonor = new CustomElite($"Elite{this.EliteEquipmentName}Honor", this.EliteEquipmentDef, this.EliteBuffColor, this.EliteModifier, tierDefs, this.RampTexture);
+                this.CustomEliteDefHonor.EliteDef.healthBoostCoefficient = HonorHealthMultiplier;
+                this.CustomEliteDefHonor.EliteDef.damageBoostCoefficient = HonorDamageMultiplier;
+                EliteAPI.Add(this.CustomEliteDefHonor);
+            }
 
 
             var baseEliteTierDefs = EliteAPI.GetCombatDirectorEliteTiers();
-            if (VanillaTier != 0)
+            if (this.VanillaTier==VanillaEliteTier.None)
             {
                 if (!CanAppearInEliteTiers.All(x => baseEliteTierDefs.Contains(x)))
                 {
@@ -277,8 +307,8 @@ namespace Augmentum.Modules.Pickups
 
             
 
-            EliteBuffDef.eliteDef = EliteDef;
-            ContentAddition.AddBuffDef(EliteBuffDef);
+            
+            
         }
 
         

@@ -37,7 +37,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
         public GameObject InvisibleEffect;
         public GameObject TrailEffect;
 
-        public Texture2D RemapTexture = MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Ramps/texRampAdaptive4.png");
+        public override Texture2D RampTexture => MainAssets.LoadAsset<Texture2D>("Assets/Textrures/Ramps/texRampAdaptive4.png");
 
         public static GameObject ItemBodyModelPrefab;
 
@@ -55,7 +55,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public static float _damageMult = 2f;
 
-        public override int VanillaTier => 1;
+        public override VanillaEliteTier VanillaTier => GetCurrentConfigOptions().Configtier;
 
         public override float CostMultiplierOfElite { get; set; } = 6;
 
@@ -101,13 +101,13 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public static PresetChoice SelectedPreset = PresetChoice.Default;
 
-        public static TierChoice tierChoice=TierChoice.T1;
+        public static VanillaEliteTier tierChoice=VanillaEliteTier.BaseTier1;
 
         private static AdaptivePresetConfig? _currentConfig = null;
 
         public struct AdaptivePresetConfig
         {
-            public TierChoice Configtier;
+            public VanillaEliteTier Configtier;
 
             public float Healthmult;
 
@@ -168,7 +168,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         private static AdaptivePresetConfig OldPresetConfig = new AdaptivePresetConfig
         {
-            Configtier=TierChoice.CustomTier,
+            Configtier=VanillaEliteTier.None,
 
             Healthmult=4,
 
@@ -218,7 +218,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
         };
         private static AdaptivePresetConfig DefaultPresetConfig = new AdaptivePresetConfig
         {
-            Configtier = TierChoice.T1,
+            Configtier = VanillaEliteTier.BaseTier1,
 
             Healthmult = 3.5f,
 
@@ -242,7 +242,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
             AdaptiveCooldownTimer = 25f,
 
-            AdaptiveBoostTimer = 10f,
+            AdaptiveBoostTimer = 6f,
 
             StacksOfRepulsionArmorPerHealth = 1f / 500f,
 
@@ -268,7 +268,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
         };
         private static AdaptivePresetConfig BJsFavConfig= new AdaptivePresetConfig
         {
-            Configtier = TierChoice.T1,
+            Configtier = VanillaEliteTier.BaseTier1,
 
             Healthmult = 4,
 
@@ -335,7 +335,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
                     break;
                 case PresetChoice.OldButT1_5:
                     config = OldPresetConfig;
-                    config.Configtier = TierChoice.T1_5;
+                    config.Configtier = VanillaEliteTier.FullTier1;
                     config.Healthmult = 4.5f;
                     config.Damagemult = 2.25f;
                     break;
@@ -393,6 +393,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
             MakeInvisEffect();
             MakeTrailEffect();
             CreateConfig(config);
+
             CreateLang();
             //CreateAffixBuffDef();
 
@@ -400,7 +401,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
             CreateEliteTiers();
             CreateElite();
             Hooks();
-            EliteRamp.AddRamp(EliteDef,RemapTexture); 
+            EliteRamp.AddRamp(EliteDef,RampTexture); 
         }
 
         private void MakeInvisEffect()
@@ -411,19 +412,19 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
             ParticleSystemRenderer[] renders = temp.GetComponentsInChildren<ParticleSystemRenderer>();
 
             EffectHelpers.SetParticleSystemColorOverTime(ref systems[0], EliteBuffColor);
-            renders[0].GetMaterial().SetTexture("_RemapTex", RemapTexture);
+            renders[0].GetMaterial().SetTexture("_RemapTex", RampTexture);
 
             EffectHelpers.SetParticleSystemColorOverTime(ref systems[1], EliteBuffColor);
-            renders[1].GetMaterial().SetTexture("_RemapTex", RemapTexture);
+            renders[1].GetMaterial().SetTexture("_RemapTex", RampTexture);
 
             EffectHelpers.SetParticleSystemColorOverTime(ref systems[2], EliteBuffColor);
-            renders[2].GetMaterial().SetTexture("_RemapTex", RemapTexture);
+            renders[2].GetMaterial().SetTexture("_RemapTex", RampTexture);
 
             EffectHelpers.SetParticleSystemColorOverTime(ref systems[3], EliteBuffColor);
-            renders[3].GetMaterial().SetTexture("_RemapTex", RemapTexture);
+            renders[3].GetMaterial().SetTexture("_RemapTex", RampTexture);
 
             EffectHelpers.SetParticleSystemColorOverTime(ref systems[4], EliteBuffColor);
-            renders[4].GetMaterial().SetTexture("_RemapTex", RemapTexture);
+            renders[4].GetMaterial().SetTexture("_RemapTex", RampTexture);
             renders[4].GetMaterial().SetTexture("_MainTex", texture);
             renders[4].GetMaterial().SetColor("_EmissionColor", EliteBuffColor);
 
@@ -442,7 +443,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
             EffectHelpers.SetParticleSystemColorOverTime(ref PS,EliteBuffColor);
             //EffectHelpers.SetParticleSystemLightColor(ref PS, EliteBuffColor);
             ParticleSystemRenderer PSR= pinkTrailSegment.GetComponent<ParticleSystemRenderer>();
-            PSR.GetMaterial().SetTexture("_RemapTex", RemapTexture);
+            PSR.GetMaterial().SetTexture("_RemapTex", RampTexture);
 
 
             DamageTrail DT = pinkTrail.GetComponent<DamageTrail>();
@@ -477,7 +478,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
         private void CreateConfig(ConfigFile config)
         {
             SelectedPreset = ConfigManager.ConfigOption<PresetChoice>("Elite: " + EliteModifier, "Preset Choice", PresetChoice.Default, "Choose a preset configuration for the Adaptive Elite. Default is the new default behavior. OldBehavior is the old behavior. OldButT1_5 is the old behavior but uses the same tier as gilded elites. Custom allows you to manually adjust each setting.");
-            tierChoice = ConfigManager.ConfigOption<TierChoice>("Elite: " + EliteModifier, "Tier Choice", DefaultPresetConfig.Configtier, "Choose the tier of the Adaptive Elite. Only used if Preset Choice is set to Custom.");
+            tierChoice = ConvertTierChoiceToVan(ConfigManager.ConfigOption<TierChoice>("Elite: " + EliteModifier, "Tier Choice", TierChoice.T1, "Choose the tier of the Adaptive Elite. Only used if Preset Choice is set to Custom."));
             _healthMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Health Multiplier", DefaultPresetConfig.Healthmult, "Multiplies the health of the elite by this amount. Only used if Preset Choice is set to Custom.");
             _damageMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Multiplier", DefaultPresetConfig.Damagemult, "Multiplies the damage of the elite by this amount. Only used if Preset Choice is set to Custom.");
             CostMultiplierOfElite = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cost Multiplier", DefaultPresetConfig.Costmultiplier, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more. Only used if Preset Choice is set to Custom. AND TierChoice is CustomTier");
@@ -503,6 +504,21 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
             EnableInvisibility = ConfigManager.ConfigOption<bool>("Elite: " + EliteModifier, "Enable Invisibility", DefaultPresetConfig.EnableInvisibility, "Enable Adaptive Elites to be invisible.");
             
 
+        }
+
+        private VanillaEliteTier ConvertTierChoiceToVan(TierChoice tierChoice)
+        {
+            switch(tierChoice)
+            {
+                case TierChoice.T1:
+                    return VanillaEliteTier.BaseTier1;
+                case TierChoice.T1_5:
+                    return VanillaEliteTier.FullTier1;
+                case TierChoice.CustomTier:
+                    return VanillaEliteTier.None;
+                default:
+                    return VanillaEliteTier.BaseTier1;
+            }
         }
 
         private void CreateEliteTiers()
