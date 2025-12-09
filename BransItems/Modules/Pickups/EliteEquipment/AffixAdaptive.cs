@@ -61,7 +61,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public static float _costMult = 6f;
 
-        public static int PreHitArmorAdd=150;
+        public static float PreHitArmorAdd=150;
 
         public static float CooldownReductionPreHit=1f;
 
@@ -220,7 +220,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
         {
             Configtier = TierChoice.T1,
 
-            Healthmult = 4,
+            Healthmult = 3.5f,
 
             Damagemult = 2,
 
@@ -254,7 +254,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
             DamageTakenModifierTimer = 4f,
 
-            InvisibleTimer = 2.5f,
+            InvisibleTimer = 2.25f,
 
             LacerationCount = 0,
 
@@ -477,30 +477,30 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
         private void CreateConfig(ConfigFile config)
         {
             SelectedPreset = ConfigManager.ConfigOption<PresetChoice>("Elite: " + EliteModifier, "Preset Choice", PresetChoice.Default, "Choose a preset configuration for the Adaptive Elite. Default is the new default behavior. OldBehavior is the old behavior. OldButT1_5 is the old behavior but uses the same tier as gilded elites. Custom allows you to manually adjust each setting.");
-            tierChoice = ConfigManager.ConfigOption<TierChoice>("Elite: " + EliteModifier, "Tier Choice", TierChoice.T1, "Choose the tier of the Adaptive Elite. Only used if Preset Choice is set to Custom.");
-            _healthMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Health Multiplier", 4f, "Multiplies the health of the elite by this amount. Only used if Preset Choice is set to Custom.");
-            _damageMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Multiplier", 2f, "Multiplies the damage of the elite by this amount. Only used if Preset Choice is set to Custom.");
-            CostMultiplierOfElite = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cost Multiplier", 6f, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more. Only used if Preset Choice is set to Custom. AND TierChoice is CustomTier");
-            PreHitArmorAdd = ConfigManager.ConfigOption<int>("Elite: " + EliteModifier, "Pre-Hit Armor Addition", 120, "Amount of armor added when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
-            CooldownReductionPreHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cooldown Reduction Pre-Hit", 1f, "Cooldown reduction multiplier applied when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
-            CooldownReductionAfterHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cooldown Reduction After Hit", 1.5f, "Cooldown reduction multiplier applied after the adaptive boost activates. Only used if Preset Choice is set to Custom.");
-            AttackSpeedPreHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Attack Speed Pre-Hit", .15f, "Attack speed bonus applied when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
-            AttackSpeedAfterHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Attack Speed After Hit", .30f, "Attack speed bonus applied after the adaptive boost activates. Only used if Preset Choice is set to Custom.");
-            MoveSpeedAfterHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Move Speed After Hit", .50f, "Movement speed bonus applied after the adaptive boost activates. Only used if Preset Choice is set to Custom.");
-            MoveSpeedInvisible = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Move Speed Invisible", 1.8f, "Movement speed multiplier applied when invisible. Only used if Preset Choice is set to Custom.");
-            AdaptiveCooldownTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Adaptive Cooldown Timer", 25f, "Cooldown time in seconds before the adaptive boost can activate again. Only used if Preset Choice is set to Custom.");
-            AdaptiveBoostTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Adaptive Boost Timer", 10f, "Duration in seconds of the adaptive boost after being hit. Only used if Preset Choice is set to Custom.");
-            StacksOfRepulsionArmorPerHealth = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Stacks Of Repulsion Armor Per Health", 1f / 500f, "Amount of armor gained per point of health for the repulsion effect. Only used if Preset Choice is set to Custom.");
-            MinimumStacksofRepulsionArmor = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Minimum Stacks of Repulsion Armor", 2f, "Minimum stacks of repulsion armor gained. Only used if Preset Choice is set to Custom.");
-            SafeGaurdPercent = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Safe Gaurd Percent", .35f, "Percentage of max combined health that is the maximum damage that can be taken in one attack. Only used if Preset Choice is set to Custom.");
-            MaxStacksofRepulsionArmor = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Maximum Stacks of Repulsion Armor", 8f, "Maximum stacks of repulsion armor gained. Only used if Preset Choice is set to Custom.");
-            DamageTakenModifierTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Taken Modifier Timer", 4f, "Duration in seconds of the damage taken modifier after being hit. Only used if Preset Choice is set to Custom.");
-            InvisibleTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Invisible Timer", 2.5f, "Duration in seconds of invisibility after being hit. Only used if Preset Choice is set to Custom.");
-            LacerationCount = ConfigManager.ConfigOption<int>("Elite: " + EliteModifier, "Laceration Count", 0, "Amount of laceration applied on hit. Only used if Preset Choice is set to Custom.");
-            LacerationDuration = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Laceration Duration", 7.5f, "Duration in seconds of laceration applied on hit. Only used if Preset Choice is set to Custom.");
-            MaxLaceration = ConfigManager.ConfigOption<int>("Elite: " + EliteModifier, "Max Laceration", 0, "Maximum stacks of laceration that can be applied. Only used if Preset Choice is set to Custom.");
-            ProcIsChance = ConfigManager.ConfigOption<bool>("Elite: " + EliteModifier, "Proc Is Chance", true, "If true, the laceration proc is chance based. If false, it is guaranteed on hit. Only used if Preset Choice is set to Custom.");
-            EnableInvisibility = ConfigManager.ConfigOption<bool>("Elite: " + EliteModifier, "Enable Invisibility", true, "Enable Adaptive Elites to be invisible.");
+            tierChoice = ConfigManager.ConfigOption<TierChoice>("Elite: " + EliteModifier, "Tier Choice", DefaultPresetConfig.Configtier, "Choose the tier of the Adaptive Elite. Only used if Preset Choice is set to Custom.");
+            _healthMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Health Multiplier", DefaultPresetConfig.Healthmult, "Multiplies the health of the elite by this amount. Only used if Preset Choice is set to Custom.");
+            _damageMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Multiplier", DefaultPresetConfig.Damagemult, "Multiplies the damage of the elite by this amount. Only used if Preset Choice is set to Custom.");
+            CostMultiplierOfElite = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cost Multiplier", DefaultPresetConfig.Costmultiplier, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more. Only used if Preset Choice is set to Custom. AND TierChoice is CustomTier");
+            PreHitArmorAdd = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Pre-Hit Armor Addition", DefaultPresetConfig.PreHitArmorAdd, "Amount of armor added when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            CooldownReductionPreHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cooldown Reduction Pre-Hit", DefaultPresetConfig.CooldownReductionPreHit, "Cooldown reduction multiplier applied when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            CooldownReductionAfterHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cooldown Reduction After Hit", DefaultPresetConfig.CooldownReductionAfterHit, "Cooldown reduction multiplier applied after the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            AttackSpeedPreHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Attack Speed Pre-Hit", DefaultPresetConfig.AttackSpeedPreHit, "Attack speed bonus applied when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            AttackSpeedAfterHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Attack Speed After Hit", DefaultPresetConfig.AttackSpeedAfterHit, "Attack speed bonus applied after the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            MoveSpeedAfterHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Move Speed After Hit", DefaultPresetConfig.MoveSpeedAfterHit, "Movement speed bonus applied after the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            MoveSpeedInvisible = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Move Speed Invisible", DefaultPresetConfig.MoveSpeedInvisible, "Movement speed multiplier applied when invisible. Only used if Preset Choice is set to Custom.");
+            AdaptiveCooldownTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Adaptive Cooldown Timer", DefaultPresetConfig.AdaptiveCooldownTimer, "Cooldown time in seconds before the adaptive boost can activate again. Only used if Preset Choice is set to Custom.");
+            AdaptiveBoostTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Adaptive Boost Timer", DefaultPresetConfig.AdaptiveBoostTimer, "Duration in seconds of the adaptive boost after being hit. Only used if Preset Choice is set to Custom.");
+            StacksOfRepulsionArmorPerHealth = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Stacks Of Repulsion Armor Per Health", DefaultPresetConfig.StacksOfRepulsionArmorPerHealth, "Amount of armor gained per point of health for the repulsion effect. Only used if Preset Choice is set to Custom.");
+            MinimumStacksofRepulsionArmor = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Minimum Stacks of Repulsion Armor", DefaultPresetConfig.MinimumStacksofRepulsionArmor, "Minimum stacks of repulsion armor gained. Only used if Preset Choice is set to Custom.");
+            SafeGaurdPercent = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Safe Gaurd Percent", DefaultPresetConfig.SafeGaurdPercent, "Percentage of max combined health that is the maximum damage that can be taken in one attack. Only used if Preset Choice is set to Custom.");
+            MaxStacksofRepulsionArmor = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Maximum Stacks of Repulsion Armor", DefaultPresetConfig.MinimumStacksofRepulsionArmor, "Maximum stacks of repulsion armor gained. Only used if Preset Choice is set to Custom.");
+            DamageTakenModifierTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Taken Modifier Timer", DefaultPresetConfig.DamageTakenModifierTimer, "Duration in seconds of the damage taken modifier after being hit. Only used if Preset Choice is set to Custom.");
+            InvisibleTimer = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Invisible Timer", DefaultPresetConfig.InvisibleTimer, "Duration in seconds of invisibility after being hit. Only used if Preset Choice is set to Custom.");
+            LacerationCount = ConfigManager.ConfigOption<int>("Elite: " + EliteModifier, "Laceration Count", DefaultPresetConfig.LacerationCount, "Amount of laceration applied on hit. Only used if Preset Choice is set to Custom.");
+            LacerationDuration = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Laceration Duration", DefaultPresetConfig.LacerationDuration, "Duration in seconds of laceration applied on hit. Only used if Preset Choice is set to Custom.");
+            MaxLaceration = ConfigManager.ConfigOption<int>("Elite: " + EliteModifier, "Max Laceration", DefaultPresetConfig.MaxLaceration, "Maximum stacks of laceration that can be applied. Only used if Preset Choice is set to Custom.");
+            ProcIsChance = ConfigManager.ConfigOption<bool>("Elite: " + EliteModifier, "Proc Is Chance", DefaultPresetConfig.ProcIsChance, "If true, the laceration proc is chance based. If false, it is guaranteed on hit. Only used if Preset Choice is set to Custom.");
+            EnableInvisibility = ConfigManager.ConfigOption<bool>("Elite: " + EliteModifier, "Enable Invisibility", DefaultPresetConfig.EnableInvisibility, "Enable Adaptive Elites to be invisible.");
             
 
         }
