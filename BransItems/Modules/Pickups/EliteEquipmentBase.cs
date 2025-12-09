@@ -123,6 +123,7 @@ namespace Augmentum.Modules.Pickups
             EliteEquipmentDef.isLunar = IsLunar;
             EliteEquipmentDef.passiveBuffDef = EliteBuffDef;
             EliteEquipmentDef.dropOnDeathChance = DropChance;
+            
 
             elites.Add(this);
 

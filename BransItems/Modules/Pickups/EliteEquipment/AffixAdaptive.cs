@@ -163,7 +163,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public enum PresetChoice
         {
-            Default, OldCustom, OldCustomButT1_5,Custom
+            Default, OldBehavior, OldButT1_5,Custom
         }
 
         private static AdaptivePresetConfig OldPresetConfig = new AdaptivePresetConfig
@@ -277,10 +277,10 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
                 case PresetChoice.Default:
                     config = DefaultPresetConfig;
                     break;
-                case PresetChoice.OldCustom:
+                case PresetChoice.OldBehavior:
                     config = OldPresetConfig;
                     break;
-                case PresetChoice.OldCustomButT1_5:
+                case PresetChoice.OldButT1_5:
                     config = OldPresetConfig;
                     config.Configtier = TierChoice.T1_5;
                     break;
@@ -421,7 +421,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         private void CreateConfig(ConfigFile config)
         {
-            SelectedPreset = ConfigManager.ConfigOption<PresetChoice>("Elite: " + EliteModifier, "Preset Choice", PresetChoice.Default, "Choose a preset configuration for the Adaptive Elite. Custom allows you to manually adjust each setting.");
+            SelectedPreset = ConfigManager.ConfigOption<PresetChoice>("Elite: " + EliteModifier, "Preset Choice", PresetChoice.Default, "Choose a preset configuration for the Adaptive Elite. Default is the new default behavior. OldBehavior is the old behavior. OldButT1_5 is the old behavior but uses the same tier as gilded elites. Custom allows you to manually adjust each setting.");
             tierChoice = ConfigManager.ConfigOption<TierChoice>("Elite: " + EliteModifier, "Tier Choice", TierChoice.T1, "Choose the tier of the Adaptive Elite. Only used if Preset Choice is set to Custom.");
             _healthMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Health Multiplier", 4f, "Multiplies the health of the elite by this amount. Only used if Preset Choice is set to Custom.");
             _damageMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Multiplier", 2f, "Multiplies the damage of the elite by this amount. Only used if Preset Choice is set to Custom.");
