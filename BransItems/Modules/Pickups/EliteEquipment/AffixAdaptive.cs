@@ -244,7 +244,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
             MoveSpeedInvisible = 1.8f,
 
-            AdaptiveCooldownTimer = 12f,
+            AdaptiveCooldownTimer = 14f,
 
             AdaptiveBoostTimer = 6f,
 
