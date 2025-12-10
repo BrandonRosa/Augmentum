@@ -55,6 +55,10 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public static float _damageMult = 2f;
 
+        public override float HonorHealthMultiplier => HealthMultiplier * .5f + .5f;
+
+        public override float HonorDamageMultiplier => DamageMultiplier * .5f + .5f;
+
         public override VanillaEliteTier VanillaTier => GetCurrentConfigOptions().Configtier;
 
         public override float CostMultiplierOfElite { get; set; } = 6;
@@ -240,7 +244,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
             MoveSpeedInvisible = 1.8f,
 
-            AdaptiveCooldownTimer = 25f,
+            AdaptiveCooldownTimer = 12f,
 
             AdaptiveBoostTimer = 6f,
 

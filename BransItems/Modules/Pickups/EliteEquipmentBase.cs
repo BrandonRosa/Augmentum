@@ -255,10 +255,10 @@ namespace Augmentum.Modules.Pickups
             EliteAPI.Add(this.CustomEliteDef);
 
 
-        IEnumerable <CombatDirector.EliteTierDef> honorTierDefs = EliteAPI.GetHonorEliteTierEnumerable(this.VanillaTier);
+            IEnumerable <CombatDirector.EliteTierDef> honorTierDefs = EliteAPI.GetHonorEliteTierEnumerable(this.VanillaTier);
             if (AllowHonor && honorTierDefs is not null)
             {
-                this.CustomEliteDefHonor = new CustomElite($"Elite{this.EliteEquipmentName}Honor", this.EliteEquipmentDef, this.EliteBuffColor, this.EliteModifier, tierDefs, this.RampTexture);
+                this.CustomEliteDefHonor = new CustomElite($"Elite{this.EliteEquipmentName}Honor", this.EliteEquipmentDef, this.EliteBuffColor, this.EliteModifier, honorTierDefs, this.RampTexture);
                 this.CustomEliteDefHonor.EliteDef.healthBoostCoefficient = HonorHealthMultiplier;
                 this.CustomEliteDefHonor.EliteDef.damageBoostCoefficient = HonorDamageMultiplier;
                 EliteAPI.Add(this.CustomEliteDefHonor);
