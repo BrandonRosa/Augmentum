@@ -65,7 +65,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public static float _costMult = 6f;
 
-        public static float PreHitArmorAdd=150;
+        public static int PreHitArmorAdd=150;
 
         public static float CooldownReductionPreHit=1f;
 
@@ -119,7 +119,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
             public float Costmultiplier;
 
-            public float PreHitArmorAdd;
+            public int PreHitArmorAdd;
 
             public float CooldownReductionPreHit;
 
@@ -294,7 +294,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
             MoveSpeedInvisible = 2.25f,
 
-            AdaptiveCooldownTimer = 25f,
+            AdaptiveCooldownTimer = 20f,
 
             AdaptiveBoostTimer = 12f,
 
@@ -371,7 +371,36 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
                     break;
             }
             _currentConfig = config;
+            SetStaticVarsToConfig();
             return config;
+        }
+
+        public static void SetStaticVarsToConfig()
+        {
+            AdaptivePresetConfig config = GetCurrentConfigOptions();
+            _healthMult = config.Healthmult;
+            _damageMult = config.Damagemult;
+            _costMult = config.Costmultiplier;
+            PreHitArmorAdd = config.PreHitArmorAdd;
+            CooldownReductionPreHit = config.CooldownReductionPreHit;
+            CooldownReductionAfterHit = config.CooldownReductionAfterHit;
+            AttackSpeedPreHit = config.AttackSpeedPreHit;
+            AttackSpeedAfterHit = config.AttackSpeedAfterHit;
+            MoveSpeedAfterHit = config.MoveSpeedAfterHit;
+            MoveSpeedInvisible = config.MoveSpeedInvisible;
+            AdaptiveCooldownTimer = config.AdaptiveCooldownTimer;
+            AdaptiveBoostTimer = config.AdaptiveBoostTimer;
+            StacksOfRepulsionArmorPerHealth = config.StacksOfRepulsionArmorPerHealth;
+            SafeGaurdPercent = config.SafeGaurdPercent;
+            MinimumStacksofRepulsionArmor = config.MinimumStacksofRepulsionArmor;
+            MaxStacksofRepulsionArmor = config.MaxStacksofRepulsionArmor;
+            DamageTakenModifierTimer = config.DamageTakenModifierTimer;
+            InvisibleTimer = config.InvisibleTimer;
+            LacerationCount = config.LacerationCount;
+            LacerationDuration = config.LacerationDuration;
+            MaxLaceration = config.MaxLaceration;
+            ProcIsChance = config.ProcIsChance;
+            EnableInvisibility = config.EnableInvisibility;
         }
 
 
@@ -486,7 +515,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
             _healthMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Health Multiplier", DefaultPresetConfig.Healthmult, "Multiplies the health of the elite by this amount. Only used if Preset Choice is set to Custom.");
             _damageMult = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Damage Multiplier", DefaultPresetConfig.Damagemult, "Multiplies the damage of the elite by this amount. Only used if Preset Choice is set to Custom.");
             CostMultiplierOfElite = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cost Multiplier", DefaultPresetConfig.Costmultiplier, "Cost to spawn the elite is multiplied by this. Decrease to make the elite spawn more. Only used if Preset Choice is set to Custom. AND TierChoice is CustomTier");
-            PreHitArmorAdd = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Pre-Hit Armor Addition", DefaultPresetConfig.PreHitArmorAdd, "Amount of armor added when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
+            PreHitArmorAdd = ConfigManager.ConfigOption<int>("Elite: " + EliteModifier, "Pre-Hit Armor Addition", DefaultPresetConfig.PreHitArmorAdd, "Amount of armor added when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
             CooldownReductionPreHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cooldown Reduction Pre-Hit", DefaultPresetConfig.CooldownReductionPreHit, "Cooldown reduction multiplier applied when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");
             CooldownReductionAfterHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Cooldown Reduction After Hit", DefaultPresetConfig.CooldownReductionAfterHit, "Cooldown reduction multiplier applied after the adaptive boost activates. Only used if Preset Choice is set to Custom.");
             AttackSpeedPreHit = ConfigManager.ConfigOption<float>("Elite: " + EliteModifier, "Attack Speed Pre-Hit", DefaultPresetConfig.AttackSpeedPreHit, "Attack speed bonus applied when hit before the adaptive boost activates. Only used if Preset Choice is set to Custom.");

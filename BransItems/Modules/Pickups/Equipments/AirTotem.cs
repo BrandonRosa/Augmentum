@@ -41,6 +41,11 @@ namespace Augmentum.Modules.Pickups.Equipments
 
         public override float Cooldown { get; } = 30f;
 
+        public static int T1EssenceCount = 1;
+        public static int T2EssenceCount = 3;
+        public static int T3EssenceCount = 15;
+        public static int BossEssenceCount = 8;
+
 
         // private UserTargetInfo currentTarget;
 
@@ -50,6 +55,7 @@ namespace Augmentum.Modules.Pickups.Equipments
 
         public override void Init(ConfigFile config)
         {
+            CreateConfig(config);
             CreateLang();
             //CreateBuff();
             CreateTargetingIndicator();
@@ -60,6 +66,14 @@ namespace Augmentum.Modules.Pickups.Equipments
             Hooks();
 
             
+        }
+
+        private void CreateConfig(ConfigFile config)
+        {
+            T1EssenceCount = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from T1 items", 1, "How many essences should drop from T1 Items?");
+            T2EssenceCount = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from T2 items", 3, "How many essences should drop from T2 Items?");
+            T3EssenceCount = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from T3 items", 15, "How many essences should drop from T3 Items?");
+            BossEssenceCount = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from Boss items", 8, "How many essences should drop from Boss Items?");
         }
 
         private void CreateTargetingIndicator()
@@ -253,18 +267,18 @@ namespace Augmentum.Modules.Pickups.Equipments
                 {
                     case ItemTier.Tier1:
                     case ItemTier.VoidTier1:
-                        spawnTotal = 1;
+                        spawnTotal = T1EssenceCount;
                         break;
                     case ItemTier.Tier2:
                     case ItemTier.VoidTier2:
-                        spawnTotal = 3;
+                        spawnTotal = T2EssenceCount;
                         break;
                     case ItemTier.Tier3:
                     case ItemTier.VoidTier3:
-                        spawnTotal = 15;
+                        spawnTotal = T3EssenceCount;
                             break;
                     case ItemTier.Boss:
-                        spawnTotal = 8;
+                        spawnTotal = BossEssenceCount;
                         break;
                     case ItemTier.Lunar:
                         pickup = PickupCatalog.FindPickupIndex(RoR2Content.Items.LunarSpecialReplacement.itemIndex);
