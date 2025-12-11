@@ -17,6 +17,9 @@ using MonoMod.RuntimeDetour;
 using Augmentum.Modules.Pickups.EliteEquipments;
 using System.Runtime.Serialization;
 using Augmentum.Modules.Pickups.Equipments;
+using BepInEx.Configuration;
+using RiskOfOptions;
+using RiskOfOptions.Options;
 
 namespace Augmentum.Modules.Compatability
 {
@@ -234,6 +237,41 @@ namespace Augmentum.Modules.Compatability
             public static bool IsInJudgementRun() => IsJudgementInstalled && AddJudgementCompat && Run.instance.gameModeIndex == GameModeCatalog.FindGameModeIndex("xJudgementRun");
 
 
+        }
+
+        public static class RiskOfOptionsCompatability
+        {
+            public const string GUID = "com.rune580.riskofoptions";
+            public static bool IsShareSuiteInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(GUID);
+
+            public static void AddConfig<T>(T config,bool requiresRestart) where T : ConfigEntryBase
+            {
+                BaseOption option = null;
+                if (config is ConfigEntry<float>)
+                {
+                    option = new FloatFieldOption(config as ConfigEntry<float>,requiresRestart);
+                }
+                else if (config is ConfigEntry<bool>)
+                {
+                    option = new CheckBoxOption(config as ConfigEntry<bool>,requiresRestart);
+                }
+                else if (config is ConfigEntry<int>)
+                {
+                    option = new IntFieldOption(config as ConfigEntry<int>,requiresRestart);
+                }
+                else if (config is ConfigEntry<string>)
+                {
+                    option = new StringInputFieldOption(config as ConfigEntry<string>, requiresRestart);
+                }
+                else
+                {
+                    option=new RiskOfOptions.Options.ChoiceOption(config,requiresRestart);
+                }
+                ModSettingsManager.AddOption(option);
+                return;
+            }
+                
+            
         }
 
         //internal static class ZetAspectsCompat

@@ -41,10 +41,15 @@ namespace Augmentum.Modules.Pickups.Equipments
 
         public override float Cooldown { get; } = 30f;
 
-        public static int T1EssenceCount = 1;
-        public static int T2EssenceCount = 3;
-        public static int T3EssenceCount = 15;
-        public static int BossEssenceCount = 8;
+        public static int T1EssenceCount => T1EssenceCountEntry.Value;
+        public static int T2EssenceCount=>T2EssenceCountEntry.Value;
+        public static int T3EssenceCount=>T3EssenceCountEntry.Value;
+        public static int BossEssenceCount=>BossEssenceCountEntry.Value;
+
+        public static ConfigEntry<int> T1EssenceCountEntry;
+        public static ConfigEntry<int> T2EssenceCountEntry;
+        public static ConfigEntry<int> T3EssenceCountEntry;
+        public static ConfigEntry<int> BossEssenceCountEntry;
 
 
         // private UserTargetInfo currentTarget;
@@ -70,10 +75,10 @@ namespace Augmentum.Modules.Pickups.Equipments
 
         private void CreateConfig(ConfigFile config)
         {
-            T1EssenceCount = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from T1 items", 1, "How many essences should drop from T1 Items?");
-            T2EssenceCount = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from T2 items", 3, "How many essences should drop from T2 Items?");
-            T3EssenceCount = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from T3 items", 15, "How many essences should drop from T3 Items?");
-            BossEssenceCount = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from Boss items", 8, "How many essences should drop from Boss Items?");
+            T1EssenceCountEntry = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from T1 items", 1, "How many essences should drop from T1 Items?");
+            T2EssenceCountEntry = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from T2 items", 3, "How many essences should drop from T2 Items?");
+            T3EssenceCountEntry = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from T3 items", 15, "How many essences should drop from T3 Items?");
+            BossEssenceCountEntry = ConfigManager.ConfigOption<int>("Equipment: " + EquipmentName, "Drops from Boss items", 8, "How many essences should drop from Boss Items?");
         }
 
         private void CreateTargetingIndicator()

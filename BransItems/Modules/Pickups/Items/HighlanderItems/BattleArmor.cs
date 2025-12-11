@@ -45,16 +45,27 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float AttackSpeedIncrease;
-        public static float ArmorIncrease;
-        public static float MaxSeconds;
-        public static float DecelerationRate;
-        public static bool EnableTech;
+
         public enum PunishTypes { Reset, SubtractTime, Divide, IncreaseLossRate };
-        public static PunishTypes PunishType;
-        public static float PunishSubractSeconds;
-        public static float PunishDivisorValue;
-        public static float PunishLossRateMultiplier;
+
+        public static float AttackSpeedIncrease => AttackSpeedIncreaseEntry.Value;
+        public static ConfigEntry<float> AttackSpeedIncreaseEntry;
+        public static float ArmorIncrease => ArmorIncreaseEntry.Value;
+        public static ConfigEntry<float> ArmorIncreaseEntry;
+        public static float MaxSeconds => MaxSecondsEntry.Value;
+        public static ConfigEntry<float> MaxSecondsEntry;
+        public static float DecelerationRate => DecelerationRateEntry.Value;
+        public static ConfigEntry<float> DecelerationRateEntry;
+        public static bool EnableTech => EnableTechEntry.Value;
+        public static ConfigEntry<bool> EnableTechEntry;
+        public static PunishTypes PunishType => PunishTypeEntry.Value;
+        public static ConfigEntry<PunishTypes> PunishTypeEntry;
+        public static float PunishSubractSeconds => PunishSubractSecondsEntry.Value;
+        public static ConfigEntry<float> PunishSubractSecondsEntry;
+        public static float PunishDivisorValue => PunishDivisorValueEntry.Value;
+        public static ConfigEntry<float> PunishDivisorValueEntry;
+        public static float PunishLossRateMultiplier => PunishLossRateMultiplierEntry.Value;
+        public static ConfigEntry<float> PunishLossRateMultiplierEntry;
 
         public static int MaxStacks=100;
 
@@ -71,18 +82,18 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            AttackSpeedIncrease = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack speed increase", 4f, "How much attack speed per second should this item give?");
-            ArmorIncrease = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Armor increase", 1f, "How much armor should this item grant?");
-            MaxSeconds = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Maximum Seconds", 20f, "How long does this effect take to get to max potential?");
-            DecelerationRate = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Deceleration Rate", .5f, "How fast does this item lose its stacks of Platinum Surge? (.3=30% as fast as the gain rate, 0 means no stacks are lost)");
+            AttackSpeedIncreaseEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack speed increase", 4f, "How much attack speed per second should this item give?");
+            ArmorIncreaseEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Armor increase", 1f, "How much armor should this item grant?");
+            MaxSecondsEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Maximum Seconds", 20f, "How long does this effect take to get to max potential?");
+            DecelerationRateEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Deceleration Rate", .5f, "How fast does this item lose its stacks of Platinum Surge? (.3=30% as fast as the gain rate, 0 means no stacks are lost)");
 
-            EnableTech= ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Enable Tech", false , "As long as the primary fire button is held, you wont be punished. Enable this behavior?");
+            EnableTechEntry = ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Enable Tech", false , "As long as the primary fire button is held, you wont be punished. Enable this behavior?");
 
-            PunishType = ConfigManager.ConfigOption<PunishTypes>("Item: " + ItemName, "Other Skill Punishment Type", PunishTypes.IncreaseLossRate, "How should the item react when using non-primary abilities?");
+            PunishTypeEntry = ConfigManager.ConfigOption<PunishTypes>("Item: " + ItemName, "Other Skill Punishment Type", PunishTypes.IncreaseLossRate, "How should the item react when using non-primary abilities?");
 
-            PunishSubractSeconds= ConfigManager.ConfigOption<float>("Item: " + ItemName, "Subract Type", 10f, "How many seconds will the Subract Punish Type remove?");
-            PunishDivisorValue= ConfigManager.ConfigOption<float>("Item: " + ItemName, "Divide Type", 2f, "How much should the divide punish type divide the current stacks of Platinum Surge?");
-            PunishLossRateMultiplier=ConfigManager.ConfigOption<float>("Item: " + ItemName, "Increase Loss Type", 5f, "What should the multiplier be for the LossRate Punish Type? (5=-5xGrowthRate. MaxSeconds/LossRatePunishMultiplier=Seconds to loose max stacks)");
+            PunishSubractSecondsEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Subract Type", 10f, "How many seconds will the Subract Punish Type remove?");
+            PunishDivisorValueEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Divide Type", 2f, "How much should the divide punish type divide the current stacks of Platinum Surge?");
+            PunishLossRateMultiplierEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Increase Loss Type", 5f, "What should the multiplier be for the LossRate Punish Type? (5=-5xGrowthRate. MaxSeconds/LossRatePunishMultiplier=Seconds to loose max stacks)");
 
         }
 

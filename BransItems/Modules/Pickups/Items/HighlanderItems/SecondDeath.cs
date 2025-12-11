@@ -46,8 +46,10 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float HealthPercent;
-        public static bool DisableSpleenOnSecondTrigger;
+        public static float HealthPercent => HealthPercentEntry.Value;
+        public static ConfigEntry<float> HealthPercentEntry;
+        public static bool DisableSpleenOnSecondTrigger => DisableSpleenOnSecondTriggerEntry.Value;
+        public static ConfigEntry<bool> DisableSpleenOnSecondTriggerEntry;
 
         public override void Init(ConfigFile config)
         {
@@ -62,8 +64,8 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            HealthPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health Percent To Trigger Effects", .50f, "What percent of health must be lost for this effect to trigger?");
-            DisableSpleenOnSecondTrigger = ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Disable shatterspleen interaction", true, "Setting this to true will disable this item's additional interactions with shatterspleen.");
+            HealthPercentEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health Percent To Trigger Effects", .50f, "What percent of health must be lost for this effect to trigger?");
+            DisableSpleenOnSecondTriggerEntry = ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Disable shatterspleen interaction", true, "Setting this to true will disable this item's additional interactions with shatterspleen.");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

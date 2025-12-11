@@ -42,14 +42,21 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
-        public static float ReplaceChance;
+        public static float ReplaceChance => ReplaceChanceEntry.Value;
+        public static ConfigEntry<float> ReplaceChanceEntry;
 
-        public static float MoveSpeedGain;
-        public static float AttackSpeedGain;
-        public static float CritChanceGain;
-        public static float HealthGain;
-        public static float DamageGain;
-        public static float ArmorGain;
+        public static float MoveSpeedGain => MoveSpeedGainEntry.Value;
+        public static ConfigEntry<float> MoveSpeedGainEntry;
+        public static float AttackSpeedGain => AttackSpeedGainEntry.Value;
+        public static ConfigEntry<float> AttackSpeedGainEntry;
+        public static float CritChanceGain => CritChanceGainEntry.Value;
+        public static ConfigEntry<float> CritChanceGainEntry;
+        public static float HealthGain => HealthGainEntry.Value;
+        public static ConfigEntry<float> HealthGainEntry;
+        public static float DamageGain => DamageGainEntry.Value;
+        public static ConfigEntry<float> DamageGainEntry;
+        public static float ArmorGain => ArmorGainEntry.Value;
+        public static ConfigEntry<float> ArmorGainEntry;
 
 
         public override void Init(ConfigFile config)
@@ -64,16 +71,16 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            ReplaceChance = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Chance to replace other Essences", .05f, "What percent of the time will Essence of Totality replace other Essences?");
-            MoveSpeedGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Move Speed given to character", 6, "How much movement speed should Essence of Totality grant?");
-            AttackSpeedGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack Speed given to character", 6, "How much attack speed should Essence of Totality grant?");
-            CritChanceGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Crit Chance given to character", 3, "How much crit chance should Essence of Totality grant?");
+            ReplaceChanceEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Chance to replace other Essences", .04f, "What percent of the time will Essence of Totality replace other Essences?");
+            MoveSpeedGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Move Speed given to character", 5, "How much movement speed should Essence of Totality grant?");
+            AttackSpeedGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack Speed given to character", 5, "How much attack speed should Essence of Totality grant?");
+            CritChanceGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Crit Chance given to character", 4, "How much crit chance should Essence of Totality grant?");
             //HealthGain = config.Bind<float>("Item: " + ItemName, "Health given to character", 15, "How much health should Essence of Totality grant?").Value;
             //DamageGain = config.Bind<float>("Item: " + ItemName, "Damage given to character", 1, "How much damage should Essence of Totality grant?").Value;
 
-            HealthGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health percent given to character", .04f, "How much health percent should Essence of Totality grant?");
-            ArmorGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Armor given to character", 4f, "How much armor should Essence of Totality grant?");
-            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage percent given to character", .04f, "How much damage should percent Essence of Totality grant?");
+            HealthGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health percent given to character", .04f, "How much health percent should Essence of Totality grant?");
+            ArmorGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Armor given to character", 4f, "How much armor should Essence of Totality grant?");
+            DamageGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage percent given to character", .04f, "How much damage should percent Essence of Totality grant?");
         }
         private GameObject SetModel()//RoR2/Base/ShinyPearl/matShinyPearl.mat
         {

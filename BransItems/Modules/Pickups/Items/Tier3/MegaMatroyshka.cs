@@ -43,9 +43,10 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility, ItemTag.CannotDuplicate };
 
 
-        public static int DropCount;
-
-        public static int AdditionalChoices;
+        public static int DropCount => DropCountEntry.Value;
+        public static ConfigEntry<int> DropCountEntry;
+        public static int AdditionalChoices => AdditionalChoicesEntry.Value;
+        public static ConfigEntry<int> AdditionalChoicesEntry;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
 
@@ -62,8 +63,8 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of red items dropped", 1, "How many red items should drop from this item?");
-            AdditionalChoices = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of additional wish options in Matroyshka drops", 1, "How additional choices should this provide in future Matroyshka drops?");
+            DropCountEntry = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of red items dropped", 1, "How many red items should drop from this item?");
+            AdditionalChoicesEntry = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of additional wish options in Matroyshka drops", 1, "How additional choices should this provide in future Matroyshka drops?");
             
         }
 

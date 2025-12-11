@@ -45,8 +45,10 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float DamageGain;
-        public static float Duration;
+        public static float DamageGain => DamageGainEntry.Value;
+        public static ConfigEntry<float> DamageGainEntry;
+        public static float Duration => DurationEntry.Value;
+        public static ConfigEntry<float> DurationEntry;
 
         public override void Init(ConfigFile config)
         {
@@ -62,8 +64,8 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public void CreateConfig(ConfigFile config)
         {
             string ConfigItemName = ItemName.Replace("\'", "");
-            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Damage percent given to character", .10f, "How much percent damage per second of cooldown should this give?");
-            Duration = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Duration of damage boost", 5f, "How long should the damage boost last?");
+            DamageGainEntry = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Damage percent given to character", .10f, "How much percent damage per second of cooldown should this give?");
+            DurationEntry = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Duration of damage boost", 5f, "How long should the damage boost last?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

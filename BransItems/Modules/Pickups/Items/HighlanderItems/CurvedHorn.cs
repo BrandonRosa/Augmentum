@@ -44,8 +44,10 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] {ItemTag.Damage };
 
-        public static float DamageGain;
-        public static float PrimaryChargeMultiplier;
+        public static float DamageGain => DamageGainEntry.Value;
+        public static ConfigEntry<float> DamageGainEntry;
+        public static float PrimaryChargeMultiplier => PrimaryChargeMultiplierEntry.Value;
+        public static ConfigEntry<float> PrimaryChargeMultiplierEntry;
 
         public override void Init(ConfigFile config)
         {
@@ -60,8 +62,8 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage percent given to character", .30f, "How much percent damage should Curved Horn grant?");
-            PrimaryChargeMultiplier = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Multiplier to increase primary charges (rounded up)", 1.5f, "What multiplier should curved horn increase primary charges by? (1.5=150%)");
+            DamageGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage percent given to character", .30f, "How much percent damage should Curved Horn grant?");
+            PrimaryChargeMultiplierEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Multiplier to increase primary charges (rounded up)", 1.5f, "What multiplier should curved horn increase primary charges by? (1.5=150%)");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

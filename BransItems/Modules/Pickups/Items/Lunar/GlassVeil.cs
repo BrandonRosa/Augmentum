@@ -34,11 +34,12 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
 
         public static GameObject ItemBodyModelPrefab;
 
-        public string ConfigBlacklist;
-
-        public bool BlacklistHealCatagory;
-
-        public string HealWhitelist;
+        public static string ConfigBlacklist => ConfigBlacklistEntry.Value;
+        public static ConfigEntry<string> ConfigBlacklistEntry;
+        public static bool BlacklistHealCatagory => BlacklistHealCatagoryEntry.Value;
+        public static ConfigEntry<bool> BlacklistHealCatagoryEntry;
+        public static string HealWhitelist => HealWhitelistEntry.Value;
+        public static ConfigEntry<string> HealWhitelistEntry;
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.BrotherBlacklist };
 
@@ -474,9 +475,9 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
 
         public void CreateConfig(ConfigFile config)
         {
-            ConfigBlacklist = ConfigManager.ConfigOption<string>("Item: " + ItemName, "Item blacklist", DefaultBlacklist , "Items (by internal name) that are rerolled on pickup, comma separated. Please find the item \"Code Names\" at: https://github.com/risk-of-thunder/R2Wiki/wiki/Item-&-Equipment-IDs-and-Names");
-            BlacklistHealCatagory = ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Auto blacklist heal catagory", true, "Enable to automatically add all items within the \"healing\" category");
-            HealWhitelist = ConfigManager.ConfigOption<string>("Item: " + ItemName, "Heal catagory exclude blacklist", DefaultHealWhitelist, "Healing catagory Items (by internal name) that are excluded from \"Auto Blacklist\", comma separated. Please find the item \"Code Names\" at: https://github.com/risk-of-thunder/R2Wiki/wiki/Item-&-Equipment-IDs-and-Names");
+            ConfigBlacklistEntry = ConfigManager.ConfigOption<string>("Item: " + ItemName, "Item blacklist", DefaultBlacklist , "Items (by internal name) that are rerolled on pickup, comma separated. Please find the item \"Code Names\" at: https://github.com/risk-of-thunder/R2Wiki/wiki/Item-&-Equipment-IDs-and-Names");
+            BlacklistHealCatagoryEntry = ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Auto blacklist heal catagory", true, "Enable to automatically add all items within the \"healing\" category");
+            HealWhitelistEntry = ConfigManager.ConfigOption<string>("Item: " + ItemName, "Heal catagory exclude blacklist", DefaultHealWhitelist, "Healing catagory Items (by internal name) that are excluded from \"Auto Blacklist\", comma separated. Please find the item \"Code Names\" at: https://github.com/risk-of-thunder/R2Wiki/wiki/Item-&-Equipment-IDs-and-Names");
         }
 
         private static HashSet<ItemDef> InstantiateItemBlacklist()
@@ -484,7 +485,7 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
             HashSet<ItemDef> blacklist = new HashSet<ItemDef>();
             blacklist=GetConfigBlacklist();
 
-            if (GlassVeil.instance.BlacklistHealCatagory)
+            if (BlacklistHealCatagory)
             {
                 HashSet<ItemDef> HealCatagoryItems = new HashSet<ItemDef>();
                 HashSet<ItemDef> HealingWhitelist = GetConfigHealingWhitelist();
@@ -518,7 +519,7 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
             HashSet<ItemDef> _items = new HashSet<ItemDef>();
 
             char[] separators = new char[] { ' ', ',' };
-            foreach (var piece in GlassVeil.instance.ConfigBlacklist.Split(separators, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var piece in ConfigBlacklist.Split(separators, StringSplitOptions.RemoveEmptyEntries))
             {
                 // if (int.TryParse(piece.Trim(), out var itemIndex))
                 //     _items.Add((ItemIndex) itemIndex);
@@ -537,7 +538,7 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
             HashSet<ItemDef> _items = new HashSet<ItemDef>();
 
             char[] separators = new char[] { ' ', ',' };
-            foreach (var piece in GlassVeil.instance.HealWhitelist.Split(separators, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var piece in HealWhitelist.Split(separators, StringSplitOptions.RemoveEmptyEntries))
             {
                 // if (int.TryParse(piece.Trim(), out var itemIndex))
                 //     _items.Add((ItemIndex) itemIndex);

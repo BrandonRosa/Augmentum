@@ -37,7 +37,8 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
 
-        public static float MoveSpeedGain;
+        public static float MoveSpeedGain => MoveSpeedGainEntry.Value;
+        public static ConfigEntry<float> MoveSpeedGainEntry;
 
 
         public override void Init(ConfigFile config)
@@ -52,7 +53,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            MoveSpeedGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Move Speed given to character", 8, "How much movement speed should Essense of Velocity grant?");
+            MoveSpeedGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Move Speed given to character", 5, "How much movement speed should Essense of Velocity grant?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

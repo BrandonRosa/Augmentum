@@ -51,15 +51,24 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Utility };
 
-        public static float InitialPercent;
-        public static float AdditionalPercent;
-        public static float InitialMaxHealing;
-        public static float AdditionalMaxHealing;
-        public static float InitialRange;
-        public static float AdditionalRange;
-        public static float TempShieldDuration;
-        public static float AllyBonus;
-        public static float CooldownDuration;
+        public static float InitialPercent => InitialPercentEntry.Value;
+        public static ConfigEntry<float> InitialPercentEntry;
+        public static float AdditionalPercent => AdditionalPercentEntry.Value;
+        public static ConfigEntry<float> AdditionalPercentEntry;
+        public static float InitialMaxHealing => InitialMaxHealingEntry.Value;
+        public static ConfigEntry<float> InitialMaxHealingEntry;
+        public static float AdditionalMaxHealing => AdditionalMaxHealingEntry.Value;
+        public static ConfigEntry<float> AdditionalMaxHealingEntry;
+        public static float InitialRange => InitialRangeEntry.Value;
+        public static ConfigEntry<float> InitialRangeEntry;
+        public static float AdditionalRange => AdditionalRangeEntry.Value;
+        public static ConfigEntry<float> AdditionalRangeEntry;
+        public static float TempShieldDuration => TempShieldDurationEntry.Value;
+        public static ConfigEntry<float> TempShieldDurationEntry;
+        public static float AllyBonus => AllyBonusEntry.Value;
+        public static ConfigEntry<float> AllyBonusEntry;
+        public static float CooldownDuration => CooldownDurationEntry.Value;
+        public static ConfigEntry<float> CooldownDurationEntry;
         public static bool AllyBonusAfterCalculation = true;
         public static bool AccountForPreexistingTempShield = true;
 
@@ -167,15 +176,15 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
 
         public void CreateConfig(ConfigFile config)
         {
-            CooldownDuration = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Duration of cooldown", 20f, "What should be the duration of the cooldown for this tiem?");
-            InitialPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent of total damage converted to shield", .10f, "What percent of total damage should be healed from the first stack of this item?");
-            AdditionalPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent of additional damage converted to shield", .05f, "What percent of total damage should be healed from additional stacks of this item?");
-            InitialMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Max percent of max health you can gain in shield", .20f, "What is the maximum percent of your health you can heal from this item from the first stack?");
-            AdditionalMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Additional percent of max health you can heal", .10f, "What is the maximum percent of your health you can heal from this item from additional stacks?");
-            AllyBonus = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Bonus Percent of shield from allies", .4f, "What is the bonus shield gained from giving shields to allies?");
-            InitialRange = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Range of nova on first stack", 15f, "What is the initial range of the nova from the first stack of this item?");
-            AdditionalRange = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Range of nova on additional stacks", 4f, "What is the additional range of the nova from additional stacks of this item?");
-            TempShieldDuration = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Duration in seconds", 15f, "What is the duration of the temporary shields?");
+            CooldownDurationEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Duration of cooldown", 20f, "What should be the duration of the cooldown for this tiem?");
+            InitialPercentEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent of total damage converted to shield", .10f, "What percent of total damage should be healed from the first stack of this item?");
+            AdditionalPercentEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent of additional damage converted to shield", .05f, "What percent of total damage should be healed from additional stacks of this item?");
+            InitialMaxHealingEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Max percent of max health you can gain in shield", .20f, "What is the maximum percent of your health you can heal from this item from the first stack?");
+            AdditionalMaxHealingEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Additional percent of max health you can heal", .10f, "What is the maximum percent of your health you can heal from this item from additional stacks?");
+            AllyBonusEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Bonus Percent of shield from allies", .4f, "What is the bonus shield gained from giving shields to allies?");
+            InitialRangeEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Range of nova on first stack", 15f, "What is the initial range of the nova from the first stack of this item?");
+            AdditionalRangeEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Range of nova on additional stacks", 4f, "What is the additional range of the nova from additional stacks of this item?");
+            TempShieldDurationEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Duration in seconds", 15f, "What is the duration of the temporary shields?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

@@ -28,7 +28,8 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override Sprite ArtifactIconDeselected => MainAssets.LoadAsset<Sprite>("Assets/Models/ArtifactOfSpoils/SpoilsDisable.png");
         public override Sprite ArtifactIconSelected => MainAssets.LoadAsset<Sprite>("Assets/Models/ArtifactOfSpoils/SpoilsEnabled.png");
 
-        public static int AdditionalChoices;
+        public static int AdditionalChoices=>AdditionalChoicesEntry.Value;
+        public static ConfigEntry<int> AdditionalChoicesEntry;
 
         public override void Init(ConfigFile config)
         {
@@ -41,7 +42,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            AdditionalChoices = ConfigManager.ConfigOption<int>("Artifact: " +ArtifactName, "Extra choices", 2, "How many additional choices should you give players with Artifact of Spoils?");
+            AdditionalChoicesEntry = ConfigManager.ConfigOption<int>("Artifact: " +ArtifactName, "Extra choices", 2, "How many additional choices should you give players with Artifact of Spoils?");
         }
 
         public override void Hooks()

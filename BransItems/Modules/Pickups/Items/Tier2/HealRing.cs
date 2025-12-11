@@ -45,10 +45,14 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
 
         public override ItemTag[] ItemTags => new ItemTag[] {ItemTag.Healing };
 
-        public static float InitialPercent;
-        public static float AdditionalPercent;
-        public static float InitialMaxHealing;
-        public static float AdditionalMaxHealing;
+        public static float InitialPercent => InitialPercentEntry.Value;
+        public static ConfigEntry<float> InitialPercentEntry;
+        public static float AdditionalPercent => AdditionalPercentEntry.Value;
+        public static ConfigEntry<float> AdditionalPercentEntry;
+        public static float InitialMaxHealing => InitialMaxHealingEntry.Value;
+        public static ConfigEntry<float> InitialMaxHealingEntry;
+        public static float AdditionalMaxHealing => AdditionalMaxHealingEntry.Value;
+        public static ConfigEntry<float> AdditionalMaxHealingEntry;
         public static float HealingRingsCooldownTime = 10f;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
@@ -92,10 +96,10 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
         public void CreateConfig(ConfigFile config)
         {
             //string ConfigItemName = ItemName.Replace("\'", "");
-            InitialPercent = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Percent of total damage heal", .20f, "What percent of total damage should be healed from the first stack of this item?");
-            AdditionalPercent = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Percent of additional damage heal", .05f, "What percent of total damage should be healed from additional stacks of this item?");
-            InitialMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Max percent of max health you can heal", .15f, "What is the maximum percent of your health you can heal from this item from the first stack?");
-            AdditionalMaxHealing = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Additional percent of max health you can heal", .15f, "What is the maximum percent of your health you can heal from this item from additional stacks?");
+            InitialPercentEntry = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Percent of total damage heal", .20f, "What percent of total damage should be healed from the first stack of this item?");
+            AdditionalPercentEntry = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Percent of additional damage heal", .05f, "What percent of total damage should be healed from additional stacks of this item?");
+            InitialMaxHealingEntry = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Max percent of max health you can heal", .15f, "What is the maximum percent of your health you can heal from this item from the first stack?");
+            AdditionalMaxHealingEntry = ConfigManager.ConfigOption<float>("Item: " + ConfigItemName, "Additional percent of max health you can heal", .15f, "What is the maximum percent of your health you can heal from this item from additional stacks?");
 
         }
 

@@ -41,7 +41,8 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
 
-        public static float AttackSpeedGain;
+        public static float AttackSpeedGain=>AttackSpeedGainEntry.Value;
+        public static ConfigEntry<float> AttackSpeedGainEntry;
 
 
         public override void Init(ConfigFile config)
@@ -56,7 +57,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            AttackSpeedGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack speed given to character", 7f, "How much attack speed should Essense of Ferocity grant?");
+            AttackSpeedGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Attack speed given to character", 5f, "How much attack speed should Essense of Ferocity grant?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

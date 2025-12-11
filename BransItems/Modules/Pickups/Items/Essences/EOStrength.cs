@@ -52,11 +52,11 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override bool CanRemove => EssenceHelpers.canRemoveEssence;
 
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
+        public static float DamageGain => DamageGainEntry.Value;
+        public static ConfigEntry<float> DamageGainEntry;
 
-        public static float DamageGain;
 
-
-		public override void Init(ConfigFile config)
+        public override void Init(ConfigFile config)
 		{
             //ItemDef._itemTierDef = EssenceHelpers.essenceTierDef;
             CreateConfig(config);
@@ -70,7 +70,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 		public void CreateConfig(ConfigFile config)
 		{
             //DamageGain = config.Bind<float>("Item: " + ItemName, "Base damage given to character", 1.25f, "How much base damage should Essense of Strength grant?").Value;
-            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent damage given to character", .04f, "How much percent damage should Essense of Strength grant?");
+            DamageGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent damage given to character", .04f, "How much percent damage should Essense of Strength grant?");
             
         }
 

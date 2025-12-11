@@ -38,7 +38,8 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
-        public static float CritChanceGain;
+        public static float CritChanceGain=>CritChanceGainEntry.Value;
+        public static ConfigEntry<float> CritChanceGainEntry;
 
 
         public override void Init(ConfigFile config)
@@ -54,7 +55,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public void CreateConfig(ConfigFile config)
         {
-            CritChanceGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Crit chance given to character", 4, "How much crit chance should Essense of Acuity grant?");
+            CritChanceGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Crit chance given to character", 4, "How much crit chance should Essense of Acuity grant?");
            
         }
 

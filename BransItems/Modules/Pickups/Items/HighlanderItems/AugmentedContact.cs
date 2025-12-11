@@ -44,8 +44,10 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float DamageGain;
-        public static float CritChanceGain;
+        public static float DamageGain => DamageGainEntry.Value;
+        public static ConfigEntry<float> DamageGainEntry;
+        public static float CritChanceGain => CritChanceGainEntry.Value;
+        public static ConfigEntry<float> CritChanceGainEntry;
 
         public override void Init(ConfigFile config)
         {
@@ -60,8 +62,8 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DamageGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Base crit damage given to character", 20f, "How much base crit damage should Augmented Contact grant?");
-            CritChanceGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Crit Chance given to character", 20f, "How much Crit Chance should Augmented Contact grant?");
+            DamageGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Base crit damage given to character", 20f, "How much base crit damage should Augmented Contact grant?");
+            CritChanceGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Crit Chance given to character", 20f, "How much Crit Chance should Augmented Contact grant?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

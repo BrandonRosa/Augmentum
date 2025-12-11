@@ -46,12 +46,18 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Utility };
 
 
-        public static float DamageWindow;
-        public static int InitialFortify;
-        public static int AdditionalFortify;
-        public static float InitialFortifyTime;
-        public static float AdditionalFortifyTime;
-        public static float CooldownTime;
+        public static float DamageWindow => DamageWindowEntry.Value;
+        public static ConfigEntry<float> DamageWindowEntry;
+        public static int InitialFortify => InitialFortifyEntry.Value;
+        public static ConfigEntry<int> InitialFortifyEntry;
+        public static int AdditionalFortify => AdditionalFortifyEntry.Value;
+        public static ConfigEntry<int> AdditionalFortifyEntry;
+        public static float InitialFortifyTime => InitialFortifyTimeEntry.Value;
+        public static ConfigEntry<float> InitialFortifyTimeEntry;
+        public static float AdditionalFortifyTime => AdditionalFortifyTimeEntry.Value;
+        public static ConfigEntry<float> AdditionalFortifyTimeEntry;
+        public static float CooldownTime => CooldownTimeEntry.Value;
+        public static ConfigEntry<float> CooldownTimeEntry;
 
         public override void Init(ConfigFile config)
         {
@@ -64,12 +70,12 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
 
         public void CreateConfig(ConfigFile config)
         {
-            DamageWindow = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Time Window", 2f, "How long is the time window between the first and second hit?");
-            InitialFortify = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Initial Fortify Count", 5, "How many stacks of Fortify does the fist stack give?");
-            AdditionalFortify = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Additional Fortify Count", 2, "How many addtional stacks of Fortify does Adaptive Armor give after the fist stack?");
-            InitialFortifyTime = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Initial Fortify Duration", 10f, "How many seconds is the duration of Fortify for the first stack of Adaptive Armor?");
-            AdditionalFortifyTime = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Additional Fortify Duration", 1f, "How many additional seconds is the duration of Fortify for Adaptive Armor after the first stack?");
-            CooldownTime = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Duration of cooldown", 20f, "How many  seconds is the duration of Fortify for Adaptive Armor after the first stack?");
+            DamageWindowEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Time Window", 2f, "How long is the time window between the first and second hit?");
+            InitialFortifyEntry = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Initial Fortify Count", 5, "How many stacks of Fortify does the fist stack give?");
+            AdditionalFortifyEntry = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Additional Fortify Count", 2, "How many addtional stacks of Fortify does Adaptive Armor give after the fist stack?");
+            InitialFortifyTimeEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Initial Fortify Duration", 10f, "How many seconds is the duration of Fortify for the first stack of Adaptive Armor?");
+            AdditionalFortifyTimeEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Additional Fortify Duration", 1f, "How many additional seconds is the duration of Fortify for Adaptive Armor after the first stack?");
+            CooldownTimeEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Duration of cooldown", 20f, "How many  seconds is the duration of Fortify for Adaptive Armor after the first stack?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

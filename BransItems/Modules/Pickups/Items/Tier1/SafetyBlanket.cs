@@ -42,11 +42,12 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
 
 
-        public static float FractionCap;
-
-        public static float InitialIFrames;
-
-        public static float AdditionalIFrames;
+        public static float FractionCap => FractionCapEntry.Value;
+        public static ConfigEntry<float> FractionCapEntry;
+        public static float InitialIFrames => InitialIFramesEntry.Value;
+        public static ConfigEntry<float> InitialIFramesEntry;
+        public static float AdditionalIFrames => AdditionalIFramesEntry.Value;
+        public static ConfigEntry<float> AdditionalIFramesEntry;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
 
@@ -63,9 +64,9 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
 
         public void CreateConfig(ConfigFile config)
         {
-            FractionCap = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Plateau value", .75f, "What value shoud Saftey Blanket plateu to?");
-            InitialIFrames = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Initial Invincibility Time", 1f, "How much additional invincibility time should Safety Blanket add?");
-            AdditionalIFrames = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Added Invincibility Time", .25f, "How much invincibility time should Safety Blanket add?");
+            FractionCapEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Plateau value", .75f, "What value shoud Saftey Blanket plateu to?");
+            InitialIFramesEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Initial Invincibility Time", 1f, "How much additional invincibility time should Safety Blanket add?");
+            AdditionalIFramesEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Added Invincibility Time", .25f, "How much invincibility time should Safety Blanket add?");
             //AdditionalDamageOfMainProjectilePerStack = config.Bind<float>("Item: " + ItemName, "Additional Damage of Projectile per Stack", 100f, "How much more damage should the projectile deal per additional stack?").Value;
         }
 

@@ -43,7 +43,8 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
-        public static float HealthGain;
+        public static float HealthGain=>HealthGainEntry.Value;
+        public static ConfigEntry<float> HealthGainEntry;
 
 
         public override void Init(ConfigFile config)
@@ -59,7 +60,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public void CreateConfig(ConfigFile config)
         {
             //HealthGain = config.Bind<float>("Item: " + ItemName, "Base health given to character", 15f, "How much base health should Essense of Life grant?").Value;
-            HealthGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent health given to character", .04f, "How much percent health should Essense of Life grant?");
+            HealthGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Percent health given to character", .04f, "How much percent health should Essense of Life grant?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

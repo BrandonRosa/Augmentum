@@ -47,7 +47,8 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float CooldownReduction = .5f;
+        public static float CooldownReduction => CooldownReductionEntry.Value;
+        public static ConfigEntry<float> CooldownReductionEntry;
 
         public static ProcType DamageBoostRing = (ProcType)(341);
 
@@ -66,7 +67,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public void CreateConfig(ConfigFile config)
         {
             string ConfigItemName = ItemName.Replace("\'", "");
-            CooldownReduction = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Band cooldown reduction", .5f, "How much cooldown reduction should this item grant?");
+            CooldownReductionEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Band cooldown reduction", .5f, "How much cooldown reduction should this item grant?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

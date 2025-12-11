@@ -50,8 +50,11 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float LuckGain;
-        public static float UpgradeChance;
+        public static float LuckGain=>LuckGainEntry.Value;
+        public static float UpgradeChance=>UpgradeChanceEntry.Value;
+
+        public static ConfigEntry<float> LuckGainEntry;
+        public static ConfigEntry<float> UpgradeChanceEntry;
 
         public override void Init(ConfigFile config)
         {
@@ -66,8 +69,8 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            LuckGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Luck Gained", .35f, "How much luck should this give the player?");
-            UpgradeChance = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Upgrade Chance", .25f, "Chance that the first chest has to give a higher tier item?");
+            LuckGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Luck Gained", .35f, "How much luck should this give the player?");
+            UpgradeChanceEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Upgrade Chance", .25f, "Chance that the first chest has to give a higher tier item?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

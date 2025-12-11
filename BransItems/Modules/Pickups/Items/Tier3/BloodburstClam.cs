@@ -42,9 +42,10 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
         public override ItemTag[] ItemTags => new ItemTag[] {ItemTag.AIBlacklist, ItemTag.Utility };
 
 
-        public static int DropCount;
-
-        public static int AdditionalDrops;
+        public static int DropCount => DropCountEntry.Value;
+        public static ConfigEntry<int> DropCountEntry;
+        public static int AdditionalDrops => AdditionalDropsEntry.Value;
+        public static ConfigEntry<int> AdditionalDropsEntry;
 
 
         public override void Init(ConfigFile config)
@@ -58,8 +59,8 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of essences dropped", 15, "How many essences should drop from this item?");
-            AdditionalDrops = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?");
+            DropCountEntry = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of essences dropped", 15, "How many essences should drop from this item?");
+            AdditionalDropsEntry = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Extra essences in future drops", 1, "How extra essences should come from future essence drops?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

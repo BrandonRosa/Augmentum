@@ -35,7 +35,8 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
 
         public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
-        public static float LuckGain;
+        public static float LuckGain=>LuckGainEntry.Value;
+        public static ConfigEntry<float> LuckGainEntry;
 
 
         public override void Init(ConfigFile config)
@@ -51,7 +52,7 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
 
         public void CreateConfig(ConfigFile config)
         {
-            LuckGain = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Luck given to character", .05f, "How much Luck should "+ItemName+" grant?");
+            LuckGainEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Luck given to character", .05f, "How much Luck should "+ItemName+" grant?");
 
         }
 

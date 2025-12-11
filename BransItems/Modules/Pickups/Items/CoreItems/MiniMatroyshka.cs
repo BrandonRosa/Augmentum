@@ -44,7 +44,8 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy };
 
 
-        public static int DropCount;
+        public static int DropCount=>DropCountEntry.Value;
+        public static ConfigEntry<int> DropCountEntry;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
 
@@ -63,7 +64,7 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
 
         public void CreateConfig(ConfigFile config)
         {
-            DropCount = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of essence items dropped", 1, "How many essence items should drop from this item?");
+            DropCountEntry = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Number of essence items dropped", 1, "How many essence items should drop from this item?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

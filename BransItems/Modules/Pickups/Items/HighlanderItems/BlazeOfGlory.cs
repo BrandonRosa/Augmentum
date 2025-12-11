@@ -47,12 +47,18 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => (!AllowItemInheritance)?(new ItemTag[] { ItemTag.Damage, ItemTag.CannotCopy }): (new ItemTag[] { ItemTag.Damage});
 
-        public static float DamageDealt;
-        public static float Radius;
-        public static float HealthPercent;
-        public static float SpawnCount;
-        public static float JellyfishDamageReductionMult;
-        public static bool AllowItemInheritance;
+        public static float DamageDealt => DamageDealtEntry.Value;
+        public static ConfigEntry<float> DamageDealtEntry;
+        public static float Radius => RadiusEntry.Value;
+        public static ConfigEntry<float> RadiusEntry;
+        public static float HealthPercent => HealthPercentEntry.Value;
+        public static ConfigEntry<float> HealthPercentEntry;
+        public static float SpawnCount => SpawnCountEntry.Value;
+        public static ConfigEntry<float> SpawnCountEntry;
+        public static float JellyfishDamageReductionMult => JellyfishDamageReductionMultEntry.Value;
+        public static ConfigEntry<float> JellyfishDamageReductionMultEntry;
+        public static bool AllowItemInheritance => AllowItemInheritanceEntry.Value;
+        public static ConfigEntry<bool> AllowItemInheritanceEntry;
 
         public static Dictionary<TeamIndex, HashSet<CharacterMaster>> TeamsWithItem= new Dictionary<TeamIndex, HashSet<CharacterMaster>>();
 
@@ -69,12 +75,12 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public void CreateConfig(ConfigFile config)
         {
-            AllowItemInheritance = ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Allow Item Inheritance", false, "Allows item to be inherited by allies with the capacity to copy (Aka engie turrets)");
-            DamageDealt = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage Dealt In Explosion", 2500f, "How much damage will the explosion deal? (1200f=1200%)");
-            HealthPercent = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health Percent To Trigger Effects", .2f, "What percent of health must be lost for this effect to trigger?");
-            SpawnCount = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Summon Jellyfish Count", 1f, "How many fellyfish should this item summon?");
-            Radius = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Explosion Radius", 50f, "What is the radius for this effect?");
-            JellyfishDamageReductionMult = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage Mult On Jellyfish", 1.2f, "What should the damage multiplier be on the summoned Jellyfish");
+            AllowItemInheritanceEntry = ConfigManager.ConfigOption<bool>("Item: " + ItemName, "Allow Item Inheritance", false, "Allows item to be inherited by allies with the capacity to copy (Aka engie turrets)");
+            DamageDealtEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage Dealt In Explosion", 2500f, "How much damage will the explosion deal? (1200f=1200%)");
+            HealthPercentEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Health Percent To Trigger Effects", .2f, "What percent of health must be lost for this effect to trigger?");
+            SpawnCountEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Summon Jellyfish Count", 1f, "How many fellyfish should this item summon?");
+            RadiusEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Explosion Radius", 50f, "What is the radius for this effect?");
+            JellyfishDamageReductionMultEntry = ConfigManager.ConfigOption<float>("Item: " + ItemName, "Damage Mult On Jellyfish", 1.2f, "What should the damage multiplier be on the summoned Jellyfish");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

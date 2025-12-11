@@ -43,7 +43,8 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
 
         public static int Choices=2;
 
-        public static int AdditionalChoices;
+        public static int AdditionalChoices => AdditionalChoicesEntry.Value;
+        public static ConfigEntry<int> AdditionalChoicesEntry;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
 
@@ -59,7 +60,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
 
         public void CreateConfig(ConfigFile config)
         {
-            AdditionalChoices = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Extra choices in future wishes", 1, "How many extra options should DiscoveryMedallion give?");
+            AdditionalChoicesEntry = ConfigManager.ConfigOption<int>("Item: " + ItemName, "Extra choices in future wishes", 1, "How many extra options should DiscoveryMedallion give?");
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()

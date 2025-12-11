@@ -178,7 +178,7 @@ namespace Augmentum
                 }
             }
 
-            var disableItems = ConfigManager.ConfigOption<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in Augmentum?");
+            var disableItems = ConfigManager.ConfigOptionValue<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in Augmentum?",true);
             if (!disableItems)
             {
                 //Item Initialization
@@ -212,7 +212,7 @@ namespace Augmentum
                 //IL.RoR2.ShopTerminalBehavior.GenerateNewPickupServer_bool += ItemBase.BlacklistFromPrinter;
                 On.RoR2.Items.ContagiousItemManager.Init += ItemBase.RegisterVoidPairings;
             }
-            var disableEquipment = ConfigManager.ConfigOption<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in Augmentum?");
+            var disableEquipment = ConfigManager.ConfigOptionValue<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in Augmentum?", true);
             if (!disableEquipment)
             {
                 //Equipment Initialization
@@ -277,8 +277,8 @@ namespace Augmentum
                 "ITEM_DISCOVERY_MEDALLION,ITEM_MEGA_MATROYSHKA";
 
 
-            var enabledShareSuite = ConfigManager.ConfigOption<bool>("Mod Compatability: " + "ShareSuite", "Enable Compatability Patches?", true, "Attempt to patch ShareSuite (if installed) to work with this mod?");
-            var ShareSuiteBlackList= ConfigManager.ConfigOption("Mod Compatability: " + "ShareSuite", "ShareSuite Blacklist", defaultShareSuiteBlacklist, "Add items to ShareSuite blacklist?");
+            var enabledShareSuite = ConfigManager.ConfigOptionValue<bool>("Mod Compatability: " + "ShareSuite", "Enable Compatability Patches?", true, "Attempt to patch ShareSuite (if installed) to work with this mod?", true);
+            var ShareSuiteBlackList= ConfigManager.ConfigOptionValue("Mod Compatability: " + "ShareSuite", "ShareSuite Blacklist", defaultShareSuiteBlacklist, "Add items to ShareSuite blacklist?",true);
             if (ModCompatability.ShareSuiteCompat.IsShareSuiteInstalled && enabledShareSuite)
             {
                 ModLogger.LogInfo("ModCompatability: " + "ShareSuite Recognized!");
@@ -290,13 +290,13 @@ namespace Augmentum
                 ModLogger.LogInfo("ModCompatability: " + "ShareSuite Blacklist added to Whitelist!");
             }
 
-            var enabledHIV = ConfigManager.ConfigOption("Mod Compatability: " + "HighItemVizability", "Enable Compatability Patches?", true, "Attempt to patch HighItemVizability (if installed) to work with this mod?");
+            var enabledHIV = ConfigManager.ConfigOptionValue("Mod Compatability: " + "HighItemVizability", "Enable Compatability Patches?", true, "Attempt to patch HighItemVizability (if installed) to work with this mod?", true);
             if (ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled && enabledHIV)
             {
                 ModLogger.LogInfo("ModCompatability: " + "HighItemVizability Recognized!");
             }
 
-            var enabledProperSave = ConfigManager.ConfigOption("Mod Compatability: " + "ProperSave", "Enable Compatability Patches?", true, "Attempt to add Propersave compatability (if installed)?");
+            var enabledProperSave = ConfigManager.ConfigOptionValue("Mod Compatability: " + "ProperSave", "Enable Compatability Patches?", true, "Attempt to add Propersave compatability (if installed)?", true);
             if (ModCompatability.ProperSaveCompat.IsProperSaveInstalled && enabledProperSave)
             {
                 ModLogger.LogInfo("ModCompatability: " + "ProperSave Recognized!");
@@ -310,7 +310,7 @@ namespace Augmentum
             //    ModCompatability.ZetAspectsCompat.ForceZetAspectCompat();
             //}
 
-            var enabledJudgement = ConfigManager.ConfigOption("Mod Compatability: " + "Judgment", "Enable Compatability Patches?", true, "Attempt to add Judgment compatability (if installed)?");
+            var enabledJudgement = ConfigManager.ConfigOptionValue("Mod Compatability: " + "Judgment", "Enable Compatability Patches?", true, "Attempt to add Judgment compatability (if installed)?", true);
             if (ModCompatability.JudgementCompat.IsJudgementInstalled && enabledJudgement)
             {
                 ModLogger.LogInfo("ModCompatability: " + "Judgment Recognized!");
@@ -336,10 +336,10 @@ namespace Augmentum
 
         public bool ValidateItem(ItemBase item, List<ItemBase> itemList)
         {
-            var enabled = ConfigManager.ConfigOption<bool>("Item: " + item.ConfigItemName, "Enable Item?", true, "Should this item appear in runs?");
-            var aiBlacklist = ConfigManager.ConfigOption<bool>("Item: " + item.ConfigItemName, "Blacklist Item from AI Use?", false, "Should the AI not be able to obtain this item?");
-            var printerBlacklist = ConfigManager.ConfigOption("Item: " + item.ConfigItemName, "Blacklist Item from Printers?", false, "Should the printers be able to print this item?");
-            var requireUnlock = ConfigManager.ConfigOption<bool>("Item: " + item.ConfigItemName, "Require Unlock", true, "Should we require this item to be unlocked before it appears in runs? (Will only affect items with associated unlockables.)");
+            var enabled = ConfigManager.ConfigOption<bool>("Item: " + item.ConfigItemName, "Enable Item?", true, "Should this item appear in runs?",true).Value;
+            var aiBlacklist = ConfigManager.ConfigOptionValue<bool>("Item: " + item.ConfigItemName, "Blacklist Item from AI Use?", false, "Should the AI not be able to obtain this item?", false);
+            var printerBlacklist = ConfigManager.ConfigOptionValue("Item: " + item.ConfigItemName, "Blacklist Item from Printers?", false, "Should the printers be able to print this item?", true);
+            var requireUnlock = ConfigManager.ConfigOption<bool>("Item: " + item.ConfigItemName, "Require Unlock", true, "Should we require this item to be unlocked before it appears in runs? (Will only affect items with associated unlockables.)", true).Value;
 
             ItemStatusDictionary.Add(item, enabled);
 
@@ -375,7 +375,7 @@ namespace Augmentum
 
         public bool ValidateEquipment(EquipmentBase equipment, List<EquipmentBase> equipmentList)
         {
-            var enabled = ConfigManager.ConfigOption<bool>("Equipment: " + equipment.EquipmentName, "Enable Equipment?", true, "Should this equipment appear in runs?");
+            var enabled = ConfigManager.ConfigOption<bool>("Equipment: " + equipment.EquipmentName, "Enable Equipment?", true, "Should this equipment appear in runs?", true).Value;
 
             EquipmentStatusDictionary.Add(equipment, enabled);
 
@@ -389,7 +389,7 @@ namespace Augmentum
 
         public bool ValidateEliteEquipment(EliteEquipmentBase eliteEquipment, List<EliteEquipmentBase> eliteEquipmentList)
         {
-            var enabled = ConfigManager.ConfigOption<bool>("Elite: " + eliteEquipment.EliteModifier, "Enable Elite Equipment?", true, "Should this elite equipment appear in runs? If disabled, the associated elite will not appear in runs either.");
+            var enabled = ConfigManager.ConfigOption<bool>("Elite: " + eliteEquipment.EliteModifier, "Enable Elite Equipment?", true, "Should this elite equipment appear in runs? If disabled, the associated elite will not appear in runs either.", true).Value;
 
             EliteEquipmentStatusDictionary.Add(eliteEquipment, enabled);
 
@@ -403,7 +403,7 @@ namespace Augmentum
 
         public bool ValidateArtifact(ArtifactBase artifact, List<ArtifactBase> artifactList)
         {
-            var enabled = ConfigManager.ConfigOption<bool>("Artifact: " + artifact.ArtifactName, "Enable Artifact?", true, "Should this artifact appear in the menu? If disabled, the associated artifact will not appear.");
+            var enabled = ConfigManager.ConfigOption<bool>("Artifact: " + artifact.ArtifactName, "Enable Artifact?", true, "Should this artifact appear in the menu? If disabled, the associated artifact will not appear.", true).Value;
 
             ArtifactStatusDictionary.Add(artifact, enabled);
 

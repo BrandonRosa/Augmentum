@@ -1,4 +1,6 @@
-﻿using BepInEx.Configuration;
+﻿using Augmentum.Modules.Compatability;
+using BepInEx.Configuration;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -41,12 +43,22 @@ namespace Augmentum.Modules.Utils
             return false;
         }
 
-        public static T ConfigOption<T>(string section, string key, T defaultvalue, string description)
+        public static ConfigEntry<T> ConfigOption<T>(string section, string key, T defaultvalue, string description,bool restartRequired = false)
         {
             var config = Augmentum.AugConfig.Bind<T>(section, key, defaultvalue, description);
-            ConfigManager.HandleConfig<T>(config, Augmentum.AugBackupConfig, key);
 
-            return config.Value;
+            ConfigManager.HandleConfig<T>(config, Augmentum.AugBackupConfig, key);
+            if (ModCompatability.RiskOfOptionsCompatability.IsShareSuiteInstalled)
+            {
+                ModCompatability.RiskOfOptionsCompatability.AddConfig(config,restartRequired);
+            }
+            return config;
         }
+
+        public static T ConfigOptionValue<T>(string section, string key, T defaultvalue, string description, bool restartRequired = false)
+        {
+            return ConfigOption<T>(section, key, defaultvalue, description,restartRequired).Value;
+        }
+
     }
 }
