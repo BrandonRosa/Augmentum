@@ -192,7 +192,7 @@ namespace Augmentum
                     if (!item.BlacklistFromPreLoad && ValidateItem(item, Items))
                     {
                         item.Init(Config);
-
+                        Config.SettingChanged += (object o, SettingChangedEventArgs args) => { item.ItemDef.descriptionToken = item.ItemFullDescriptionFormatted; };
                         ModLogger.LogInfo("Item: " + item.ItemName + " Initialized!");
                         //if (item.ItemDef._itemTierDef==Core.instance.itemTierDef)
                         //{
@@ -226,7 +226,7 @@ namespace Augmentum
                     if (ValidateEquipment(equipment, Equipments))
                     {
                         equipment.Init(Config);
-
+                        Config.SettingChanged += (object o, SettingChangedEventArgs args) => { equipment.EquipmentDef.descriptionToken = equipment.EquipmentFullDescriptionFormatted; };
                         ModLogger.LogInfo("Equipment: " + equipment.EquipmentName + " Initialized!");
                     }
                 }
@@ -243,7 +243,7 @@ namespace Augmentum
                 if (ValidateEliteEquipment(eliteEquipment, EliteEquipments))
                 {
                     eliteEquipment.Init(Config);
-
+                    Config.SettingChanged += (object o, SettingChangedEventArgs args) => { eliteEquipment.EliteEquipmentDef.descriptionToken = eliteEquipment.EliteEquipmentFullDescriptionFormatted; };
                     ModLogger.LogInfo("Elite Equipment: " + eliteEquipment.EliteEquipmentName + " Initialized!");
                 }
             }

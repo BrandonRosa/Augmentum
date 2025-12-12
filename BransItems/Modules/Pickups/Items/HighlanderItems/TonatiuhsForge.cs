@@ -20,8 +20,11 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Overclocked Pacemaker";
         public override string ItemLangTokenName => "OVERCLOCKED_PACEMAKER";
         public override string ItemPickupDesc => "When using your Special skill, increase your damage. Scales with cooldown.";
-        public override string ItemFullDescription =>  $"When using your <style=cIsUtility>Special skill</style>, increase your total <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain*100}%</style> for every second of cooldown. Lasts {Duration} seconds.";
+        public override string ItemFullDescriptionRaw =>
+            @"When using your <style=cIsUtility>Special skill</style>, increase your total <style=cIsDamage>damage</style> by <style=cIsDamage>{0}%</style> for every second of cooldown. Lasts {1} seconds.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, DamageGain * 100, Duration);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -90,7 +93,8 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             if (self && self.characterBody.inventory && GetCount(self.characterBody) > 0)
             {
                 SkillLocator skillLocator = self.characterBody.skillLocator;
-                if (self == skillLocator.special || self == skillLocator.specialBonusStockSkill || self == skillLocator.specialBonusStockOverrideSkill)
+
+                if (skillLocator&&(self == skillLocator.special || self == skillLocator.specialBonusStockSkill || self == skillLocator.specialBonusStockOverrideSkill))
                 {
                     float duration = self.CalculateFinalRechargeInterval();
                     for (int i = 0; i < duration; i++)

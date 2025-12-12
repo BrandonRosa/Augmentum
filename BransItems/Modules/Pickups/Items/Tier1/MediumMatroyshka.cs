@@ -24,7 +24,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
         public override string ItemName => "Medium Matroyshka";
         public override string ItemLangTokenName => "MEDIUM_MATROYSHKA";
         public override string ItemPickupDesc => "The next time you use an equipment, crack open for a white item and a " + Augmentum.CoreColorString + "mini surprise</color> .";
-        public override string ItemFullDescription => $"On next <style=cIsUtility>equipment use</style>, cracks open for a white item. Gain "+Augmentum.CoreColorString+"Mini Matroyshka</color>.";
+        public override string ItemFullDescriptionRaw =>
+            @"On next <style=cIsUtility>equipment use</style>, cracks open for a white item. Gain {0}Mini Matroyshka</color>.";
+
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, Augmentum.CoreColorString);
 
         public override string ItemLore => "";
 

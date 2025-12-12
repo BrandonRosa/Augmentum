@@ -36,8 +36,9 @@ namespace Augmentum.Modules.Pickups
         }
 		public abstract string ItemLangTokenName { get; }
 		public abstract string ItemPickupDesc { get; }
-		public abstract string ItemFullDescription { get; }
-		public abstract string ItemLore { get; }
+		public abstract string ItemFullDescriptionRaw { get; }
+        public abstract string ItemFullDescriptionFormatted { get; }
+        public abstract string ItemLore { get; }
 
 		public virtual ItemTierDef ModdedTierDef { get; } = null;
 
@@ -64,7 +65,7 @@ namespace Augmentum.Modules.Pickups
 		{
 			LanguageAPI.Add("ITEM_" + ItemLangTokenName + "_NAME", ItemName);
 			LanguageAPI.Add("ITEM_" + ItemLangTokenName + "_PICKUP", ItemPickupDesc);
-			LanguageAPI.Add("ITEM_" + ItemLangTokenName + "_DESCRIPTION", ItemFullDescription);
+			LanguageAPI.Add("ITEM_" + ItemLangTokenName + "_DESCRIPTION", ItemFullDescriptionRaw);
 			LanguageAPI.Add("ITEM_" + ItemLangTokenName + "_LORE", ItemLore);
 		}
 
@@ -76,7 +77,7 @@ namespace Augmentum.Modules.Pickups
 			ItemDef.name = "ITEM_" + ItemLangTokenName;
 			ItemDef.nameToken = "ITEM_" + ItemLangTokenName + "_NAME";
 			ItemDef.pickupToken = "ITEM_" + ItemLangTokenName + "_PICKUP";
-			ItemDef.descriptionToken = "ITEM_" + ItemLangTokenName + "_DESCRIPTION";
+			ItemDef.descriptionToken = ItemFullDescriptionFormatted;
 			ItemDef.loreToken = "ITEM_" + ItemLangTokenName + "_LORE";
 			ItemDef.pickupModelPrefab = ItemModel;
 			ItemDef.pickupIconSprite = ItemIcon;

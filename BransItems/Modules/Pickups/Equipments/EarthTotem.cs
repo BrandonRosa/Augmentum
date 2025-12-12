@@ -31,7 +31,9 @@ namespace Augmentum.Modules.Pickups.Equipments
 
         public override string EquipmentPickupDesc => "Absorb an equipment and gain its effect.";
 
-        public override string EquipmentFullDescription => "<style=cIsUtility>Absorb</style> an equipment and add its effect to this equipment.";
+        public override string EquipmentFullDescriptionRaw => "<style=cIsUtility>Absorb</style> an equipment and add its effect to this equipment.";
+
+        public override string EquipmentFullDescriptionFormatted => EquipmentFullDescriptionRaw;
 
         public override string EquipmentLore =>
 

@@ -18,7 +18,11 @@ namespace Augmentum.Modules.Pickups.Items.NoTier
         public override string ItemName => "Mega Matroyshka Shells";
         public override string ItemLangTokenName => "MEGA_MATROYSHKA_CONSUMED";
         public override string ItemPickupDesc => "Future Matroyshka drops allow you to discover rewards.";
-        public override string ItemFullDescription => $"Discover future Matroyshka drops. Rewards come with {MegaMatroyshka.AdditionalChoices}<style=cStack>(+{MegaMatroyshka.AdditionalChoices})</style> choices.";
+        public override string ItemFullDescriptionRaw =>
+            @"Discover future Matroyshka drops. Rewards come with {0}<style=cStack>(+{1})</style> choices.";
+
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, MegaMatroyshka.AdditionalChoices, MegaMatroyshka.AdditionalChoices);
 
         public override string ItemLore => "";
 

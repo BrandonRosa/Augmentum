@@ -23,8 +23,11 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
 
         public override string ItemPickupDesc => $"Gain a veil which blocks damage then gives you invincibility and makes you immune to all indirect damage... <style=cDeath>BUT your max health cannot exceed 1</style> ";
 
-        public override string ItemFullDescription => "Gain a veil which <style=cIsHealing>blocks</style> damage then gives you <style=cIsHealing>5 seconds</style> of <style=cIsHealing>invincibility</style>. Recharges after <style=cIsUtility>120 seconds</style>. <style=cIsHealing>Ignore indirect damage</style>. <style=cIsUtility>Discover replacements for useless items</style>. <style=cDeath>Set max health to 1</style>."; 
+        public override string ItemFullDescriptionRaw =>
+            @"Gain a veil which <style=cIsHealing>blocks</style> damage then gives you <style=cIsHealing>5 seconds</style> of <style=cIsHealing>invincibility</style>. Recharges after <style=cIsUtility>120 seconds</style>. <style=cIsHealing>Ignore indirect damage</style>. <style=cIsUtility>Discover replacements for useless items</style>. <style=cDeath>Set max health to 1</style>.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw);
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Lunar;

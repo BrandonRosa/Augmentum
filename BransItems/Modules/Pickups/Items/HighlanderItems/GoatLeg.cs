@@ -18,8 +18,11 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Horse Hoof";
         public override string ItemLangTokenName => "HORSE_HOOF";
         public override string ItemPickupDesc => "Increase movement speed, sprint speed, and jump height.";
-        public override string ItemFullDescription => $"Increase <style=cIsUtility>movemement speed</style> by <style=cIsUtility>{MovementGain}%</style>, <style=cIsUtility>sprint speed</style> by <style=cIsUtility>{SprintGain}%</style>, and <style=cIsUtility>jump height</style> by <style=cIsUtility>{JumpPowerGain}%</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"Increase <style=cIsUtility>movemement speed</style> by <style=cIsUtility>{0}%</style>, <style=cIsUtility>sprint speed</style> by <style=cIsUtility>{1}%</style>, and <style=cIsUtility>jump height</style> by <style=cIsUtility>{2}%</style>.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, MovementGain, SprintGain, JumpPowerGain);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;

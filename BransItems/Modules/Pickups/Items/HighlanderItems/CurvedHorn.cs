@@ -19,8 +19,11 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Curved Horn";
         public override string ItemLangTokenName => "CURVED_HORN";
         public override string ItemPickupDesc => "Increases damage and primary charges.";
-        public override string ItemFullDescription => $"Increase your <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain*100}%</style>. Gain <style=cIsUtility>{(PrimaryChargeMultiplier - 1) * 100f}%</style> more <style=cIsUtility>Primary skill</style> charges.";
+        public override string ItemFullDescriptionRaw =>
+            @"Increase your <style=cIsDamage>damage</style> by <style=cIsDamage>{0}%</style>. Gain <style=cIsUtility>{1}%</style> more <style=cIsUtility>Primary skill</style> charges.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, DamageGain * 100, (PrimaryChargeMultiplier - 1) * 100f);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;

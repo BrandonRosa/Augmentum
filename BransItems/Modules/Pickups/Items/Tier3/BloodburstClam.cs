@@ -22,8 +22,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
         public override string ItemName => "Bloodburst Clam";
         public override string ItemLangTokenName => "BLOODBURST_CLAM";
         public override string ItemPickupDesc => $"On pickup, crack open for {DropCount} essences which boost stats. Future essence drops will come with 1 more.";
-        public override string ItemFullDescription => $"Crack open for <style=cIsDamage>{DropCount}</style> "+Augmentum.EssencesKeyword+". Future "+Augmentum.EssenceKeyword+ $" drops will come with 1<style=cStack>(+{AdditionalDrops} per stack)</style> more.";
+        public override string ItemFullDescriptionRaw =>
+            @"Crack open for <style=cIsDamage>{0}</style> {1}. Future {2} drops will come with 1<style=cStack>(+{3} per stack)</style> more.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, DropCount, Augmentum.EssencesKeyword, Augmentum.EssenceKeyword, AdditionalDrops);
         public override string ItemLore => "Excerpt from Void Expedition Archives:\n" + "Found within the void whales, the Bloodburst Clam is a rare species that thrives in the digestive tracks of these colossal creatures." + 
             "The clam leeches off life forms unfortunate enough to enter the void whales, compressing their blood and life force into potent essences. Its unique adaptation allows it to extract and compress the essence of victims, creating small orbs of concentrated vitality."+
             "Encountering the Bloodburst Clam leaves some uneasy, as the reward of powerful essences is a reminder of the unknown number of lives sacrificed within the whale's innards.";

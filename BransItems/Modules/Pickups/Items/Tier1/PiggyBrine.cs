@@ -19,8 +19,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
         public override string ItemName => "Piggy Brine";
         public override string ItemLangTokenName => "PIG_JAR";
         public override string ItemPickupDesc => "Increase regen. Breaks at low health.";
-        public override string ItemFullDescription => $"Increases <style=cIsHealing>regeneration</style> by <style=cIsHealing>{RegenPercent*100}%</style><style=cStack>(+{RegenAdditionalPercent*100}% per stack)</style> <style=cIsHealing>plus</style> an additional <style=cIsHealing>+{RegenBase} hp/s</style><style=cStack>(+{RegenAdditionalBase} hp/s per stack)</style>. Taking damage to below <style=cIsHealth>25% health</style> <style=cIsUtility>breaks</style> this item and gives 1 second of <style=cIsHealing>invincibility</style>. ";
+        public override string ItemFullDescriptionRaw =>
+            @"Increases <style=cIsHealing>regeneration</style> by <style=cIsHealing>{0}%</style><style=cStack>(+{1}% per stack)</style> <style=cIsHealing>plus</style> an additional <style=cIsHealing>+{2} hp/s</style><style=cStack>(+{3} hp/s per stack)</style>. Taking damage to below <style=cIsHealth>25% health</style> <style=cIsUtility>breaks</style> this item and gives 1 second of <style=cIsHealing>invincibility</style>. ";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, RegenPercent * 100, RegenAdditionalPercent * 100, RegenBase, RegenAdditionalBase);
         public override string ItemLore => $"";
 
         public override ItemTier Tier => ItemTier.Tier1;

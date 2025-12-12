@@ -20,7 +20,9 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Abyssal Beacon";
         public override string ItemLangTokenName => "ABYSSAL_BEACON";
         public override string ItemPickupDesc => "After completing a teleporter event, create a Null Portal. Destroy this if you travel through it.";
-        public override string ItemFullDescription => $"After completing a <style=cIsUtility>teleporter event</style>, create a <style=cIsVoid>Null Portal</style>. <style=cIsUtility>Breaks</style> if you travel through it.";
+        public override string ItemFullDescriptionRaw => $"After completing a <style=cIsUtility>teleporter event</style>, create a <style=cIsVoid>Null Portal</style>. <style=cIsUtility>Breaks</style> if you travel through it.";
+
+        public override string ItemFullDescriptionFormatted => ItemFullDescriptionRaw;
 
         public override string ItemLore => "";
 

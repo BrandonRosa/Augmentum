@@ -26,10 +26,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
         public override string ItemName => "Adaptive Armor";
         public override string ItemLangTokenName => "ADAPTIVE_ARMOR";
         public override string ItemPickupDesc => "After being hit twice in a short amount of time, receive a huge flat damage reduction from all attacks.";
-        public override string ItemFullDescription => $"After taking damage twice in <style=cIsDamage>{DamageWindow}</style> seconds, " +
-            //$"gain <style=cIsDamage>{InitialFortify}</style><style=cStack>(+{AdditionalFortify})</style> Fortify for <style=cIsDamage>{InitialFortifyTime}</style><style=cStack>(+{AdditionalFortifyTime})</style> seconds. Each stack of Fortify reduces all incoming damage by 5, but not below 1. Refreshes <style=cIsDamage>{CooldownTime}</style> seconds after triggering.";
-            $"reduce all <style=cIsDamage>incoming damage</style> by <style=cIsDamage>{5f* InitialFortify} </style><style=cStack>(+{AdditionalFortify*5f} per stack)</style> for <style=cIsDamage>{InitialFortifyTime} </style><style=cStack>(+{AdditionalFortifyTime} per stack)</style> seconds. Cannot be reduced below <style=cIsDamage>1</style>. Recharges after <style=cIsDamage>{CooldownTime}</style> seconds.";
+        public override string ItemFullDescriptionRaw =>
+            @"After taking damage twice in <style=cIsDamage>{0}</style> seconds, reduce all <style=cIsDamage>incoming damage</style> by <style=cIsDamage>{1} </style><style=cStack>(+{2} per stack)</style> for <style=cIsDamage>{3} </style><style=cStack>(+{4} per stack)</style> seconds. Cannot be reduced below <style=cIsDamage>1</style>. Recharges after <style=cIsDamage>{5}</style> seconds.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, DamageWindow, 5f * InitialFortify, AdditionalFortify * 5f, InitialFortifyTime, AdditionalFortifyTime, CooldownTime);
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier2;

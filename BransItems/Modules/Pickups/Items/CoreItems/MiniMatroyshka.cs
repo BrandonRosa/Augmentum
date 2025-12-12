@@ -24,7 +24,11 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
         public override string ItemName => "Mini Matroyshka";
         public override string ItemLangTokenName => "MINI_MATROYSHKA";
         public override string ItemPickupDesc => "The next time you open a chest, crack open for an " + Augmentum.EssenceKeyword + ".";
-        public override string ItemFullDescription => $"On next <style=cisUtility>chest purchase</style>, cracks open for an "+Augmentum.EssenceKeyword+". \n<style=cMono>There is nothing left.</style>";
+        public override string ItemFullDescriptionRaw =>
+            @"On next <style=cisUtility>chest purchase</style>, cracks open for an {0}. <style=cMono>There is nothing left.</style>";
+
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, Augmentum.EssenceKeyword);
 
         public override string ItemLore => "";
 

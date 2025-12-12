@@ -21,8 +21,11 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Second Death";
         public override string ItemLangTokenName => "SECOND_DEATH";
         public override string ItemPickupDesc => $"On-Kill effects trigger twice. Bosses trigger On-Kill effects every {HealthPercent*100}% of health lost.";
-        public override string ItemFullDescription => $"<style=cIsDamage>On-Kill</style> effects <style=cIsDamage>trigger twice</style>. Bosses <style=cIsDamage>trigger On-Kill</style> effects every <style=cIsHealth>{HealthPercent * 100}%</style> of <style=cIsHealth>health lost</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"<style=cIsDamage>On-Kill</style> effects <style=cIsDamage>trigger twice</style>. Bosses <style=cIsDamage>trigger On-Kill</style> effects every <style=cIsHealth>{0}%</style> of <style=cIsHealth>health lost</style>.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, HealthPercent * 100);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;

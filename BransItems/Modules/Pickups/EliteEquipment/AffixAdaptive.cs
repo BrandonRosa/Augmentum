@@ -23,9 +23,10 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public override string EliteEquipmentPickupDesc => "Become an aspect of evolution.";
 
-        public override string EliteEquipmentFullDescription => EliteEquipmentPickupDesc+$"\nWhen hit, gain a <style=cIsHealing>defensive boost</style> for <style=cIsHealing>{AdaptiveBoostTimer}</style> seconds, become <style=cIsUtility>invisible</style> for <style=cIsUtility>{InvisibleTimer}</style> , and gain a massive speed boost. Recharges after {AdaptiveCooldownTimer} seconds.\n" +
-            ((LacerationCount==0||MaxLaceration==0)?"":$"Attacks apply 20 <style=cIsDamage>laceration</style> on hit for <style=cIsDamage>{LacerationDuration}</style> seconds, every 10 stacks increases <style=cIsDamage>incoming damage</style> by <style=cIsDamage>1</style>.");
-
+        public override string EliteEquipmentFullDescriptionRaw => EliteEquipmentPickupDesc+$"\nWhen hit, gain a <style=cIsHealing>defensive boost</style> for <style=cIsHealing>"+@"{0}</style> seconds, become <style=cIsUtility>invisible</style> for <style=cIsUtility>{1}</style> , and gain a massive speed boost. Recharges after {2} seconds."+"\n" +
+            ((LacerationCount==0||MaxLaceration==0)?"":@"Attacks apply 20 <style=cIsDamage>laceration</style> on hit for <style=cIsDamage>{3}</style> seconds, every 10 stacks increases <style=cIsDamage>incoming damage</style> by <style=cIsDamage>1</style>.");
+        public override string EliteEquipmentFullDescriptionFormatted => ((LacerationCount == 0 || MaxLaceration == 0) ? string.Format(EliteEquipmentFullDescriptionRaw, AdaptiveBoostTimer, InvisibleTimer, AdaptiveCooldownTimer): 
+                string.Format(EliteEquipmentFullDescriptionRaw, AdaptiveBoostTimer, InvisibleTimer, AdaptiveCooldownTimer, LacerationDuration));
         public override string EliteEquipmentLore => "";
 
         public override string EliteModifier => "Adaptive";
@@ -377,7 +378,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public static void SetStaticVarsToConfig()
         {
-            AdaptivePresetConfig config = GetCurrentConfigOptions();
+            AdaptivePresetConfig config =  ();
             _healthMult = config.Healthmult;
             _damageMult = config.Damagemult;
             _costMult = config.Costmultiplier;
@@ -1293,7 +1294,9 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public override string ItemPickupDesc => AffixAdaptive.instance.EliteEquipmentPickupDesc;
 
-        public override string ItemFullDescription => AffixAdaptive.instance.EliteEquipmentFullDescription;
+        public override string ItemFullDescriptionRaw => AffixAdaptive.instance.EliteEquipmentFullDescriptionRaw;
+
+        public override string ItemFullDescriptionFormatted => AffixAdaptive.instance.EliteEquipmentFullDescriptionFormatted;
 
         public override string ItemLore => AffixAdaptive.instance.EliteEquipmentLore;
 

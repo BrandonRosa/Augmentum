@@ -21,9 +21,12 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
     {
         public override string ItemName => "Blaze of Glory";
         public override string ItemLangTokenName => "BLAZE_OF_GLORY";
-        public override string ItemPickupDesc => $"After a boss loses {HealthPercent * 100}% health, summon {SpawnCount} elite Jellyfish. When your allies die, send them to the afterlife in a blaze of glory dealing massive explosive damage to enemies.";
-        public override string ItemFullDescription => $"After a boss <style=cIsHealth>loses {HealthPercent * 100}% health</style>, summon {SpawnCount} elite <style=cIsDamage>Jellyfish</style>. When allies <style=cDeath>die</style>, send them to the afterlife in a <style=cIsDamage>blaze of glory</style> dealing <style=cIsDamage>{DamageDealt}% explosive damage</style> to enemies.";
+        public override string ItemPickupDesc => $"After a boss loses enough health, summon allied elite Jellyfish. When your allies die, send them to the afterlife in a blaze of glory dealing massive explosive damage to enemies.";
+        public override string ItemFullDescriptionRaw =>
+            @"After a boss <style=cIsHealth>loses {0}% health</style>, summon {1} elite <style=cIsDamage>Jellyfish</style>. When allies <style=cDeath>die</style>, send them to the afterlife in a <style=cIsDamage>blaze of glory</style> dealing <style=cIsDamage>{2}% explosive damage</style> to enemies.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, HealthPercent * 100, SpawnCount, DamageDealt);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -305,11 +308,13 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             //On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
             ItemHelpers.ToggleBossGroupDamageHooks(true);
             BossGroupDamageTakenTracker.AddToPercentLostActionList(HealthPercent, BossHealthPercentageTrigger);
-            On.RoR2.Inventory.GiveItem_ItemIndex_int += Inventory_GiveItem_ItemIndex_int;
-            On.RoR2.Inventory.RemoveItem_ItemIndex_int += Inventory_RemoveItem_ItemIndex_int;
+            On.RoR2.Inventory.GiveItemPermanent_ItemIndex_int += Inventory_GiveItem_ItemIndex_int;
+            On.RoR2.Inventory.RemoveItemPermanent_ItemIndex_int += Inventory_RemoveItem_ItemIndex_int;
             On.RoR2.HealthComponent.Suicide += HealthComponent_Suicide;
             On.RoR2.Run.OnClientGameOver += Run_OnClientGameOver;
         }
+
+
 
         private void Run_OnClientGameOver(On.RoR2.Run.orig_OnClientGameOver orig, Run self, RunReport runReport)
         {
@@ -344,7 +349,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             orig(self, killerOverride, inflictorOverride, damageType);
         }
 
-        private void Inventory_RemoveItem_ItemIndex_int(On.RoR2.Inventory.orig_RemoveItem_ItemIndex_int orig, Inventory self, ItemIndex itemIndex, int count)
+        private void Inventory_RemoveItem_ItemIndex_int(On.RoR2.Inventory.orig_RemoveItemPermanent_ItemIndex_int orig, Inventory self, ItemIndex itemIndex, int count)
         {
             orig(self, itemIndex, count);
             if (self)
@@ -355,7 +360,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
                     TeamIndex TI = master.teamIndex;
                     if (TeamsWithItem.ContainsKey(TI))
                     {
-                        if(self.GetItemCount(instance.ItemDef) == 0)
+                        if(self.GetItemCountEffective(instance.ItemDef) == 0)
                             TeamsWithItem[TI].Remove(master);
                     }
                     else
@@ -366,7 +371,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             }
         }
 
-        private void Inventory_GiveItem_ItemIndex_int(On.RoR2.Inventory.orig_GiveItem_ItemIndex_int orig, Inventory self, ItemIndex itemIndex, int count)
+        private void Inventory_GiveItem_ItemIndex_int(On.RoR2.Inventory.orig_GiveItemPermanent_ItemIndex_int orig, Inventory self, ItemIndex itemIndex, int count)
         {
             orig(self, itemIndex, count);
             if(self)

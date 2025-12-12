@@ -27,9 +27,11 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Pharaohs Puzzlebox";
         public override string ItemLangTokenName => "PUZZLEBOX";
         public override string ItemPickupDesc => "The first chest has a chance to have its tier upgraded. Gain a bit of semi-permant luck when this happens.";
-        public override string ItemFullDescription => $"Gain <style=cIsUtility>{LuckGain*100f}% Luck</style>. The first chest opened each stage has a <style=cIsUtility>{UpgradeChance*100f}%</style> chance upgrade its item. Gain "+ Augmentum.CoreColorString +"3 Clover Sprouts</color> if successful, " +
-            $""+ Augmentum.CoreColorString + "1</color> if not. When parting with the <color=#C8A200>Pharaoh</color>, <style=cDeath>split</style> your "+ Augmentum.CoreColorString +"Clovers</color>.";
+        public override string ItemFullDescriptionRaw =>
+        @"Gain <style=cIsUtility>{0}% Luck</style>. The first chest opened each stage has a <style=cIsUtility>{1}%</style> chance upgrade its item. Gain {2}3 Clover Sprouts</color> if successful, {3}1</color> if not. When parting with the <color=#C8A200>Pharaoh</color>, <style=cDeath>split</style> your {4}Clovers</color>.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, LuckGain * 100f, UpgradeChance * 100f, Augmentum.CoreColorString, Augmentum.CoreColorString, Augmentum.CoreColorString);
         public override string ItemLore => "An ancient duelist from a forgotten time once was said to hold this. \nSome stories say he was a master strategist, who slayed dragons and held the world in the palm of his hands, others say he was simply lucky.. \n \n - Designed By paranoidhawklet \n - 3rd Place Winner of the 2024 Design Contest";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -212,7 +214,9 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override string ItemPickupDesc => "";
 
-        public override string ItemFullDescription => "";
+        public override string ItemFullDescriptionRaw => "";
+
+        public override string ItemFullDescriptionFormatted => "";
 
         public override string ItemLore => "";
 
@@ -284,7 +288,9 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override string ItemPickupDesc => "";
 
-        public override string ItemFullDescription => "";
+        public override string ItemFullDescriptionRaw => "";
+
+        public override string ItemFullDescriptionFormatted => "";
 
         public override string ItemLore => "";
 

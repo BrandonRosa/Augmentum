@@ -17,7 +17,11 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Resilience";
         public override string ItemLangTokenName => "ESSENCE_OF_RESILIENCE";
         public override string ItemPickupDesc => "Slightly increase armor.";
-        public override string ItemFullDescription => $"Gain <style=cIsHealing>{ArmorGain} </style><style=cStack>(+{ArmorGain} per stack)</style> <style=cIsHealing> armor</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"Gain <style=cIsHealing>{0} </style><style=cStack>(+{1} per stack)</style> <style=cIsHealing> armor</style>.";
+
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, ArmorGain, ArmorGain);
 
         public override string ItemLore => $"";
 

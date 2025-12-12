@@ -23,8 +23,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
         public override string ItemName => "Discovery Medallion";
         public override string ItemLangTokenName => "DISCOVERY_MEDALLION";
         public override string ItemPickupDesc => "On pickup, discover a Red tier item. Future discoveries come with more choices.";
-        public override string ItemFullDescription => $"On pickup, discover a <style=cIsHealth>red item</style>. Future discoveries come with 1 <style=cStack>(+{AdditionalChoices} per stack)</style> more choice.";
+        public override string ItemFullDescriptionRaw =>
+            @"On pickup, discover a <style=cIsHealth>red item</style>. Future discoveries come with 1 <style=cStack>(+{0} per stack)</style> more choice.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, AdditionalChoices);
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier3;

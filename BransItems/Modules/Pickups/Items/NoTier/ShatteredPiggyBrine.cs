@@ -18,7 +18,9 @@ namespace Augmentum.Modules.Pickups.Items.NoTier
         public override string ItemName => "Piggy Brine (Shattered)";
         public override string ItemLangTokenName => "SHATTERED_PIG_JAR";
         public override string ItemPickupDesc => "It's what he wouldve wanted.... Does nothing anymore.";
-        public override string ItemFullDescription => ItemPickupDesc;
+        public override string ItemFullDescriptionRaw => ItemPickupDesc;
+
+        public override string ItemFullDescriptionFormatted => ItemFullDescriptionRaw;
 
         public override string ItemLore => "";
 

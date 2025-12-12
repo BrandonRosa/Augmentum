@@ -30,7 +30,9 @@ namespace Augmentum.Modules.Pickups
         public abstract string EliteEquipmentName { get; }
         public abstract string EliteAffixToken { get; }
         public abstract string EliteEquipmentPickupDesc { get; }
-        public abstract string EliteEquipmentFullDescription { get; }
+        public abstract string EliteEquipmentFullDescriptionRaw { get; }
+
+        public abstract string EliteEquipmentFullDescriptionFormatted { get; }
         public abstract string EliteEquipmentLore { get; }
         public abstract string EliteModifier { get; }
 
@@ -109,7 +111,7 @@ namespace Augmentum.Modules.Pickups
         {
             LanguageAPI.Add("BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_NAME", EliteEquipmentName);
             LanguageAPI.Add("BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_PICKUP", EliteEquipmentPickupDesc);
-            LanguageAPI.Add("BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_DESCRIPTION", EliteEquipmentFullDescription);
+            LanguageAPI.Add("BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_DESCRIPTION", EliteEquipmentFullDescriptionRaw);
             LanguageAPI.Add("BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_LORE", EliteEquipmentLore);
             LanguageAPI.Add("BRANS_ELITE_" + EliteAffixToken + "_MODIFIER", EliteModifier + " {0}");
 
@@ -123,7 +125,7 @@ namespace Augmentum.Modules.Pickups
             EliteEquipmentDef.name = "BRANS_ELITE_EQUIPMENT_" + EliteAffixToken;
             EliteEquipmentDef.nameToken = "BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_NAME";
             EliteEquipmentDef.pickupToken = "BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_PICKUP";
-            EliteEquipmentDef.descriptionToken = "BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_DESCRIPTION";
+            EliteEquipmentDef.descriptionToken = EliteEquipmentFullDescriptionFormatted;
             EliteEquipmentDef.loreToken = "BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_LORE";
             EliteEquipmentDef.pickupModelPrefab = EliteEquipmentModel;
             EliteEquipmentDef.pickupIconSprite = EliteEquipmentIcon;

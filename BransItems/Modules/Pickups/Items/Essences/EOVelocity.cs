@@ -17,7 +17,11 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Velocity";
         public override string ItemLangTokenName => "ESSENCE_OF_VELOCITY";
         public override string ItemPickupDesc => "Slightly increase movement speed.";
-        public override string ItemFullDescription => $"Increase <style=cIsUtility>movement speed</style> by <style=cIsUtility>{MoveSpeedGain}%</style><style=cStack> (+{MoveSpeedGain}% per stack)</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"Increase <style=cIsUtility>movement speed</style> by <style=cIsUtility>{0}%</style><style=cStack> (+{1}% per stack)</style>.";
+
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, MoveSpeedGain, MoveSpeedGain);
 
         public override string ItemLore => "Entry number 17:\n\n Fast Faster Yet Faster The Speed Keeps Growing. \nThe Velocities Surging Swifter. \nSpedometer Reads Near-Relativistic. \nThis Next Experiment Seems Very Very Interesting ... \nWhat Do You Two Think?";
 

@@ -17,7 +17,11 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
         public override string ItemName => "Clover Sprout";
         public override string ItemLangTokenName => "CLOVER_SPROUT";
         public override string ItemPickupDesc => "Slightly increase your Luck.";
-        public override string ItemFullDescription => $"Increase your <style=cIsUtility>Luck</style> by <style=cIsUtility>{LuckGain*100f}% </style><style=cStack>(+{LuckGain*100f}% per stack)</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"Increase your <style=cIsUtility>Luck</style> by <style=cIsUtility>{0}% </style><style=cStack>(+{1}% per stack)</style>.";
+
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, LuckGain * 100f, LuckGain * 100f);
 
         public override string ItemLore => $"Im telling you dude, this clover is my charm! My luck is turning around! \n \n ...? \n \n What? \n \n Man, you JUST told me that you got food poisoning at the sloppy joe truck, you got stuck in traffic, you stubbed your toe, AND your date canceled on you." +
             $"\n \n I mean yeah. BUT, after showering I dropped my phone face down from chest height onto the tile... and IT SURVIVED UNSCATHED! This clover is my new personal good luck magnet! \n \n ... Let me see that. Dude its not even a 4 leaf clover, its just a regular 3 leaf one... One of the leafs has a nibble on it! Its like a 2.85 leaf clover AT BEST!";

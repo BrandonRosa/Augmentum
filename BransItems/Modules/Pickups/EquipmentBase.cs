@@ -24,8 +24,9 @@ namespace Augmentum.Modules.Pickups
 		public abstract string EquipmentName { get; }
 		public abstract string EquipmentLangTokenName { get; }
 		public abstract string EquipmentPickupDesc { get; }
-		public abstract string EquipmentFullDescription { get; }
-		public abstract string EquipmentLore { get; }
+		public abstract string EquipmentFullDescriptionRaw { get; }
+        public abstract string EquipmentFullDescriptionFormatted { get; }
+        public abstract string EquipmentLore { get; }
 
 		public virtual GameObject EquipmentModel { get; } = Resources.Load<GameObject>("Prefabs/PickupModels/PickupMystery");
 		public virtual Sprite EquipmentIcon { get; } = Resources.Load<Sprite>("Textures/MiscIcons/texMysteryIcon");
@@ -47,7 +48,7 @@ namespace Augmentum.Modules.Pickups
 		{
 			LanguageAPI.Add("EQUIPMENT_" + EquipmentLangTokenName + "_NAME", EquipmentName);
 			LanguageAPI.Add("EQUIPMENT_" + EquipmentLangTokenName + "_PICKUP", EquipmentPickupDesc);
-			LanguageAPI.Add("EQUIPMENT_" + EquipmentLangTokenName + "_DESCRIPTION", EquipmentFullDescription);
+			LanguageAPI.Add("EQUIPMENT_" + EquipmentLangTokenName + "_DESCRIPTION", EquipmentFullDescriptionRaw);
 			LanguageAPI.Add("EQUIPMENT_" + EquipmentLangTokenName + "_LORE", EquipmentLore);
 		}
 
@@ -59,7 +60,7 @@ namespace Augmentum.Modules.Pickups
 			EquipmentDef.name = "EQUIPMENT_" + EquipmentLangTokenName;
 			EquipmentDef.nameToken = "EQUIPMENT_" + EquipmentLangTokenName + "_NAME";
 			EquipmentDef.pickupToken = "EQUIPMENT_" + EquipmentLangTokenName + "_PICKUP";
-			EquipmentDef.descriptionToken = "EQUIPMENT_" + EquipmentLangTokenName + "_DESCRIPTION";
+			EquipmentDef.descriptionToken = EquipmentFullDescriptionFormatted;
 			EquipmentDef.loreToken = "EQUIPMENT_" + EquipmentLangTokenName + "_LORE";
 			EquipmentDef.pickupModelPrefab = EquipmentModel;
 			EquipmentDef.pickupIconSprite = EquipmentIcon;

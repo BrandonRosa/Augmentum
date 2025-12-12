@@ -25,8 +25,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
         public override string ItemName => "Charm of Desires";
         public override string ItemLangTokenName => "CHARM_OF_DESIRES";
         public override string ItemPickupDesc => "At the start of each stage, discover an Essence.";
-        public override string ItemFullDescription => $"At the start of <style=cIsUtility>each stage</style>, discover <style=cIsUtility>{DropCount}</style><style=cStack> (+{AdditionalDrops} per stack)</style> " + Augmentum.EssenceKeyword + ".";
+        public override string ItemFullDescriptionRaw =>
+            @"At the start of <style=cIsUtility>each stage</style>, discover <style=cIsUtility>{0}</style><style=cStack> (+{1} per stack)</style> {2}.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, DropCount, AdditionalDrops, Augmentum.EssenceKeyword);
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier2;

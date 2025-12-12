@@ -17,7 +17,11 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Life";
         public override string ItemLangTokenName => "ESSENCE_OF_LIFE";
         public override string ItemPickupDesc => "Slightly increase maximum health.";
-        public override string ItemFullDescription => $"Gain <style=cIsHealing>{HealthGain*100}% </style><style=cStack>(+{HealthGain*100}% per stack)</style> <style=cIsHealing>maximum health</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"Gain <style=cIsHealing>{0}% </style><style=cStack>(+{1}% per stack)</style> <style=cIsHealing>maximum health</style>.";
+
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, HealthGain * 100, HealthGain * 100);
 
         public override string ItemLore => $"<style=cMono>/--AUTO-TRANSCRIPTION FROM MEDICAL WARD OF UES [Redacted] --//</style>\n\n" +
             $"\"How have you been since our last appointment?\"\n\n" +

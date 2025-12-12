@@ -278,7 +278,7 @@ namespace Augmentum.Modules.ItemTiers.HighlanderTier
                         if ((ItemCatalog.GetItemDef(temp)._itemTierDef == itemTierDef))
                         {
                             ItemIndex toss = self.inventory.itemAcquisitionOrder[i];
-                            self.inventory.RemoveItem(toss);
+                            self.inventory.RemoveItemPermanent(toss);
 
                             Vector3 val = Vector3.up * 25f; //dropTransform.forward * dropForwardVelocityStrength;
                             PickupIndex pickupIndex = PickupCatalog.FindPickupIndex(toss);

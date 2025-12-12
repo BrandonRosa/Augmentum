@@ -28,12 +28,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
         public override string ItemName => "Nova Band";
         public override string ItemLangTokenName => "NOVA_BAND";
         public override string ItemPickupDesc => $"High damage hits also create a shielding nova. Give more shield for every ally in range. Recharges over time. <style=cIsVoid>Corrupts all {HealRing.instance.ItemName.Replace(" Band","")} and {BarrierRing.instance.ItemName.Replace(" Band", "")} Bands.</style>";
-        public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> create a " +
-            //$"<style=cIsHealing>{InitialRange}m</style> <style=cStack>(+{AdditionalRange}m per stack)</style> " +
-            $"<style=cIsHealing>shielding nova</style>" +
-            $" which gives <style=cIsHealing>{InitialPercent*100}%</style> <style=cStack>(+{AdditionalPercent*100}% per stack)</style> TOTAL damage as <style=cIsHealing>temporary shield</style> up to <style=cIsHealing>{InitialMaxHealing*100}%</style> <style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max health. " +
-            $"Give <style=cIsHealing>{(AllyBonus)*100}% more shield</style> per Ally in range. Recharges every <style=cIsUtility>{CooldownDuration}</style> seconds. <style=cIsVoid>Corrupts all {HealRing.instance.ItemName.Replace(" Band","")} and {BarrierRing.instance.ItemName.Replace(" Band", "")} Bands.</style> "; //Lasts <style=cIsHealing>{TempShieldDuration}</style> seconds. 
+        public override string ItemFullDescriptionRaw =>
+            @"Hits that deal <style=cIsDamage>more than 400% damage</style> create a <style=cIsHealing>shielding nova</style> which gives <style=cIsHealing>{0}%</style> <style=cStack>(+{1}% per stack)</style> TOTAL damage as <style=cIsHealing>temporary shield</style> up to <style=cIsHealing>{2}%</style> <style=cStack>(+{3}% per stack)</style> max health. Give <style=cIsHealing>{4}% more shield</style> per Ally in range. Recharges every <style=cIsUtility>{5}</style> seconds. <style=cIsVoid>Corrupts all {6} and {7} Bands.</style> ";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, InitialPercent * 100, AdditionalPercent * 100, InitialMaxHealing * 100, AdditionalMaxHealing * 100, (AllyBonus) * 100, CooldownDuration, HealRing.instance.ItemName.Replace(" Band", ""), BarrierRing.instance.ItemName.Replace(" Band", ""));
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.VoidTier2;

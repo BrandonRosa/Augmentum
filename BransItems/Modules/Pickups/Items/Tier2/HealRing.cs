@@ -27,9 +27,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
         public override string ItemName => "Halda's Band";
         public override string ItemLangTokenName => "HEALING_BAND";
         public override string ItemPickupDesc => "High damage hits also heal you. Recharges over time.";
-        public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also <style=cIsHealing>heal</style> you for <style=cIsHealing>{InitialPercent*100}%</style> <style=cStack>(+{AdditionalPercent*100}% per stack)</style> of the TOTAL damage" +
-            $" up to <style=cIsHealing>{InitialMaxHealing*100}%</style> <style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max health. Recharges every <style=cIsUtility>{HealRing.HealingRingsCooldownTime}</style> seconds.";
+        public override string ItemFullDescriptionRaw =>
+            @"Hits that deal <style=cIsDamage>more than 400% damage</style> also <style=cIsHealing>heal</style> you for <style=cIsHealing>{0}%</style> <style=cStack>(+{1}% per stack)</style> of the TOTAL damage up to <style=cIsHealing>{2}%</style> <style=cStack>(+{3}% per stack)</style> max health. Recharges every <style=cIsUtility>{4}</style> seconds.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, InitialPercent * 100, AdditionalPercent * 100, InitialMaxHealing * 100, AdditionalMaxHealing * 100, HealRing.HealingRingsCooldownTime);
         public override string ItemLore => $"Should sickness overtake you,\nShould death draw near,\nI will heal you.\nI will be there.";
 
         public override ItemTier Tier => ItemTier.Tier2;

@@ -26,9 +26,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
         public override string ItemName => "Brindel's Band";
         public override string ItemLangTokenName => "BARRIER_BAND";
         public override string ItemPickupDesc => "High damage hits also grants barrier. Recharges over time.";
-        public override string ItemFullDescription => $"Hits that deal <style=cIsDamage>more than 400% damage</style> also grant a <style=cIsHealing>temporary barrier</style> for <style=cIsHealing>{InitialPercent*100}%</style><style=cStack>(+{AdditionalPercent*100}% per stack)</style> of the TOTAL damage" +
-            $" up to <style=cIsHealing>{InitialMaxHealing*100}%</style><style=cStack>(+{AdditionalMaxHealing*100}% per stack)</style> max combined health. Recharges every <style=cIsUtility>{HealRing.HealingRingsCooldownTime}</style> seconds.";
+        public override string ItemFullDescriptionRaw =>
+            @"Hits that deal <style=cIsDamage>more than 400% damage</style> also grant a <style=cIsHealing>temporary barrier</style> for <style=cIsHealing>{0}%</style><style=cStack>(+{1}% per stack)</style> of the TOTAL damage up to <style=cIsHealing>{2}%</style><style=cStack>(+{3}% per stack)</style> max combined health. Recharges every <style=cIsUtility>{4}</style> seconds.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, InitialPercent * 100, AdditionalPercent * 100, InitialMaxHealing * 100, AdditionalMaxHealing * 100, HealRing.HealingRingsCooldownTime);
         public override string ItemLore => $"Should you become weak,\nShould harm come to you,\nI will protect you.\nI will be there.";
 
         public override ItemTier Tier => ItemTier.Tier2;

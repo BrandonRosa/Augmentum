@@ -25,8 +25,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
         public override string ItemName => "Mega Matroyshka";
         public override string ItemLangTokenName => "MEGA_MATROYSHKA";
         public override string ItemPickupDesc => "The next time you kill an elite, crack open for a <style=cIsHealth>red item</style> and a <style=cIsHealing>massive surprise</style>.";
-        public override string ItemFullDescription => $"On next <style=cIsDamage>elite kill</style>, cracks open for a <style=cIsHealth>red item</style>. Gain <style=cIsHealing>Massive Matroyshka</style>. <style=cIsUtility>Discover future Matroyshka rewards</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"On next <style=cIsDamage>elite kill</style>, cracks open for a <style=cIsHealth>red item</style>. Gain <style=cIsHealing>Massive Matroyshka</style>. <style=cIsUtility>Discover future Matroyshka rewards</style>.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw);
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier3;

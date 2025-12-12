@@ -18,9 +18,17 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Totality";
         public override string ItemLangTokenName => "ESSENCE_OF_TOTALITY";
         public override string ItemPickupDesc => "Slightly increase all stats.";
-        public override string ItemFullDescription => $"Gain: \n• <style=cIsDamage>{AttackSpeedGain}%</style><style=cStack> (+{AttackSpeedGain}% per stack)</style> <style=cIsDamage>attack speed</style> \n• <style=cIsUtility>{MoveSpeedGain}%</style><style=cStack> (+{MoveSpeedGain}% per stack)</style> <style=cIsUtility>movement speed</style> \n• <style=cIsDamage>{CritChanceGain}%</style><style=cStack> (+{CritChanceGain}% per stack)</style> <style=cIsDamage>Critical Strike</style> chance " +
-            $"\n• <style=cIsDamage>{DamageGain*100}%</style><style=cStack> (+{DamageGain*100}% per stack)</style> <style=cIsDamage>damage</style> \n• <style=cIsHealing>{HealthGain*100}%</style><style=cStack> (+{HealthGain*100}% per stack)</style> <style=cIsHealing>health</style> \n• <style=cIsHealing>{ArmorGain } </style><style=cStack> (+{ArmorGain } per stack)</style> <style=cIsHealing>armor</style>";
+        public override string ItemFullDescriptionRaw =>
+            @"Gain: 
+                • <style=cIsDamage>{0}%</style><style=cStack> (+{1}% per stack)</style> <style=cIsDamage>attack speed</style> 
+                • <style=cIsUtility>{2}%</style><style=cStack> (+{3}% per stack)</style> <style=cIsUtility>movement speed</style> 
+                • <style=cIsDamage>{4}%</style><style=cStack> (+{5}% per stack)</style> <style=cIsDamage>Critical Strike</style> chance 
+                • <style=cIsDamage>{6}%</style><style=cStack> (+{7}% per stack)</style> <style=cIsDamage>damage</style> 
+                • <style=cIsHealing>{8}%</style><style=cStack> (+{9}% per stack)</style> <style=cIsHealing>health</style> 
+                • <style=cIsHealing>{10} </style><style=cStack> (+{11} per stack)</style> <style=cIsHealing>armor</style>";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, AttackSpeedGain, AttackSpeedGain, MoveSpeedGain, MoveSpeedGain, CritChanceGain, CritChanceGain, DamageGain * 100, DamageGain * 100, HealthGain * 100, HealthGain * 100, ArmorGain, ArmorGain);
         public override string ItemLore => $"Excerpt from the folk tale \"The Radiant Luminance:\"\n\n" +
             $"\"In the twilight of ancient realms, a tale unfolds of the rarest gem, a stone coveted by noble souls of valor. Legends speak of the Radiant Luminance, an ethereal jewel that bestowed boundless strength upon those deemed worthy. " +
             $"Whispers carried through the annals of time tell of heroes who, in their noble deeds, unwittingly birthed this precious gemstone from the very essence of their valorous souls.\n" +

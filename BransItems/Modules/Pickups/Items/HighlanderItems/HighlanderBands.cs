@@ -22,8 +22,11 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Chal’s Band";
         public override string ItemLangTokenName => "COOLDOWN_BAND";
         public override string ItemPickupDesc => "Reduces Band cooldowns. High damage hits deal more damage.";
-        public override string ItemFullDescription => $"Reduces Band <style=cIsUtility>cooldowns</style> by <style=cIsUtility>{CooldownReduction * 100f}%</style>. Hits that deal <style=cIsDamage>more than 350% damage</style> deal <style=cIsDamage>50% more</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"Reduces Band <style=cIsUtility>cooldowns</style> by <style=cIsUtility>{0}%</style>. Hits that deal <style=cIsDamage>more than 350% damage</style> deal <style=cIsDamage>50% more</style>.";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, CooldownReduction * 100f);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -559,7 +562,9 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Tlaloc’s Band";
         public override string ItemLangTokenName => "DOUBLE_BAND";
         public override string ItemPickupDesc => "Band effects trigger twice. High damage hits deal more damage.";
-        public override string ItemFullDescription => $"Band <style=cIsUtility>effects trigger twice</style>. Hits that deal <style=cIsDamage>more than 400% damage</style> deal <style=cIsDamage>50% more</style>.";
+        public override string ItemFullDescriptionRaw => $"Band <style=cIsUtility>effects trigger twice</style>. Hits that deal <style=cIsDamage>more than 400% damage</style> deal <style=cIsDamage>50% more</style>.";
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw);
 
         public override string ItemLore => "";
 

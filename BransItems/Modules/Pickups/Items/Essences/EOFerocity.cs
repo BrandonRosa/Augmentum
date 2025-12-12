@@ -17,7 +17,11 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Ferocity";
         public override string ItemLangTokenName => "ESSENCE_OF_FEROCITY";
         public override string ItemPickupDesc => "Slightly increase attack speed.";
-        public override string ItemFullDescription => $"Increase <style=cIsDamage>attack speed</style> by <style=cIsDamage>{AttackSpeedGain}% </style><style=cStack>(+{AttackSpeedGain}% per stack)</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"Increase <style=cIsDamage>attack speed</style> by <style=cIsDamage>{0}% </style><style=cStack>(+{1}% per stack)</style>.";
+
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, AttackSpeedGain, AttackSpeedGain);
 
         public override string ItemLore => $"Ever since my partner got their hands on that stone, it's like they've become a whirlwind of action. Their attacks hit harder, and it's almost dizzying watching them go." +
             $" There's this newfound intensity, like a beast unleashed. It's not just about speed; it's about ferocity. The enemies don't stand a chance, and I find myself struggling just to keep up." +

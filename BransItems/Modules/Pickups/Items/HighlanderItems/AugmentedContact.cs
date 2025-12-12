@@ -19,7 +19,11 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Augmented Contact";
         public override string ItemLangTokenName => "AUGMENTED_CONTACT";
         public override string ItemPickupDesc => "Increase crit damage and crit chance.";
-        public override string ItemFullDescription => $"Increase <style=cIsDamage>Critical Strike damage</style> by <style=cIsDamage>{DamageGain}%</style> and <style=cIsDamage>Critical Strike chance</style> by <style=cIsDamage>{CritChanceGain}%</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"Increase <style=cIsDamage>Critical Strike damage</style> by <style=cIsDamage>{0}%</style> and <style=cIsDamage>Critical Strike chance</style> by <style=cIsDamage>{1}%</style>.";
+
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, DamageGain, CritChanceGain);
 
         public override string ItemLore => "";
 

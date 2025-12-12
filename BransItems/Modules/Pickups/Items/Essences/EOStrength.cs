@@ -18,7 +18,11 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override string ItemName => "Essence of Strength";
         public override string ItemLangTokenName => "ESSENCE_OF_STRENGTH";
         public override string ItemPickupDesc => "Slightly increase damage.";
-        public override string ItemFullDescription => $"Increase <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain*100}%</style> <style=cStack>(+{DamageGain*100}% per stack)</style>."; //$"Increase <style=cIsDamage>damage</style> by <style=cIsDamage>{DamageGain}</style> <style=cStack>(+{DamageGain} per stack)</style>.";
+        public override string ItemFullDescriptionRaw =>
+            @"Increase <style=cIsDamage>damage</style> by <style=cIsDamage>{0}%</style> <style=cStack>(+{1}% per stack)</style>.";
+
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, DamageGain * 100, DamageGain * 100);
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +

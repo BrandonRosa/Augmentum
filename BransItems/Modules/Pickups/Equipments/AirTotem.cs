@@ -27,8 +27,11 @@ namespace Augmentum.Modules.Pickups.Equipments
 
         public override string EquipmentPickupDesc => "Transform an item to its "+Augmentum.EssencesKeyword+".";
 
-        public override string EquipmentFullDescription => "<style=cIsUtility>Transform</style> an item to an " + Augmentum.EssenceKeyword + " which gives a slight <style=cIsUtility>stat boost</style>.<style=cIsUtility> Scales with item rarity</style>.";
+        public override string EquipmentFullDescriptionRaw =>
+            @"<style=cIsUtility>Transform</style> an item to an {0} which gives a slight <style=cIsUtility>stat boost</style>.<style=cIsUtility> Scales with item rarity</style>.";
 
+        public override string EquipmentFullDescriptionFormatted =>
+            string.Format(EquipmentFullDescriptionRaw, Augmentum.EssenceKeyword);
         public override string EquipmentLore =>
             $"";
         public override bool UseTargeting => true;

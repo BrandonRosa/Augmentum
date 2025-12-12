@@ -20,8 +20,11 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemName => "Platinum Fists";
         public override string ItemLangTokenName => "PLATINUM_FISTS";
         public override string ItemPickupDesc => "While only using your Primary skill, increase attack speed and armor.";
-        public override string ItemFullDescription => $"While using your <style=cIsUtility>Primary skill</style>, gain <style=cIsDamage>{AttackSpeedIncrease}% attack speed</style> and <style=cIsHealing>{ArmorIncrease} armor</style> every second up to {MaxSeconds} seconds."+FinishDescription();
+        public override string ItemFullDescriptionRaw =>
+            @"While using your <style=cIsUtility>Primary skill</style>, gain <style=cIsDamage>{0}% attack speed</style> and <style=cIsHealing>{1} armor</style> every second up to {2} seconds.{3}";
 
+        public override string ItemFullDescriptionFormatted =>
+            string.Format(ItemFullDescriptionRaw, AttackSpeedIncrease, ArmorIncrease, MaxSeconds, FinishDescription());
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
