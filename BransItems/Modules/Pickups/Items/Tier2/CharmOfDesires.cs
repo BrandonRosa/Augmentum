@@ -17,6 +17,7 @@ using UnityEngine.AddressableAssets;
 using Augmentum.Modules.Pickups.Items.CoreItems;
 using Augmentum.Modules.Pickups.Items.Tier1;
 using Augmentum.Modules.Pickups.Items.Tier3;
+using RoR2.ContentManagement;
 
 namespace Augmentum.Modules.Pickups.Items.Tier2
 {
@@ -52,7 +53,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
 
         public static int BaseChoices=2;
 
-        public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
+        public static GameObject potentialPrefab = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_OptionPickup.OptionPickup_prefab)).WaitForCompletion();
 
         public override void Init(ConfigFile config)
         {
@@ -332,11 +333,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
                     pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),
                     prefabOverride = potentialPrefab,
                     position = transform.position + Vector3.up * 1.5f,
-                    rotation = Quaternion.identity,
                     pickupIndex = drops[0]
                 };
                 //pickupInfo.prefabOverride = (choices.Length > 3) ? commandCubePrefab : voidPotentialPrefab;
                 pickupInfo.prefabOverride = potentialPrefab;
+ 
                 PickupDropletController.CreatePickupDroplet(pickupInfo,transform.position + Vector3.up * 1.5f, val);
                 val = val2 * val;
 

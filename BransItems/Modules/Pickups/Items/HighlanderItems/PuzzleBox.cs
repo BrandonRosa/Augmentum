@@ -26,7 +26,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
     {
         public override string ItemName => "Pharaohs Puzzlebox";
         public override string ItemLangTokenName => "PUZZLEBOX";
-        public override string ItemPickupDesc => "The first chest has a chance to have its tier upgraded. Gain a bit of semi-permant luck when this happens.";
+        public override string ItemPickupDesc => "The first chest has a chance to have its tier upgraded. Gain a bit of semi-permanent luck when this happens.";
         public override string ItemFullDescriptionRaw =>
         @"Gain <style=cIsUtility>{0}% Luck</style>. The first chest opened each stage has a <style=cIsUtility>{1}%</style> chance upgrade its item. Gain {2}3 Clover Sprouts</color> if successful, {3}1</color> if not. When parting with the <color=#C8A200>Pharaoh</color>, <style=cDeath>split</style> your {4}Clovers</color>.";
 

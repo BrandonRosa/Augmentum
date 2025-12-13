@@ -267,6 +267,7 @@ namespace Augmentum
             //Compatability
             ModLogger.LogInfo("-------------COMPATIBILITY---------------------");
             ValidateModCompatability();
+            OptionPickupFix.Init();
 
 
         }

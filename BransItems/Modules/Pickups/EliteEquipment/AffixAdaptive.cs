@@ -378,7 +378,7 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public static void SetStaticVarsToConfig()
         {
-            AdaptivePresetConfig config =  ();
+            AdaptivePresetConfig config = GetCurrentConfigOptions();
             _healthMult = config.Healthmult;
             _damageMult = config.Damagemult;
             _costMult = config.Costmultiplier;
