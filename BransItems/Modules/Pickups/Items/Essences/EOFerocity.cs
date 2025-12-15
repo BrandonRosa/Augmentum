@@ -21,7 +21,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             @"Increase <style=cIsDamage>attack speed</style> by <style=cIsDamage>{0}% </style><style=cStack>(+{1}% per stack)</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, AttackSpeedGain, AttackSpeedGain);
+            string.Format(GetLangDesc(), AttackSpeedGain, AttackSpeedGain);
 
         public override string ItemLore => $"Ever since my partner got their hands on that stone, it's like they've become a whirlwind of action. Their attacks hit harder, and it's almost dizzying watching them go." +
             $" There's this newfound intensity, like a beast unleashed. It's not just about speed; it's about ferocity. The enemies don't stand a chance, and I find myself struggling just to keep up." +
@@ -56,6 +56,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

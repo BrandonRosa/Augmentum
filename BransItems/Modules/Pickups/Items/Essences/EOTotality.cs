@@ -28,7 +28,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
                 • <style=cIsHealing>{10} </style><style=cStack> (+{11} per stack)</style> <style=cIsHealing>armor</style>";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, AttackSpeedGain, AttackSpeedGain, MoveSpeedGain, MoveSpeedGain, CritChanceGain, CritChanceGain, DamageGain * 100, DamageGain * 100, HealthGain * 100, HealthGain * 100, ArmorGain, ArmorGain);
+            string.Format(GetLangDesc(), AttackSpeedGain, AttackSpeedGain, MoveSpeedGain, MoveSpeedGain, CritChanceGain, CritChanceGain, DamageGain * 100, DamageGain * 100, HealthGain * 100, HealthGain * 100, ArmorGain, ArmorGain);
         public override string ItemLore => $"Excerpt from the folk tale \"The Radiant Luminance:\"\n\n" +
             $"\"In the twilight of ancient realms, a tale unfolds of the rarest gem, a stone coveted by noble souls of valor. Legends speak of the Radiant Luminance, an ethereal jewel that bestowed boundless strength upon those deemed worthy. " +
             $"Whispers carried through the annals of time tell of heroes who, in their noble deeds, unwittingly birthed this precious gemstone from the very essence of their valorous souls.\n" +
@@ -74,6 +74,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

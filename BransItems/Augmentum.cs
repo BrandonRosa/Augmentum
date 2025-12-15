@@ -86,8 +86,8 @@ namespace Augmentum
         //public static Dictionary<InteractableBase, bool> InteractableStatusDictionary = new Dictionary<InteractableBase, bool>();
         // public static Dictionary<SurvivorBase, bool> SurvivorStatusDictionary = new Dictionary<SurvivorBase, bool>();
 
-        public static string EssenceKeyword => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">Essence</color>";
-        public static string EssencesKeyword => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">Essences</color>";
+        public static string EssenceKeyword => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">"+Language.GetString("TIER_CORE_ESSENCE_KEYWORD") +"</color>";
+        public static string EssencesKeyword => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">"+Language.GetString("TIER_CORE_ESSENCES_KEYWORD") +"</color>";
 
         public static string CoreColorString => "<color=#" + ColorCatalog.GetColorHexString(Colors.TempCoreLight) + ">";
         public void Awake()
@@ -193,6 +193,16 @@ namespace Augmentum
                     {
                         item.Init(Config);
                         Config.SettingChanged += (object o, SettingChangedEventArgs args) => { item.ItemDef.descriptionToken = item.ItemFullDescriptionFormatted; };
+                        On.RoR2.Language.LoadStrings += (orig,self) =>
+                        {
+                            orig(self);
+                            item.ItemDef.descriptionToken = item.ItemFullDescriptionFormatted;
+                        };
+                        On.RoR2.Language.SetCurrentLanguage += (orig, languageIndex) =>
+                        {
+                            orig(languageIndex);
+                            item.ItemDef.descriptionToken = item.ItemFullDescriptionFormatted;
+                        };
                         ModLogger.LogInfo("Item: " + item.ItemName + " Initialized!");
                         //if (item.ItemDef._itemTierDef==Core.instance.itemTierDef)
                         //{

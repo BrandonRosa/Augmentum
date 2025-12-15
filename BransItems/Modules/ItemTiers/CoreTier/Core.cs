@@ -10,6 +10,7 @@ using R2API;
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Augmentum.Modules.Pickups;
 
 namespace Augmentum.Modules.ItemTiers.CoreTier
 {
@@ -48,9 +49,15 @@ namespace Augmentum.Modules.ItemTiers.CoreTier
 
             CreateDropletPrefab();
             CreateVFXPrefab();
-
+            CreateLang();
             CreateTier();
 
+        }
+
+        private void CreateLang()
+        {
+            LanguageAPI.Add("TIER_CORE_ESSENCE_KEYWORD", "Essence");
+            LanguageAPI.Add("TIER_CORE_ESSENCES_KEYWORD", "Essences");
         }
 
         private void CreateDropletPrefab()

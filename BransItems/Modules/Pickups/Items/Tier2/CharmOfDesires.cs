@@ -30,7 +30,9 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             @"At the start of <style=cIsUtility>each stage</style>, discover <style=cIsUtility>{0}</style><style=cStack> (+{1} per stack)</style> {2}.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, DropCount, AdditionalDrops, Augmentum.EssenceKeyword);
+            string.Format(Language.GetString("ITEM_" + ItemLangTokenName + "_DESCRIPTION"), DropCount, AdditionalDrops, Augmentum.EssenceKeyword);
+
+
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier2;
@@ -61,6 +63,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

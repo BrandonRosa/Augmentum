@@ -27,7 +27,7 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
             @"Gain a veil which <style=cIsHealing>blocks</style> damage then gives you <style=cIsHealing>5 seconds</style> of <style=cIsHealing>invincibility</style>. Recharges after <style=cIsUtility>120 seconds</style>. <style=cIsHealing>Ignore indirect damage</style>. <style=cIsUtility>Discover replacements for useless items</style>. <style=cDeath>Set max health to 1</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw);
+            string.Format(GetLangDesc());
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Lunar;
@@ -473,6 +473,7 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

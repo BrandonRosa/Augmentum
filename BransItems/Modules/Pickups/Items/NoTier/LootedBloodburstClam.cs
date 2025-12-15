@@ -22,7 +22,7 @@ namespace Augmentum.Modules.Pickups.Items.NoTier
             @"Future essence drops will come with {0}<style=cStack>(+{0} per stack)</style> more.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, BloodburstClam.AdditionalDrops);
+            string.Format(GetLangDesc(), BloodburstClam.AdditionalDrops);
 
         public override string ItemLore => "";
 

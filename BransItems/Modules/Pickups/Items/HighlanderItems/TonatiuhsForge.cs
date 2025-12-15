@@ -24,7 +24,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             @"When using your <style=cIsUtility>Special skill</style>, increase your total <style=cIsDamage>damage</style> by <style=cIsDamage>{0}%</style> for every second of cooldown. Lasts {1} seconds.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, DamageGain * 100, Duration);
+            string.Format(GetLangDesc(), DamageGain * 100, Duration);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -60,6 +60,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
 
         }

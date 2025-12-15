@@ -27,7 +27,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
         public override string ItemPickupDesc => "The next time a teleporter is activated, crack open for a <style=cIsHealing>green item</style> and a medium surprise.";
         public override string ItemFullDescriptionRaw => $"On next <style=cIsUtility>teleporter activation</style>, cracks open for a <style=cIsHealing>green item</style>. Gain Medium Matroyshka.";
 
-        public override string ItemFullDescriptionFormatted => ItemFullDescriptionRaw;
+        public override string ItemFullDescriptionFormatted => GetLangDesc();
 
         public override string ItemLore => "";
 
@@ -58,6 +58,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

@@ -22,7 +22,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             @"Increase <style=cIsUtility>movemement speed</style> by <style=cIsUtility>{0}%</style>, <style=cIsUtility>sprint speed</style> by <style=cIsUtility>{1}%</style>, and <style=cIsUtility>jump height</style> by <style=cIsUtility>{2}%</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, MovementGain, SprintGain, JumpPowerGain);
+            string.Format(GetLangDesc(), MovementGain, SprintGain, JumpPowerGain);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -60,6 +60,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
 
         }

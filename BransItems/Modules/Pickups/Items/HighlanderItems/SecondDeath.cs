@@ -25,7 +25,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             @"<style=cIsDamage>On-Kill</style> effects <style=cIsDamage>trigger twice</style>. Bosses <style=cIsDamage>trigger On-Kill</style> effects every <style=cIsHealth>{0}%</style> of <style=cIsHealth>health lost</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, HealthPercent * 100);
+            string.Format(GetLangDesc(), HealthPercent * 100);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -61,6 +61,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
 
         }

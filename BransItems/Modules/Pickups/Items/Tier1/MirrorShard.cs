@@ -28,7 +28,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
             @"On pickup, becomes a copy of a white item in your inventory";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw);
+            string.Format(GetLangDesc());
 
         public override string ItemLore => $"\"Hey boss, I have news about the prototype.\"" + "\n" +
             $"\"What is it? Did the output object not print correctly?\"" + "\n" +
@@ -65,6 +65,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
             
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

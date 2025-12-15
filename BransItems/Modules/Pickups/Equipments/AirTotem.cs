@@ -31,7 +31,7 @@ namespace Augmentum.Modules.Pickups.Equipments
             @"<style=cIsUtility>Transform</style> an item to an {0} which gives a slight <style=cIsUtility>stat boost</style>.<style=cIsUtility> Scales with item rarity</style>.";
 
         public override string EquipmentFullDescriptionFormatted =>
-            string.Format(EquipmentFullDescriptionRaw, Augmentum.EssenceKeyword);
+            string.Format(GetLangDesc(), Augmentum.EssenceKeyword);
         public override string EquipmentLore =>
             $"";
         public override bool UseTargeting => true;

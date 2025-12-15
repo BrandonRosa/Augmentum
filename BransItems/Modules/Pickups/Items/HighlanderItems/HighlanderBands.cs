@@ -26,7 +26,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             @"Reduces Band <style=cIsUtility>cooldowns</style> by <style=cIsUtility>{0}%</style>. Hits that deal <style=cIsDamage>more than 350% damage</style> deal <style=cIsDamage>50% more</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, CooldownReduction * 100f);
+            string.Format(GetLangDesc(), CooldownReduction * 100f);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -63,6 +63,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
 
         }
@@ -564,7 +565,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public override string ItemPickupDesc => "Band effects trigger twice. High damage hits deal more damage.";
         public override string ItemFullDescriptionRaw => $"Band <style=cIsUtility>effects trigger twice</style>. Hits that deal <style=cIsDamage>more than 400% damage</style> deal <style=cIsDamage>50% more</style>.";
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw);
+            string.Format(GetLangDesc());
 
         public override string ItemLore => "";
 

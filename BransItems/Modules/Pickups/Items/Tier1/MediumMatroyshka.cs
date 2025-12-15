@@ -28,7 +28,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
             @"On next <style=cIsUtility>equipment use</style>, cracks open for a white item. Gain {0}Mini Matroyshka</color>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, Augmentum.CoreColorString);
+            string.Format(GetLangDesc(), Augmentum.CoreColorString);
 
         public override string ItemLore => "";
 
@@ -59,6 +59,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

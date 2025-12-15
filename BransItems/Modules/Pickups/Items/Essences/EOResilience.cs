@@ -21,7 +21,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             @"Gain <style=cIsHealing>{0} </style><style=cStack>(+{1} per stack)</style> <style=cIsHealing> armor</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, ArmorGain, ArmorGain);
+            string.Format(GetLangDesc(), ArmorGain, ArmorGain);
 
         public override string ItemLore => $"";
 
@@ -51,6 +51,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

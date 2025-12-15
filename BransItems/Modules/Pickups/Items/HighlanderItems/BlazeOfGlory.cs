@@ -26,7 +26,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             @"After a boss <style=cIsHealth>loses {0}% health</style>, summon {1} elite <style=cIsDamage>Jellyfish</style>. When allies <style=cDeath>die</style>, send them to the afterlife in a <style=cIsDamage>blaze of glory</style> dealing <style=cIsDamage>{2}% explosive damage</style> to enemies.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, HealthPercent * 100, SpawnCount, DamageDealt);
+            string.Format(GetLangDesc(), HealthPercent * 100, SpawnCount, DamageDealt);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -72,6 +72,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
 
         }

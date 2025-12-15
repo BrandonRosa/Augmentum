@@ -23,7 +23,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             @"Increase <style=cIsDamage>Critical Strike damage</style> by <style=cIsDamage>{0}%</style> and <style=cIsDamage>Critical Strike chance</style> by <style=cIsDamage>{1}%</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, DamageGain, CritChanceGain);
+            string.Format(GetLangDesc(), DamageGain, CritChanceGain);
 
         public override string ItemLore => "";
 
@@ -60,6 +60,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
 
         }

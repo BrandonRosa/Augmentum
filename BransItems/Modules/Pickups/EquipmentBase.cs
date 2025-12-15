@@ -52,7 +52,12 @@ namespace Augmentum.Modules.Pickups
 			LanguageAPI.Add("EQUIPMENT_" + EquipmentLangTokenName + "_LORE", EquipmentLore);
 		}
 
-		public abstract ItemDisplayRuleDict CreateItemDisplayRules();
+        public string GetLangDesc()
+        {
+            return Language.GetString("EQUIPMENT_" + EquipmentLangTokenName + "_DESCRIPTION");
+        }
+
+        public abstract ItemDisplayRuleDict CreateItemDisplayRules();
 
 		protected void CreateEquipment()
 		{

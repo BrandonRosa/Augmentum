@@ -21,7 +21,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             @"Gain <style=cIsHealing>{0}% </style><style=cStack>(+{1}% per stack)</style> <style=cIsHealing>maximum health</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, HealthGain * 100, HealthGain * 100);
+            string.Format(GetLangDesc(), HealthGain * 100, HealthGain * 100);
 
         public override string ItemLore => $"<style=cMono>/--AUTO-TRANSCRIPTION FROM MEDICAL WARD OF UES [Redacted] --//</style>\n\n" +
             $"\"How have you been since our last appointment?\"\n\n" +
@@ -58,6 +58,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

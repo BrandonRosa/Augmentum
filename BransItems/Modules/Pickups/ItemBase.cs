@@ -69,6 +69,11 @@ namespace Augmentum.Modules.Pickups
 			LanguageAPI.Add("ITEM_" + ItemLangTokenName + "_LORE", ItemLore);
 		}
 
+		public string GetLangDesc()
+		{
+			return Language.GetString("ITEM_" + ItemLangTokenName + "_DESCRIPTION");
+		}
+
 		public abstract ItemDisplayRuleDict CreateItemDisplayRules();
 
 		protected void CreateItem()
@@ -87,14 +92,26 @@ namespace Augmentum.Modules.Pickups
 			if(ModdedTierDef==null)
 				ItemDef.deprecatedTier = Tier;
 			else
-				ItemDef._itemTierDef = ModdedTierDef						;
+				ItemDef._itemTierDef = ModdedTierDef;
 			ItemDef.tags = ItemTags;
 			//ItemTag.WorldUnique
 			var itemDisplayRuleDict = CreateItemDisplayRules();
 			ItemAPI.Add(new CustomItem(ItemDef, itemDisplayRuleDict));
 		}
 
-        
+        protected virtual void SetLogbookCameraPosition()
+        {
+            var modelParameters = ItemModel.AddComponent<ModelPanelParameters>();
+
+            modelParameters.focusPointTransform = ItemModel.transform.Find("FocusPoint");
+            modelParameters.cameraPositionTransform = ItemModel.transform.Find("CameraPosition");
+            modelParameters.modelRotation = new Quaternion(0f, 0f, 0f, 1f);
+
+            modelParameters.minDistance = 1;
+            modelParameters.maxDistance = 3;
+        }
+
+
 
         public abstract void Hooks();
 

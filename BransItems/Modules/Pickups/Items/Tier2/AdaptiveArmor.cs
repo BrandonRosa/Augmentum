@@ -30,7 +30,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             @"After taking damage twice in <style=cIsDamage>{0}</style> seconds, reduce all <style=cIsDamage>incoming damage</style> by <style=cIsDamage>{1} </style><style=cStack>(+{2} per stack)</style> for <style=cIsDamage>{3} </style><style=cStack>(+{4} per stack)</style> seconds. Cannot be reduced below <style=cIsDamage>1</style>. Recharges after <style=cIsDamage>{5}</style> seconds.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, DamageWindow, 5f * InitialFortify, AdditionalFortify * 5f, InitialFortifyTime, AdditionalFortifyTime, CooldownTime);
+            string.Format(GetLangDesc(), DamageWindow, 5f * InitialFortify, AdditionalFortify * 5f, InitialFortifyTime, AdditionalFortifyTime, CooldownTime);
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier2;
@@ -66,6 +66,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

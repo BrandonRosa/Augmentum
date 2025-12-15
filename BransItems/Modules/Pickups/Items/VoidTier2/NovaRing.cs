@@ -32,7 +32,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             @"Hits that deal <style=cIsDamage>more than 400% damage</style> create a <style=cIsHealing>shielding nova</style> which gives <style=cIsHealing>{0}%</style> <style=cStack>(+{1}% per stack)</style> TOTAL damage as <style=cIsHealing>temporary shield</style> up to <style=cIsHealing>{2}%</style> <style=cStack>(+{3}% per stack)</style> max health. Give <style=cIsHealing>{4}% more shield</style> per Ally in range. Recharges every <style=cIsUtility>{5}</style> seconds. <style=cIsVoid>Corrupts all {6} and {7} Bands.</style> ";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, InitialPercent * 100, AdditionalPercent * 100, InitialMaxHealing * 100, AdditionalMaxHealing * 100, (AllyBonus) * 100, CooldownDuration, HealRing.instance.ItemName.Replace(" Band", ""), BarrierRing.instance.ItemName.Replace(" Band", ""));
+            string.Format(GetLangDesc(), InitialPercent * 100, AdditionalPercent * 100, InitialMaxHealing * 100, AdditionalMaxHealing * 100, (AllyBonus) * 100, CooldownDuration, HealRing.instance.ItemName.Replace(" Band", ""), BarrierRing.instance.ItemName.Replace(" Band", ""));
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.VoidTier2;
@@ -85,6 +85,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             SetupEffectPrefab();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

@@ -22,7 +22,7 @@ namespace Augmentum.Modules.Pickups.Items.NoTier
             @"Future discoveries will come with {0}<style=cStack>(+{0})</style> more choice.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, DiscoveryMedallion.AdditionalChoices);
+            string.Format(GetLangDesc(), DiscoveryMedallion.AdditionalChoices);
 
         public override string ItemLore => "";
 

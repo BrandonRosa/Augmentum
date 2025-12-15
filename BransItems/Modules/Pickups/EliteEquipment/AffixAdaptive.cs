@@ -11,6 +11,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using static Augmentum.Augmentum;
 using static Augmentum.Modules.Utils.ItemHelpers;
+using System.Runtime.CompilerServices;
+using RoR2.WwiseUtils;
 
 
 namespace Augmentum.Modules.Pickups.EliteEquipments
@@ -25,8 +27,8 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public override string EliteEquipmentFullDescriptionRaw => EliteEquipmentPickupDesc+$"\nWhen hit, gain a <style=cIsHealing>defensive boost</style> for <style=cIsHealing>"+@"{0}</style> seconds, become <style=cIsUtility>invisible</style> for <style=cIsUtility>{1}</style> , and gain a massive speed boost. Recharges after {2} seconds."+"\n" +
             ((LacerationCount==0||MaxLaceration==0)?"":@"Attacks apply 20 <style=cIsDamage>laceration</style> on hit for <style=cIsDamage>{3}</style> seconds, every 10 stacks increases <style=cIsDamage>incoming damage</style> by <style=cIsDamage>1</style>.");
-        public override string EliteEquipmentFullDescriptionFormatted => ((LacerationCount == 0 || MaxLaceration == 0) ? string.Format(EliteEquipmentFullDescriptionRaw, AdaptiveBoostTimer, InvisibleTimer, AdaptiveCooldownTimer): 
-                string.Format(EliteEquipmentFullDescriptionRaw, AdaptiveBoostTimer, InvisibleTimer, AdaptiveCooldownTimer, LacerationDuration));
+        public override string EliteEquipmentFullDescriptionFormatted => ((LacerationCount == 0 || MaxLaceration == 0) ? string.Format(GetLangDesc(), AdaptiveBoostTimer, InvisibleTimer, AdaptiveCooldownTimer): 
+                string.Format(GetLangDesc(), AdaptiveBoostTimer, InvisibleTimer, AdaptiveCooldownTimer, LacerationDuration));
         public override string EliteEquipmentLore => "";
 
         public override string EliteModifier => "Adaptive";
@@ -921,7 +923,33 @@ namespace Augmentum.Modules.Pickups.EliteEquipments
 
         public override void Hooks()
         {
+            //On.RoR2.CharacterBody.OnBuffFirstStackGained += CharacterBody_OnBuffFirstStackGained;
+        }
+
+        private void CharacterBody_OnBuffFirstStackGained(On.RoR2.CharacterBody.orig_OnBuffFirstStackGained orig, CharacterBody self, BuffDef buffDef)
+        {
+            orig(self, buffDef);
+
+            if (!buffDef || !self)
+                return;
+
+            if (buffDef==this.EliteBuffDef)
+            {
+                OnBuffGained(self);
+                return;
+            }
             
+        }
+
+        private void OnBuffGained(CharacterBody self)
+        {
+            
+            SoundbankLoader sbl=self.gameObject.AddComponent<SoundbankLoader>();
+            
+            sbl.soundbankStrings= new string[]
+            {
+                "RoR2/Base/Bandit2/Bandit2"
+            };
         }
 
         //If you want an on use effect, implement it here as you would with a normal equipment.

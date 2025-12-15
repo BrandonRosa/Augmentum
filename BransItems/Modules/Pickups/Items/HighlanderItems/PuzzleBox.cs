@@ -31,7 +31,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         @"Gain <style=cIsUtility>{0}% Luck</style>. The first chest opened each stage has a <style=cIsUtility>{1}%</style> chance upgrade its item. Gain {2}3 Clover Sprouts</color> if successful, {3}1</color> if not. When parting with the <color=#C8A200>Pharaoh</color>, <style=cDeath>split</style> your {4}Clovers</color>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, LuckGain * 100f, UpgradeChance * 100f, Augmentum.CoreColorString, Augmentum.CoreColorString, Augmentum.CoreColorString);
+            string.Format(GetLangDesc(), LuckGain * 100f, UpgradeChance * 100f, Augmentum.CoreColorString, Augmentum.CoreColorString, Augmentum.CoreColorString);
         public override string ItemLore => "An ancient duelist from a forgotten time once was said to hold this. \nSome stories say he was a master strategist, who slayed dragons and held the world in the palm of his hands, others say he was simply lucky.. \n \n - Designed By paranoidhawklet \n - 3rd Place Winner of the 2024 Design Contest";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -65,6 +65,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
 
         }
@@ -110,77 +111,80 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
                     if (chestBehavior.currentPickup == UniquePickup.none) chestBehavior.Roll();
 
                     PickupDef pickupDef = PickupCatalog.GetPickupDef(chestBehavior.currentPickup.pickupIndex);
-                    ItemTier chestItemTier = pickupDef.itemTier;
-                    ItemIndex chestItemIndex =pickupDef.itemIndex;
-                    if (chestItemTier is ItemTier.Tier1 or ItemTier.Tier2 or ItemTier.Tier3)
+                    if (pickupDef != null)
                     {
-                        
-                        bool upgrade=RoR2.Util.CheckRoll(UpgradeChance*100f+ (mast.inventory.GetItemCountEffective(ItemDef)-1)*10f, mast);
-                        mast.inventory.GiveItemPermanent(PuzzleBoxHiddenChestOpened.instance.ItemDef);
-                        if(upgrade)
+                        ItemTier chestItemTier = pickupDef.itemTier;
+                        ItemIndex chestItemIndex = pickupDef.itemIndex;
+                        if (chestItemTier is ItemTier.Tier1 or ItemTier.Tier2 or ItemTier.Tier3)
                         {
-                            PickupIndex newPI = PickupIndex.none;
-                            switch(chestItemTier)
+
+                            bool upgrade = RoR2.Util.CheckRoll(UpgradeChance * 100f + (mast.inventory.GetItemCountEffective(ItemDef) - 1) * 10f, mast);
+                            mast.inventory.GiveItemPermanent(PuzzleBoxHiddenChestOpened.instance.ItemDef);
+                            if (upgrade)
                             {
-                                case ItemTier.Tier1:
-                                    newPI = ItemHelpers.GetRandomSelectionFromArray(Run.instance.availableTier2DropList,1,Run.instance.runRNG)[0];
-                                    chestBehavior.currentPickup = new UniquePickup(newPI);
-                                    break;
-                                case ItemTier.Tier2:
-                                    newPI = ItemHelpers.GetRandomSelectionFromArray(Run.instance.availableTier3DropList, 1, Run.instance.runRNG)[0];
-                                    chestBehavior.currentPickup = new UniquePickup(newPI);
-                                    break;
-                                case ItemTier.Tier3:
-                                    newPI = ItemHelpers.GetRandomSelectionFromArray(Run.instance.availableBossDropList, 1, Run.instance.runRNG)[0];
-                                    Drop_Yellow(new UniquePickup(newPI), chestBehavior);
-                                    break;
-                            }
-                            
-                            
-                            AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_35_0.RoR2_Base_Common_VFX.ShrineChanceDollUseEffect_prefab)).Completed += x => 
-                            {
-                                EffectManager.SpawnEffect(x.Result, new EffectData
+                                PickupIndex newPI = PickupIndex.none;
+                                switch (chestItemTier)
                                 {
-                                    origin = self.transform.position,
-                                    rotation = UnityEngine.Quaternion.identity,
-                                    scale = 1f,
-                                    color = UnityEngine.Color.yellow,
-                                }, transmit: true);
-                            };
+                                    case ItemTier.Tier1:
+                                        newPI = ItemHelpers.GetRandomSelectionFromArray(Run.instance.availableTier2DropList, 1, Run.instance.runRNG)[0];
+                                        chestBehavior.currentPickup = new UniquePickup(newPI);
+                                        break;
+                                    case ItemTier.Tier2:
+                                        newPI = ItemHelpers.GetRandomSelectionFromArray(Run.instance.availableTier3DropList, 1, Run.instance.runRNG)[0];
+                                        chestBehavior.currentPickup = new UniquePickup(newPI);
+                                        break;
+                                    case ItemTier.Tier3:
+                                        newPI = ItemHelpers.GetRandomSelectionFromArray(Run.instance.availableBossDropList, 1, Run.instance.runRNG)[0];
+                                        Drop_Yellow(new UniquePickup(newPI), chestBehavior);
+                                        break;
+                                }
 
-                            //EffectManager.SpawnEffect(effectPrefabShrineRewardJackpotVFX, new EffectData
-                            //{
-                            //    origin = base.transform.position,
-                            //    rotation = Quaternion.identity,
-                            //    scale = 1f,
-                            //    color = colorShrineRewardJackpot
-                            //}, transmit: true);
 
-                            Chat.SendBroadcastChat(new Chat.SimpleChatMessage
+                                AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_35_0.RoR2_Base_Common_VFX.ShrineChanceDollUseEffect_prefab)).Completed += x =>
+                                {
+                                    EffectManager.SpawnEffect(x.Result, new EffectData
+                                    {
+                                        origin = self.transform.position,
+                                        rotation = UnityEngine.Quaternion.identity,
+                                        scale = 1f,
+                                        color = UnityEngine.Color.yellow,
+                                    }, transmit: true);
+                                };
+
+                                //EffectManager.SpawnEffect(effectPrefabShrineRewardJackpotVFX, new EffectData
+                                //{
+                                //    origin = base.transform.position,
+                                //    rotation = Quaternion.identity,
+                                //    scale = 1f,
+                                //    color = colorShrineRewardJackpot
+                                //}, transmit: true);
+
+                                Chat.SendBroadcastChat(new Chat.SimpleChatMessage
+                                {
+                                    baseToken = "<color=#C8A200><size=120%>" + "The heart of the cards responds! My path is clear." + "</color></size>"
+                                });
+
+                                mast.inventory.GiveItemPermanent(PuzzleBoxHiddenLuckGain.instance.ItemDef, 3);
+                                mast.inventory.GiveItemPermanent(CloverSprout.instance.ItemDef, 3);
+
+                                Chat.AddPickupMessage(mast.GetBody(), CloverSprout.instance.ItemDef.nameToken, ColorCatalog.GetColor(Colors.TempCoreLight), 3);
+
+                                CharacterMasterNotificationQueue.PushItemTransformNotification(mast, instance.ItemDef.itemIndex, PickupCatalog.GetPickupDef(newPI).itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+                                CharacterMasterNotificationQueue.PushItemTransformNotification(mast, instance.ItemDef.itemIndex, CloverSprout.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+                            }
+                            else
                             {
-                                baseToken = "<color=#C8A200><size=120%>" + "The heart of the cards responds! My path is clear." + "</color></size>"
-                            });
+                                Chat.SendBroadcastChat(new Chat.SimpleChatMessage
+                                {
+                                    baseToken = "<color=#C8A200><size=120%>" + "A tough draw, but the duel isn’t over." + "</color></size>"
+                                });
+                                mast.inventory.GiveItemPermanent(CloverSprout.instance.ItemDef, 1);
+                                mast.inventory.GiveItemPermanent(PuzzleBoxHiddenLuckGain.instance.ItemDef, 1);
 
-                            mast.inventory.GiveItemPermanent(PuzzleBoxHiddenLuckGain.instance.ItemDef,3);
-                            mast.inventory.GiveItemPermanent(CloverSprout.instance.ItemDef, 3);
+                                Chat.AddPickupMessage(mast.GetBody(), CloverSprout.instance.ItemDef.nameToken, ColorCatalog.GetColor(Colors.TempCoreLight), 1);
+                                CharacterMasterNotificationQueue.PushItemTransformNotification(mast, instance.ItemDef.itemIndex, CloverSprout.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
 
-                            Chat.AddPickupMessage(mast.GetBody(), CloverSprout.instance.ItemDef.nameToken, ColorCatalog.GetColor(Colors.TempCoreLight), 3);
-                            
-                            CharacterMasterNotificationQueue.PushItemTransformNotification(mast,instance.ItemDef.itemIndex, PickupCatalog.GetPickupDef(newPI).itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
-                            CharacterMasterNotificationQueue.PushItemTransformNotification(mast, instance.ItemDef.itemIndex, CloverSprout.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
-                        }
-                        else
-                        {
-                            Chat.SendBroadcastChat(new Chat.SimpleChatMessage
-                            {
-                                baseToken = "<color=#C8A200><size=120%>" + "A tough draw, but the duel isn’t over." + "</color></size>"
-                            });
-                            mast.inventory.GiveItemPermanent(CloverSprout.instance.ItemDef, 1);
-                            mast.inventory.GiveItemPermanent(PuzzleBoxHiddenLuckGain.instance.ItemDef, 1);
-
-                            Chat.AddPickupMessage(mast.GetBody(), CloverSprout.instance.ItemDef.nameToken, ColorCatalog.GetColor(Colors.TempCoreLight), 1);
-                            CharacterMasterNotificationQueue.PushItemTransformNotification(mast, instance.ItemDef.itemIndex, CloverSprout.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
-
+                            }
                         }
                     }
                 }

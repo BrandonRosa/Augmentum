@@ -23,7 +23,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             @"Increase your <style=cIsDamage>damage</style> by <style=cIsDamage>{0}%</style>. Gain <style=cIsUtility>{1}%</style> more <style=cIsUtility>Primary skill</style> charges.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, DamageGain * 100, (PrimaryChargeMultiplier - 1) * 100f);
+            string.Format(GetLangDesc(), DamageGain * 100, (PrimaryChargeMultiplier - 1) * 100f);
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -59,6 +59,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
 
         }

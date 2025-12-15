@@ -29,7 +29,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
             @"On next <style=cIsDamage>elite kill</style>, cracks open for a <style=cIsHealth>red item</style>. Gain <style=cIsHealing>Massive Matroyshka</style>. <style=cIsUtility>Discover future Matroyshka rewards</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw);
+            string.Format(GetLangDesc());
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier3;
@@ -61,6 +61,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

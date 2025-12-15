@@ -22,7 +22,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             @"Increase <style=cIsDamage>damage</style> by <style=cIsDamage>{0}%</style> <style=cStack>(+{1}% per stack)</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, DamageGain * 100, DamageGain * 100);
+            string.Format(GetLangDesc(), DamageGain * 100, DamageGain * 100);
 
         public override string ItemLore => "Today marked a turning point in our ceaseless struggle for survival on this alien canvas of hostility. " +
             "Amidst the jagged terrain, we stumbled upon a crystalline marvel pulsating with an otherworldly glow. The others dismissed it as mere decoration, but something about it beckoned me closer." +
@@ -67,7 +67,8 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 			CreateLang();
 			//CreateBuff();
 			CreateItem();
-			Hooks();
+            SetLogbookCameraPosition();
+            Hooks();
             
         }
 

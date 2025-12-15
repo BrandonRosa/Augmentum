@@ -28,7 +28,7 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
             @"On next <style=cisUtility>chest purchase</style>, cracks open for an {0}. <style=cMono>There is nothing left.</style>";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, Augmentum.EssenceKeyword);
+            string.Format(GetLangDesc(), Augmentum.EssenceKeyword);
 
         public override string ItemLore => "";
 
@@ -63,6 +63,7 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 

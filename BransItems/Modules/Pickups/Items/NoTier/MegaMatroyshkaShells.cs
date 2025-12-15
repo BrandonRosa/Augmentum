@@ -22,7 +22,7 @@ namespace Augmentum.Modules.Pickups.Items.NoTier
             @"Discover future Matroyshka drops. Rewards come with {0}<style=cStack>(+{1})</style> choices.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, MegaMatroyshka.AdditionalChoices, MegaMatroyshka.AdditionalChoices);
+            string.Format(GetLangDesc(), MegaMatroyshka.AdditionalChoices, MegaMatroyshka.AdditionalChoices);
 
         public override string ItemLore => "";
 

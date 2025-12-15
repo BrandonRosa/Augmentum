@@ -24,7 +24,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             @"While using your <style=cIsUtility>Primary skill</style>, gain <style=cIsDamage>{0}% attack speed</style> and <style=cIsHealing>{1} armor</style> every second up to {2} seconds.{3}";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, AttackSpeedIncrease, ArmorIncrease, MaxSeconds, FinishDescription());
+            string.Format(GetLangDesc(), AttackSpeedIncrease, ArmorIncrease, MaxSeconds, FinishDescription());
         public override string ItemLore => "";
 
         public override ItemTierDef ModdedTierDef => Highlander.instance.itemTierDef; //ItemTier.AssignedAtRuntime;
@@ -77,8 +77,10 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             //ItemDef._itemTierDef = EssenceHelpers.essenceTierDef;
             CreateConfig(config);
             CreateLang();
+            AdditionalLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
 
         }
@@ -315,27 +317,41 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             return rules;
         }
 
-        public static string FinishDescription()
+        public void AdditionalLang()
         {
-            string ans = $" After ";
+            string prefix = "ITEM_" + ItemLangTokenName + "_DESCRIPTION_";
+            LanguageAPI.Add(prefix+"1a", " After using a <style=cIsUtility>different skill</style>,");
+            LanguageAPI.Add(prefix + "1b", " After only using a <style=cIsUtility>different skill</style>,");
+
+            LanguageAPI.Add(prefix + "2a", @" remove {0} seconds from the bonus.");
+            LanguageAPI.Add(prefix + "2b", @" divide the bonus by {0}.");
+            LanguageAPI.Add(prefix + "2c", @" quickly lose the bonus until the primary skill is used again.");
+            LanguageAPI.Add(prefix + "2d", @" reset the bonus to 0.");
+        }
+
+        public string FinishDescription()
+        {
+            string prefix = "ITEM_" + ItemLangTokenName + "_DESCRIPTION_";
+            string ans = $"";
             if (EnableTech)
-                ans += "only ";
-            ans+="using a <style=cIsUtility>different skill</style>, ";
+                ans += Language.GetString(prefix+"1b");
+            else
+                ans += Language.GetString(prefix + "1a");
 
             switch(PunishType)
             {
                 case PunishTypes.SubtractTime:
-                    ans += $" remove {PunishSubractSeconds} seconds from the bonus.";
+                    ans += Language.GetStringFormatted(prefix + "2a",PunishSubractSeconds);
                     break;
                 case PunishTypes.Divide:
-                    ans += $" divide the bonus by {PunishDivisorValue}.";
+                    ans += Language.GetStringFormatted(prefix + "2b", PunishDivisorValue);
                     break;
                 case PunishTypes.IncreaseLossRate:
-                    ans += $" quickly lose the bonus until the primary skill is used again.";
+                    ans += Language.GetString(prefix + "2c");
                     break;
                 case PunishTypes.Reset:
                 default:
-                    ans += $" reset the bonus to 0.";
+                    ans += Language.GetString(prefix + "2d");
                     break;
             }
 

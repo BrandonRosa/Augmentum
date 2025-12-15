@@ -21,7 +21,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             @"Increase <style=cIsUtility>movement speed</style> by <style=cIsUtility>{0}%</style><style=cStack> (+{1}% per stack)</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(ItemFullDescriptionRaw, MoveSpeedGain, MoveSpeedGain);
+            string.Format(GetLangDesc(), MoveSpeedGain, MoveSpeedGain);
 
         public override string ItemLore => "Entry number 17:\n\n Fast Faster Yet Faster The Speed Keeps Growing. \nThe Velocities Surging Swifter. \nSpedometer Reads Near-Relativistic. \nThis Next Experiment Seems Very Very Interesting ... \nWhat Do You Two Think?";
 
@@ -52,6 +52,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             CreateLang();
             //CreateBuff();
             CreateItem();
+            SetLogbookCameraPosition();
             Hooks();
         }
 
