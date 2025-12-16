@@ -37,6 +37,11 @@ namespace Augmentum.Modules.ItemTiers.CoreTier
         //public ColorCatalog.ColorIndex colorIndex = ColorsAPI.RegisterColor(new Color32(21,99,58,255));//ColorCatalog.ColorIndex.Money;//CoreLight.instance.colorCatalogEntry.ColorIndex;
 
         //public ColorCatalog.ColorIndex darkColorIndex = ColorsAPI.RegisterColor(new Color32(1,126,62,255));//ColorCatalog.ColorIndex.Money;//CoreDark.instance.colorCatalogEntry.ColorIndex;
+
+        public HashSet<ItemBase> BaseEssences = new HashSet<ItemBase>();
+
+        
+
         /// <summary>
         ///  CoreLight.instance.colorCatalogEntry.ColorIndex;
         /// 

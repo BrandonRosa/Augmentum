@@ -9,6 +9,7 @@ using System.Text;
 using UnityEngine;
 using static Augmentum.Augmentum;
 using static Augmentum.Modules.Utils.ItemHelpers;
+using Augmentum.Modules.ItemTiers.CoreTier;
 
 namespace Augmentum.Modules.Pickups.Items.Essences
 {
@@ -55,6 +56,9 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             CreateConfig(config);
             CreateLang();
             //CreateBuff();
+
+            Core.instance.BaseEssences.Add(this);
+
             CreateItem();
             SetLogbookCameraPosition();
             Hooks();

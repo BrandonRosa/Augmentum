@@ -26,24 +26,30 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public static PickupIndex[] GetBasicEssencePickupIndex()
         {
-            PickupIndex[] EssenceIndicies = new PickupIndex[6];
+            PickupIndex[] EssenceIndicies = new PickupIndex[Core.instance.BaseEssences.Count];
             //PickupCatalog.FindPickupIndex(EOAcuity.itemIndex);
-            EssenceIndicies[0] = PickupCatalog.FindPickupIndex(EOAcuity.instance.ItemDef.itemIndex);
-            EssenceIndicies[1] = PickupCatalog.FindPickupIndex(EOStrength.instance.ItemDef.itemIndex);
-            EssenceIndicies[2] = PickupCatalog.FindPickupIndex(EOLife.instance.ItemDef.itemIndex);
-            EssenceIndicies[3] = PickupCatalog.FindPickupIndex(EOVelocity.instance.ItemDef.itemIndex);
-            EssenceIndicies[4] = PickupCatalog.FindPickupIndex(EOFerocity.instance.ItemDef.itemIndex);
-            EssenceIndicies[5] = PickupCatalog.FindPickupIndex(EOResilience.instance.ItemDef.itemIndex);
+            //EssenceIndicies[0] = PickupCatalog.FindPickupIndex(EOAcuity.instance.ItemDef.itemIndex);
+            //EssenceIndicies[1] = PickupCatalog.FindPickupIndex(EOStrength.instance.ItemDef.itemIndex);
+            //EssenceIndicies[2] = PickupCatalog.FindPickupIndex(EOLife.instance.ItemDef.itemIndex);
+            //EssenceIndicies[3] = PickupCatalog.FindPickupIndex(EOVelocity.instance.ItemDef.itemIndex);
+            //EssenceIndicies[4] = PickupCatalog.FindPickupIndex(EOFerocity.instance.ItemDef.itemIndex);
+            //EssenceIndicies[5] = PickupCatalog.FindPickupIndex(EOResilience.instance.ItemDef.itemIndex);
+            int index = 0;
+            foreach(var item in Core.instance.BaseEssences)
+            {
+                EssenceIndicies[index] = PickupCatalog.FindPickupIndex(item.ItemDef.itemIndex);
+                index++;
+            }
 
             return EssenceIndicies;
         }
 
         public static PickupIndex GetEssenceIndex(Xoroshiro128Plus rng)
         {
-            if (rng.RangeFloat(0, 1) < EOTotality.ReplaceChance)
+            if (EOTotality.instance!=null && rng.RangeFloat(0, 1) < EOTotality.ReplaceChance)
                 return PickupCatalog.FindPickupIndex(EOTotality.instance.ItemDef.itemIndex);
             else
-                return GetBasicEssencePickupIndex()[rng.RangeInt(0, 6)];
+                return GetBasicEssencePickupIndex()[rng.RangeInt(0, Core.instance.BaseEssences.Count)];
         }
 
 
@@ -58,8 +64,17 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public static PickupIndex[] GetEssenceDropsWithoutRepeating(Xoroshiro128Plus rng, int dropCount)
         {
             PickupIndex[] BasicEssence = GetBasicEssencePickupIndex();
-            if(dropCount>=6)
-                return new PickupIndex[] { BasicEssence[0], BasicEssence[1], BasicEssence[2], BasicEssence[3], BasicEssence[4], BasicEssence[5], PickupCatalog.FindPickupIndex(EOTotality.instance.ItemDef.itemIndex) };
+            bool hasTotality = EOTotality.instance != null;
+
+            if (hasTotality && dropCount >= BasicEssence.Length +1)
+            {
+                PickupIndex[] result = new PickupIndex[BasicEssence.Length+1];
+                Array.Copy(BasicEssence, result, BasicEssence.Length);
+                result[^1] = PickupCatalog.FindPickupIndex(EOTotality.instance.ItemDef.itemIndex);
+                return result;
+            }
+            else if (dropCount >= BasicEssence.Length)
+                return BasicEssence;
             List<PickupIndex> pickupList = new List<PickupIndex>();
             for(int i=0; i<dropCount;i++)
             {

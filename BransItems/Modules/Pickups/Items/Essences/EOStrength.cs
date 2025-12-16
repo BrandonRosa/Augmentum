@@ -10,6 +10,7 @@ using UnityEngine;
 using static Augmentum.Augmentum;
 using static Augmentum.Modules.Utils.ItemHelpers;
 using static RoR2.ItemTag;
+using Augmentum.Modules.ItemTiers.CoreTier;
 
 namespace Augmentum.Modules.Pickups.Items.Essences
 {
@@ -65,8 +66,11 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             //ItemDef._itemTierDef = EssenceHelpers.essenceTierDef;
             CreateConfig(config);
 			CreateLang();
-			//CreateBuff();
-			CreateItem();
+            //CreateBuff();
+
+            Core.instance.BaseEssences.Add(this);
+
+            CreateItem();
             SetLogbookCameraPosition();
             Hooks();
             

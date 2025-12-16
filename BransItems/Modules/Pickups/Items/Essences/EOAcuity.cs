@@ -52,6 +52,9 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             CreateConfig(config);
             CreateLang();
             //CreateBuff();
+
+            Core.instance.BaseEssences.Add(this);
+
             CreateItem();
             SetLogbookCameraPosition();
             Hooks();
