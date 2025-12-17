@@ -242,7 +242,18 @@ namespace Augmentum.Modules.Pickups.Equipments
             //On.RoR2.GlobalEventManager.OnCharacterDeath += MorphEquipmentIntoAffix;
             //On.RoR2.EquipmentSlot.Update += UpdateTargets;
             //On.RoR2.EquipmentSlot.Start += Start;
-            On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets; 
+            On.RoR2.EquipmentSlot.UpdateTargets += UpdateTargets;
+
+            On.RoR2.Language.LoadStrings += (orig, self) =>
+            {
+                orig(self);
+                this.EquipmentDef.pickupToken = EquipmentPickupDesc;
+            };
+            On.RoR2.Language.SetCurrentLanguage += (orig, languageIndex) =>
+            {
+                orig(languageIndex);
+                this.EquipmentDef.pickupToken = EquipmentPickupDesc;
+            };
         }
 
         protected override bool ActivateEquipment(EquipmentSlot slot)

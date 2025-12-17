@@ -113,7 +113,7 @@ namespace Augmentum.Modules.Pickups
             LanguageAPI.Add("BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_PICKUP", EliteEquipmentPickupDesc);
             LanguageAPI.Add("BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_DESCRIPTION", EliteEquipmentFullDescriptionRaw);
             LanguageAPI.Add("BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_LORE", EliteEquipmentLore);
-            LanguageAPI.Add("BRANS_ELITE_" + EliteAffixToken + "_MODIFIER", EliteModifier);// + " {0}");
+            LanguageAPI.Add("BRANS_ELITE_" + EliteAffixToken + "_MODIFIER", EliteModifier+ " {0}");
 
         }
 

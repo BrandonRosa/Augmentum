@@ -300,7 +300,18 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
             //On.RoR2.PurchaseInteraction.CanBeAffordedByInteractor += PurchaseInteraction_CanBeAffordedByInteractor;
             On.RoR2.PurchaseInteraction.OnInteractionBegin += PurchaseInteraction_OnInteractionBegin;
             On.RoR2.PickupDisplay.RebuildModel += PickupDisplay_RebuildModel;
-            
+            On.RoR2.Language.LoadStrings += (orig, self) =>
+            {
+                orig(self);
+                ItemDef.pickupToken = ItemPickupDesc;
+            };
+            On.RoR2.Language.SetCurrentLanguage += (orig, languageIndex) =>
+            {
+                orig(languageIndex);
+                ItemDef.pickupToken = ItemPickupDesc;
+            };
+
+
         }
 
         private void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self, GameObject modelObjectOverride)
