@@ -46,7 +46,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public static PickupIndex GetEssenceIndex(Xoroshiro128Plus rng)
         {
-            if (EOTotality.instance!=null && rng.RangeFloat(0, 1) < EOTotality.ReplaceChance)
+            if (ItemStatusDictionary[EOTotality.instance] && rng.RangeFloat(0, 1) < EOTotality.ReplaceChance)
                 return PickupCatalog.FindPickupIndex(EOTotality.instance.ItemDef.itemIndex);
             else
                 return GetBasicEssencePickupIndex()[rng.RangeInt(0, Core.instance.BaseEssences.Count)];
@@ -64,7 +64,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public static PickupIndex[] GetEssenceDropsWithoutRepeating(Xoroshiro128Plus rng, int dropCount)
         {
             PickupIndex[] BasicEssence = GetBasicEssencePickupIndex();
-            bool hasTotality = EOTotality.instance != null;
+            bool hasTotality = ItemStatusDictionary[EOTotality.instance];
 
             if (hasTotality && dropCount >= BasicEssence.Length +1)
             {
