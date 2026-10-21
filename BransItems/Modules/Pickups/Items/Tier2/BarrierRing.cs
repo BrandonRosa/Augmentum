@@ -46,13 +46,13 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Utility};
 
-        public static float InitialPercent => InitialPercentEntry.Value;
+        public static float InitialPercent => InitialPercentEntry != null ? InitialPercentEntry.Value : default;
         public static ConfigEntry<float> InitialPercentEntry;
-        public static float AdditionalPercent => AdditionalPercentEntry.Value;
+        public static float AdditionalPercent => AdditionalPercentEntry != null ? AdditionalPercentEntry.Value : default;
         public static ConfigEntry<float> AdditionalPercentEntry;
-        public static float InitialMaxHealing => InitialMaxHealingEntry.Value;
+        public static float InitialMaxHealing => InitialMaxHealingEntry != null ? InitialMaxHealingEntry.Value : default;
         public static ConfigEntry<float> InitialMaxHealingEntry;
-        public static float AdditionalMaxHealing => AdditionalMaxHealingEntry.Value;
+        public static float AdditionalMaxHealing => AdditionalMaxHealingEntry != null ? AdditionalMaxHealingEntry.Value : default;
         public static ConfigEntry<float> AdditionalMaxHealingEntry;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();

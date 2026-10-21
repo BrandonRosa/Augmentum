@@ -129,7 +129,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
         private void TransformItem(CharacterBody body,ItemIndex index)
         {
             ModLogger.LogWarning("index" + index);
-            body.inventory.RemoveItem(ItemDef);
+            body.inventory.RemoveItemPermanent(ItemDef);
             
             if (body.master)
             {

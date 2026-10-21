@@ -46,7 +46,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility , ItemTag.CannotDuplicate};
 
 
-        public static int DropCount => DropCountEntry.Value;
+        public static int DropCount => DropCountEntry != null ? DropCountEntry.Value : default;
         public static ConfigEntry<int> DropCountEntry;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
@@ -412,7 +412,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
 
         private void BreakItem(CharacterBody self, int count)
         {
-            self.inventory.RemoveItem(MediumMatroyshka.instance.ItemDef.itemIndex, count);
+            self.inventory.RemoveItemPermanent(MediumMatroyshka.instance.ItemDef.itemIndex, count);
             
         }
     }

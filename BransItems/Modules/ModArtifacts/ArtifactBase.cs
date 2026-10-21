@@ -72,8 +72,16 @@ namespace Augmentum.Modules.Pickups
 
 		public bool IsSelectedAndInRun()
         {
-			return Augmentum.ArtifactStatusDictionary.GetValueOrDefault(this,false) && RunArtifactManager.instance && RunArtifactManager.instance.IsArtifactEnabled(ArtifactDef);
+			return ArtifactDef && Augmentum.ArtifactStatusDictionary.GetValueOrDefault(this,false) && RunArtifactManager.instance && RunArtifactManager.instance.IsArtifactEnabled(ArtifactDef);
 
+		}
+
+		/// <summary>
+		/// Null-safe check for code outside the artifact itself, so a disabled or missing artifact simply reads as "off".
+		/// </summary>
+		public static bool IsActive(ArtifactBase artifact)
+		{
+			return artifact != null && artifact.IsSelectedAndInRun();
 		}
 
 		public void FixScriptableObjectName()

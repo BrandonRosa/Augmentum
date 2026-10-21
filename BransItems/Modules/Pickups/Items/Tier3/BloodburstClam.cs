@@ -45,9 +45,9 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
         public override ItemTag[] ItemTags => new ItemTag[] {ItemTag.AIBlacklist, ItemTag.Utility };
 
 
-        public static int DropCount => DropCountEntry.Value;
+        public static int DropCount => DropCountEntry != null ? DropCountEntry.Value : default;
         public static ConfigEntry<int> DropCountEntry;
-        public static int AdditionalDrops => AdditionalDropsEntry.Value;
+        public static int AdditionalDrops => AdditionalDropsEntry != null ? AdditionalDropsEntry.Value : default;
         public static ConfigEntry<int> AdditionalDropsEntry;
 
 
@@ -336,7 +336,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
         */
         private void BreakItem(CharacterBody self)
         {
-            self.inventory.RemoveItem(BloodburstClam.instance.ItemDef.itemIndex);
+            self.inventory.RemoveItemPermanent(BloodburstClam.instance.ItemDef.itemIndex);
             self.inventory.GiveItem(LootedBloodburstClam.instance.ItemDef.itemIndex);
             if (self.master)
             {

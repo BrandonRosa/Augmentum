@@ -50,20 +50,20 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
-        public static float ReplaceChance => ReplaceChanceEntry.Value;
+        public static float ReplaceChance => ReplaceChanceEntry != null ? ReplaceChanceEntry.Value : default;
         public static ConfigEntry<float> ReplaceChanceEntry;
 
-        public static float MoveSpeedGain => MoveSpeedGainEntry.Value;
+        public static float MoveSpeedGain => MoveSpeedGainEntry != null ? MoveSpeedGainEntry.Value : default;
         public static ConfigEntry<float> MoveSpeedGainEntry;
-        public static float AttackSpeedGain => AttackSpeedGainEntry.Value;
+        public static float AttackSpeedGain => AttackSpeedGainEntry != null ? AttackSpeedGainEntry.Value : default;
         public static ConfigEntry<float> AttackSpeedGainEntry;
-        public static float CritChanceGain => CritChanceGainEntry.Value;
+        public static float CritChanceGain => CritChanceGainEntry != null ? CritChanceGainEntry.Value : default;
         public static ConfigEntry<float> CritChanceGainEntry;
-        public static float HealthGain => HealthGainEntry.Value;
+        public static float HealthGain => HealthGainEntry != null ? HealthGainEntry.Value : default;
         public static ConfigEntry<float> HealthGainEntry;
-        public static float DamageGain => DamageGainEntry.Value;
+        public static float DamageGain => DamageGainEntry != null ? DamageGainEntry.Value : default;
         public static ConfigEntry<float> DamageGainEntry;
-        public static float ArmorGain => ArmorGainEntry.Value;
+        public static float ArmorGain => ArmorGainEntry != null ? ArmorGainEntry.Value : default;
         public static ConfigEntry<float> ArmorGainEntry;
 
 

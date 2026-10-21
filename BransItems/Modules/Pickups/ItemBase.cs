@@ -119,14 +119,24 @@ namespace Augmentum.Modules.Pickups
 		{
 			if (!body || !body.inventory) { return 0; }
 
-			return body.inventory.GetItemCount(ItemDef);
+			return GetCount(body.inventory);
 		}
 
 		public int GetCount(CharacterMaster master)
 		{
 			if (!master || !master.inventory) { return 0; }
 
-			return master.inventory.GetItemCount(ItemDef);
+			return GetCount(master.inventory);
+		}
+
+		/// <summary>
+		/// Safe even when this item is disabled in the config (ItemDef is never created then).
+		/// </summary>
+		public int GetCount(Inventory inventory)
+		{
+			if (!inventory || !ItemDef || ItemDef.itemIndex == ItemIndex.None) { return 0; }
+
+			return inventory.GetItemCount(ItemDef);
 		}
 
 		internal static void RegisterVoidPairings(ContagiousItemManager.orig_Init orig)

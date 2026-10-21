@@ -45,11 +45,11 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.Utility };
 
 
-        public static float FractionCap => FractionCapEntry.Value;
+        public static float FractionCap => FractionCapEntry != null ? FractionCapEntry.Value : default;
         public static ConfigEntry<float> FractionCapEntry;
-        public static float InitialIFrames => InitialIFramesEntry.Value;
+        public static float InitialIFrames => InitialIFramesEntry != null ? InitialIFramesEntry.Value : default;
         public static ConfigEntry<float> InitialIFramesEntry;
-        public static float AdditionalIFrames => AdditionalIFramesEntry.Value;
+        public static float AdditionalIFrames => AdditionalIFramesEntry != null ? AdditionalIFramesEntry.Value : default;
         public static ConfigEntry<float> AdditionalIFramesEntry;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();

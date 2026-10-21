@@ -1,5 +1,4 @@
 ﻿using BepInEx.Configuration;
-using Augmentum.Modules.Compatability;
 using Augmentum.Modules.ItemTiers.CoreTier;
 using Augmentum.Modules.ItemTiers.HighlanderTier;
 using Augmentum.Modules.Utils;
@@ -52,8 +51,6 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             orig(self, wc);
             if (NetworkServer.active && self && self.safeWardController && self.safeWardController.transform && self.IsStageTransitionWave() && this.IsSelectedAndInRun() && (Run.instance.NetworkstageClearCount + 1) % 2 == 0)
             {
-                if (ModCompatability.JudgementCompat.IsInJudgementRun() && (Run.instance.NetworkstageClearCount + 1) % 4 != 0)
-                    return;
                 int count = PlayerCharacterMasterController.instances.Count;
                 DropHighlanders(count, self.safeWardController.transform);
             }
@@ -72,6 +69,9 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public static void DropHighlanders(int dropCount, Transform dropPosition)
         {
+            if (dropCount <= 0 || !dropPosition || ItemHelpers.PickupDefsWithTier(Highlander.instance.itemTierDef).Count == 0)
+                return;
+
             int num = dropCount;
             float num2 = 360f / (float)num;
             Vector3 val = Quaternion.AngleAxis((float)UnityEngine.Random.Range(0, 360), Vector3.up) * (Vector3.up * 40f + Vector3.forward * 5f);
@@ -79,7 +79,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
             int num3 = 0;
             while (num3 < num)
             {
-                if (Spoils.instance.IsSelectedAndInRun())
+                if (ArtifactBase.IsActive(Spoils.instance))
                 {
 
                     Chat.SendBroadcastChat(new Chat.SimpleChatMessage

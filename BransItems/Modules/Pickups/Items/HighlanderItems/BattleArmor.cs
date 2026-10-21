@@ -15,7 +15,7 @@ using Augmentum.Modules.StandaloneBuffs;
 
 namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 {
-    class BattleArmor : ItemBase<CurvedHorn>
+    class BattleArmor : ItemBase<BattleArmor>
     {
         public override string ItemName => "Platinum Fists";
         public override string ItemLangTokenName => "PLATINUM_FISTS";
@@ -51,23 +51,23 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public enum PunishTypes { Reset, SubtractTime, Divide, IncreaseLossRate };
 
-        public static float AttackSpeedIncrease => AttackSpeedIncreaseEntry.Value;
+        public static float AttackSpeedIncrease => AttackSpeedIncreaseEntry != null ? AttackSpeedIncreaseEntry.Value : default;
         public static ConfigEntry<float> AttackSpeedIncreaseEntry;
-        public static float ArmorIncrease => ArmorIncreaseEntry.Value;
+        public static float ArmorIncrease => ArmorIncreaseEntry != null ? ArmorIncreaseEntry.Value : default;
         public static ConfigEntry<float> ArmorIncreaseEntry;
-        public static float MaxSeconds => MaxSecondsEntry.Value;
+        public static float MaxSeconds => MaxSecondsEntry != null ? MaxSecondsEntry.Value : default;
         public static ConfigEntry<float> MaxSecondsEntry;
-        public static float DecelerationRate => DecelerationRateEntry.Value;
+        public static float DecelerationRate => DecelerationRateEntry != null ? DecelerationRateEntry.Value : default;
         public static ConfigEntry<float> DecelerationRateEntry;
-        public static bool EnableTech => EnableTechEntry.Value;
+        public static bool EnableTech => EnableTechEntry != null ? EnableTechEntry.Value : default;
         public static ConfigEntry<bool> EnableTechEntry;
-        public static PunishTypes PunishType => PunishTypeEntry.Value;
+        public static PunishTypes PunishType => PunishTypeEntry != null ? PunishTypeEntry.Value : default;
         public static ConfigEntry<PunishTypes> PunishTypeEntry;
-        public static float PunishSubractSeconds => PunishSubractSecondsEntry.Value;
+        public static float PunishSubractSeconds => PunishSubractSecondsEntry != null ? PunishSubractSecondsEntry.Value : default;
         public static ConfigEntry<float> PunishSubractSecondsEntry;
-        public static float PunishDivisorValue => PunishDivisorValueEntry.Value;
+        public static float PunishDivisorValue => PunishDivisorValueEntry != null ? PunishDivisorValueEntry.Value : default;
         public static ConfigEntry<float> PunishDivisorValueEntry;
-        public static float PunishLossRateMultiplier => PunishLossRateMultiplierEntry.Value;
+        public static float PunishLossRateMultiplier => PunishLossRateMultiplierEntry != null ? PunishLossRateMultiplierEntry.Value : default;
         public static ConfigEntry<float> PunishLossRateMultiplierEntry;
 
         public static int MaxStacks=100;

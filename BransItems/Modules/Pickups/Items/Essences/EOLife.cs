@@ -48,7 +48,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
-        public static float HealthGain=>HealthGainEntry.Value;
+        public static float HealthGain=> HealthGainEntry != null ? HealthGainEntry.Value : default;
         public static ConfigEntry<float> HealthGainEntry;
 
 

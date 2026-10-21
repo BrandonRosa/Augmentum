@@ -48,9 +48,9 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float DamageGain => DamageGainEntry.Value;
+        public static float DamageGain => DamageGainEntry != null ? DamageGainEntry.Value : default;
         public static ConfigEntry<float> DamageGainEntry;
-        public static float Duration => DurationEntry.Value;
+        public static float Duration => DurationEntry != null ? DurationEntry.Value : default;
         public static ConfigEntry<float> DurationEntry;
 
         public override void Init(ConfigFile config)

@@ -1,5 +1,4 @@
-﻿using Augmentum.Modules.Compatability;
-using Augmentum.Modules.ItemTiers;
+﻿using Augmentum.Modules.ItemTiers;
 using RoR2;
 using System;
 using UnityEngine;
@@ -80,29 +79,6 @@ namespace Augmentum.Modules.Utils
                             ((Component)obj).gameObject.SetActive(true);
                             ParticleSystem.MainModule main = obj.main;
                             main.startColor =new ParticleSystem.MinMaxGradient(color);
-                        }
-
-                        if(ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled)
-                        {
-                            float h, s, v = 0;
-                            Color.RGBToHSV(color, out h, out s, out v);
-                            Color32 colorBright = Color.HSVToRGB(h, 1f, v); //maybe replace v with 1f
-                            GameObject lineStart = display.gameObject;
-                            Vector3 lineStartPos = display.transform.position;
-                            Vector3 lineEndPos = lineStartPos + new Vector3(0f, 100f, 0f);
-                            LineRenderer lineRender = lineStart.AddComponent<LineRenderer>();
-                            lineRender.positionCount = 2;
-                            ((Renderer)lineRender).material = new Material(LegacyShaderAPI.Find("Hopoo Games/FX/Vertex Colors Only"));
-
-                            lineRender.startColor = colorBright;
-                            lineRender.endColor = colorBright;
-
-                            lineRender.startWidth = 0.25f;
-                            lineRender.endWidth = 0f;
-                            lineRender.SetPosition(0, lineStartPos);
-                            lineRender.SetPosition(1, lineEndPos);
-                            //Augmentum.ModLogger.LogWarning("NOTPINK");
-                            
                         }
                     }
                 }

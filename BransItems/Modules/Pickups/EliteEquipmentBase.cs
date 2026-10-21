@@ -119,7 +119,7 @@ namespace Augmentum.Modules.Pickups
 
         public string GetLangDesc()
         {
-            return Language.GetString("BRANS_ELITE_" + EliteAffixToken + "_DESCRIPTION");
+            return Language.GetString("BRANS_ELITE_EQUIPMENT_" + EliteAffixToken + "_DESCRIPTION");
         }
 
         protected void CreateEquipment()
@@ -250,77 +250,52 @@ namespace Augmentum.Modules.Pickups
 
         protected void CreateElite()
         {
-            IEnumerable<CombatDirector.EliteTierDef> tierDefs = EliteAPI.GetEliteTierEnumerable(this.VanillaTier);
-            if (tierDefs is null) return;
+            VanillaEliteTier vanillaTier = this.VanillaTier;
+            string modifierToken = "BRANS_ELITE_" + EliteAffixToken + "_MODIFIER";
 
-            CustomEliteDef = new CustomElite($"Elite{this.EliteEquipmentName}",this.EliteEquipmentDef,this.EliteBuffColor,this.EliteModifier,tierDefs,this.RampTexture);
-            EliteDef.name = "BRANS_ELITE_" + EliteAffixToken;
-            EliteDef.modifierToken = "BRANS_ELITE_" + EliteAffixToken + "_MODIFIER";
-            EliteDef.eliteEquipmentDef = EliteEquipmentDef;
+            IEnumerable<EliteTierDef> tierDefs;
+            if (vanillaTier == VanillaEliteTier.None)
+            {
+                // Custom tier: register our own tier defs with the director, then put the elite only in those.
+                var baseEliteTierDefs = EliteAPI.GetCombatDirectorEliteTiers();
+                foreach (EliteTierDef eliteTierDef in CanAppearInEliteTiers.Except(baseEliteTierDefs).ToArray())
+                {
+                    EliteAPI.AddCustomEliteTier(eliteTierDef);
+                }
+                tierDefs = CanAppearInEliteTiers;
+            }
+            else
+            {
+                tierDefs = EliteAPI.GetEliteTierEnumerable(vanillaTier);
+            }
+
+            // GetVanillaEliteTierDef returns null for a slot that doesn't exist, which would break the director's tier loop.
+            tierDefs = tierDefs.Where(x => x != null).ToArray();
+            if (!tierDefs.Any())
+            {
+                Augmentum.ModLogger.LogError($"Elite {EliteModifier}: no valid elite tiers found for {vanillaTier}, it will not spawn.");
+            }
+
+            CustomEliteDef = new CustomElite($"BRANS_ELITE_{EliteAffixToken}", this.EliteEquipmentDef, this.EliteBuffColor, modifierToken, tierDefs, this.RampTexture);
             EliteDef.healthBoostCoefficient = HealthMultiplier;
             EliteDef.damageBoostCoefficient = DamageMultiplier;
             EliteBuffDef.eliteDef = EliteDef;
 
             EliteAPI.Add(this.CustomEliteDef);
 
-
-            IEnumerable <CombatDirector.EliteTierDef> honorTierDefs = EliteAPI.GetHonorEliteTierEnumerable(this.VanillaTier);
-            if (AllowHonor && honorTierDefs is not null)
+            // Honor only reuses vanilla tiers; a custom tier has no honor counterpart.
+            if (AllowHonor && vanillaTier != VanillaEliteTier.None)
             {
-                this.CustomEliteDefHonor = new CustomElite($"Elite{this.EliteEquipmentName}Honor", this.EliteEquipmentDef, this.EliteBuffColor, this.EliteModifier, honorTierDefs, this.RampTexture);
-                this.CustomEliteDefHonor.EliteDef.healthBoostCoefficient = HonorHealthMultiplier;
-                this.CustomEliteDefHonor.EliteDef.damageBoostCoefficient = HonorDamageMultiplier;
-                EliteAPI.Add(this.CustomEliteDefHonor);
-            }
-
-
-            var baseEliteTierDefs = EliteAPI.GetCombatDirectorEliteTiers();
-            if (this.VanillaTier==VanillaEliteTier.None)
-            {
-                if (!CanAppearInEliteTiers.All(x => baseEliteTierDefs.Contains(x)))
+                var honorTierDefs = EliteAPI.GetHonorEliteTierEnumerable(vanillaTier).Where(x => x != null).ToArray();
+                if (honorTierDefs.Length > 0)
                 {
-                    //if (Plugin
-                    //)
-                    //{
-                    //    Log.LogInfo("Creating custom elite tier");
-                    //}
-
-                    var distinctEliteTierDefs = CanAppearInEliteTiers.Except(baseEliteTierDefs);
-                    //if (Plugin.DEBUG)
-                    //{
-                    //    Log.LogInfo("distinct tiers = " + distinctEliteTierDefs.Count());
-                    //}
-                    foreach (EliteTierDef eliteTierDef in distinctEliteTierDefs)
-                    {
-                        var indexToInsertAt = Array.FindIndex(baseEliteTierDefs, x => x.costMultiplier >= eliteTierDef.costMultiplier);
-                        if (indexToInsertAt >= 0)
-                        {
-                            EliteAPI.AddCustomEliteTier(eliteTierDef, indexToInsertAt);
-
-                        }
-                        else
-                        {
-                            EliteAPI.AddCustomEliteTier(eliteTierDef);
-
-                        }
-                        baseEliteTierDefs = EliteAPI.GetCombatDirectorEliteTiers();
-                    }
+                    this.CustomEliteDefHonor = new CustomElite($"BRANS_ELITE_{EliteAffixToken}_HONOR", this.EliteEquipmentDef, this.EliteBuffColor, modifierToken, honorTierDefs, this.RampTexture);
+                    this.CustomEliteDefHonor.EliteDef.healthBoostCoefficient = HonorHealthMultiplier;
+                    this.CustomEliteDefHonor.EliteDef.damageBoostCoefficient = HonorDamageMultiplier;
+                    EliteAPI.Add(this.CustomEliteDefHonor);
                 }
-                
-                {
-                    EliteAPI.Add(new CustomElite(EliteDef, CanAppearInEliteTiers));
-
-                }
-
             }
-
-            
-
-            
-            
         }
-
-        
 
         protected bool PerformEquipmentAction(On.RoR2.EquipmentSlot.orig_PerformEquipmentAction orig, RoR2.EquipmentSlot self, EquipmentDef equipmentDef)
         {

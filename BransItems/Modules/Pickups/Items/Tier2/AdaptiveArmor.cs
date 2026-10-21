@@ -47,17 +47,17 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Utility };
 
 
-        public static float DamageWindow => DamageWindowEntry.Value;
+        public static float DamageWindow => DamageWindowEntry != null ? DamageWindowEntry.Value : default;
         public static ConfigEntry<float> DamageWindowEntry;
-        public static int InitialFortify => InitialFortifyEntry.Value;
+        public static int InitialFortify => InitialFortifyEntry != null ? InitialFortifyEntry.Value : default;
         public static ConfigEntry<int> InitialFortifyEntry;
-        public static int AdditionalFortify => AdditionalFortifyEntry.Value;
+        public static int AdditionalFortify => AdditionalFortifyEntry != null ? AdditionalFortifyEntry.Value : default;
         public static ConfigEntry<int> AdditionalFortifyEntry;
-        public static float InitialFortifyTime => InitialFortifyTimeEntry.Value;
+        public static float InitialFortifyTime => InitialFortifyTimeEntry != null ? InitialFortifyTimeEntry.Value : default;
         public static ConfigEntry<float> InitialFortifyTimeEntry;
-        public static float AdditionalFortifyTime => AdditionalFortifyTimeEntry.Value;
+        public static float AdditionalFortifyTime => AdditionalFortifyTimeEntry != null ? AdditionalFortifyTimeEntry.Value : default;
         public static ConfigEntry<float> AdditionalFortifyTimeEntry;
-        public static float CooldownTime => CooldownTimeEntry.Value;
+        public static float CooldownTime => CooldownTimeEntry != null ? CooldownTimeEntry.Value : default;
         public static ConfigEntry<float> CooldownTimeEntry;
 
         public override void Init(ConfigFile config)

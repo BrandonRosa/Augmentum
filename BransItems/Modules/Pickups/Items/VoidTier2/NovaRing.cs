@@ -50,23 +50,23 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Utility };
 
-        public static float InitialPercent => InitialPercentEntry.Value;
+        public static float InitialPercent => InitialPercentEntry != null ? InitialPercentEntry.Value : default;
         public static ConfigEntry<float> InitialPercentEntry;
-        public static float AdditionalPercent => AdditionalPercentEntry.Value;
+        public static float AdditionalPercent => AdditionalPercentEntry != null ? AdditionalPercentEntry.Value : default;
         public static ConfigEntry<float> AdditionalPercentEntry;
-        public static float InitialMaxHealing => InitialMaxHealingEntry.Value;
+        public static float InitialMaxHealing => InitialMaxHealingEntry != null ? InitialMaxHealingEntry.Value : default;
         public static ConfigEntry<float> InitialMaxHealingEntry;
-        public static float AdditionalMaxHealing => AdditionalMaxHealingEntry.Value;
+        public static float AdditionalMaxHealing => AdditionalMaxHealingEntry != null ? AdditionalMaxHealingEntry.Value : default;
         public static ConfigEntry<float> AdditionalMaxHealingEntry;
-        public static float InitialRange => InitialRangeEntry.Value;
+        public static float InitialRange => InitialRangeEntry != null ? InitialRangeEntry.Value : default;
         public static ConfigEntry<float> InitialRangeEntry;
-        public static float AdditionalRange => AdditionalRangeEntry.Value;
+        public static float AdditionalRange => AdditionalRangeEntry != null ? AdditionalRangeEntry.Value : default;
         public static ConfigEntry<float> AdditionalRangeEntry;
-        public static float TempShieldDuration => TempShieldDurationEntry.Value;
+        public static float TempShieldDuration => TempShieldDurationEntry != null ? TempShieldDurationEntry.Value : default;
         public static ConfigEntry<float> TempShieldDurationEntry;
-        public static float AllyBonus => AllyBonusEntry.Value;
+        public static float AllyBonus => AllyBonusEntry != null ? AllyBonusEntry.Value : default;
         public static ConfigEntry<float> AllyBonusEntry;
-        public static float CooldownDuration => CooldownDurationEntry.Value;
+        public static float CooldownDuration => CooldownDurationEntry != null ? CooldownDurationEntry.Value : default;
         public static ConfigEntry<float> CooldownDurationEntry;
         public static bool AllyBonusAfterCalculation = true;
         public static bool AccountForPreexistingTempShield = true;
@@ -425,7 +425,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
                 {
                     if (component2.HasBuff(NovaRingReady.instance.BuffDef))
                     {
-                        int itemCount = component2.inventory.GetItemCount(ItemDef);
+                        int itemCount = GetCount(component2);
                         triggered = true;
                         if (itemCount > 0)
                         {
@@ -451,9 +451,9 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             {
                 component2.RemoveBuff(NovaRingReady.instance.BuffDef);
                 float cooldown = NovaRing.CooldownDuration;
-                if (component2.inventory.GetItemCount(HighlanderItems.CooldownBand.instance.ItemDef) > 0)
+                if (HighlanderItems.CooldownBand.instance.GetCount(component2) > 0)
                     cooldown *= HighlanderItems.CooldownBand.CooldownReduction;
-                for (int i = 0; i <= component2.inventory.GetItemCount(DoubleBand.instance.ItemDef); i++)
+                for (int i = 0; i <= DoubleBand.instance.GetCount(component2); i++)
                     for (int k = 1; (float)k <= cooldown; k++)
                     {
                         component2.AddTimedBuff(NovaRingCooldown.instance.BuffDef, k);
@@ -461,12 +461,13 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             }
         }
 
-        private void ShieldNovaPostCalculation(float shieldAmount, GameObject victim, int itemCount, TeamIndex spawnerTeam)
+        private static List<CharacterBody> FindAlliesInRange(Vector3 origin, int itemCount, TeamIndex spawnerTeam, out float radius)
         {
             List<CharacterBody> list = new List<CharacterBody>();
             SphereSearch sphereSearch = new SphereSearch();
-            sphereSearch.radius = InitialRange+AdditionalRange*((float)itemCount - 1f);
-            sphereSearch.origin = victim.transform.position;
+            radius = InitialRange + AdditionalRange * ((float)itemCount - 1f);
+            sphereSearch.radius = radius;
+            sphereSearch.origin = origin;
             sphereSearch.queryTriggerInteraction = (QueryTriggerInteraction)1;
             sphereSearch.mask = LayerIndex.entityPrecise.mask;
             sphereSearch.RefreshCandidates();
@@ -474,51 +475,37 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             HurtBox[] hurtBoxes = sphereSearch.GetHurtBoxes();
             for (int i = 0; i < hurtBoxes.Length; i++)
             {
-                CharacterBody item = hurtBoxes[i].healthComponent.body;
-                if (!list.Contains(item) && item.teamComponent.teamIndex==spawnerTeam)
+                CharacterBody item = hurtBoxes[i].healthComponent ? hurtBoxes[i].healthComponent.body : null;
+                if (item && item.teamComponent && !list.Contains(item) && item.teamComponent.teamIndex == spawnerTeam)
                 {
                     list.Add(item);
                 }
             }
-            int totalShield = (int)(shieldAmount * (1+AllyBonus*(list.Count-1f)));
-            foreach (CharacterBody item2 in list)
+            return list;
+        }
+
+        private static void GiveShield(List<CharacterBody> bodies, float totalShield)
+        {
+            int amount = (int)totalShield;
+            foreach (CharacterBody body in bodies)
             {
-               
-                for (int i = 0; i < totalShield; i++)
-                    item2.AddTimedBuff(TemporaryShield.instance.BuffDef, TempShieldDuration);
+                TemporaryShield.AddTemporaryShield(body, amount, TempShieldDuration);
             }
-            effectPrefab.transform.localScale = Vector3.one*sphereSearch.radius;
+        }
+
+        private void ShieldNovaPostCalculation(float shieldAmount, GameObject victim, int itemCount, TeamIndex spawnerTeam)
+        {
+            List<CharacterBody> list = FindAlliesInRange(victim.transform.position, itemCount, spawnerTeam, out float radius);
+            GiveShield(list, shieldAmount * (1 + AllyBonus * (list.Count - 1f)));
+            effectPrefab.transform.localScale = Vector3.one * radius;
             EffectManager.SimpleEffect(effectPrefab, victim.transform.position, Quaternion.identity, transmit: true);
-            //effectPrefab.transform.localScale = Vector3.one * 12;
         }
 
         private void ShieldNovaPreCalculation(float damageCalculation, float healthCalculation, GameObject victim, int itemCount, TeamIndex spawnerTeam)
         {
-            List<CharacterBody> list = new List<CharacterBody>();
-            SphereSearch sphereSearch = new SphereSearch();
-            sphereSearch.radius = InitialRange + AdditionalRange * ((float)itemCount - 1f);
-            sphereSearch.origin = victim.transform.position;
-            sphereSearch.queryTriggerInteraction = (QueryTriggerInteraction)1;
-            sphereSearch.mask = LayerIndex.entityPrecise.mask;
-            sphereSearch.RefreshCandidates();
-            sphereSearch.FilterCandidatesByDistinctHurtBoxEntities();
-            HurtBox[] hurtBoxes = sphereSearch.GetHurtBoxes();
-            for (int i = 0; i < hurtBoxes.Length; i++)
-            {
-                CharacterBody item = hurtBoxes[i].healthComponent.body;
-                if (!list.Contains(item) && item.teamComponent.teamIndex == spawnerTeam)
-                {
-                    list.Add(item);
-                }
-            }
-            int totalShieldPercent = (int)(1 + AllyBonus * (list.Count - 1f));
-            float totalShield;
-            totalShield = Math.Min(damageCalculation*totalShieldPercent, healthCalculation );
-            foreach (CharacterBody item2 in list)
-            {
-                for (int i = 0; i < totalShield; i++)
-                    item2.AddTimedBuff(TemporaryShield.instance.BuffDef, TempShieldDuration);
-            }
+            List<CharacterBody> list = FindAlliesInRange(victim.transform.position, itemCount, spawnerTeam, out _);
+            float totalShieldPercent = 1 + AllyBonus * (list.Count - 1f);
+            GiveShield(list, Math.Min(damageCalculation * totalShieldPercent, healthCalculation));
             EffectManager.SimpleEffect(effectPrefab, victim.transform.position, Quaternion.identity, transmit: true);
         }
     }

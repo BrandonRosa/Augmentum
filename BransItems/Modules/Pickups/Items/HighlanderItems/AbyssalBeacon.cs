@@ -306,98 +306,82 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override void Hooks()
         {
-            //TeleporterInteraction.onTeleporterFinishGlobal += TeleporterInteraction_onTeleporterFinishGlobal;
+            // Public event instead of hooking the private AttemptToSpawnAllEligiblePortals, which is only reached from the teleporter's charged state.
+            TeleporterInteraction.onTeleporterChargedGlobal += TeleporterInteraction_onTeleporterChargedGlobal;
             On.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
-            On.RoR2.TeleporterInteraction.AttemptToSpawnAllEligiblePortals += TeleporterInteraction_AttemptToSpawnAllEligiblePortals;
         }
 
-        private void TeleporterInteraction_AttemptToSpawnAllEligiblePortals(On.RoR2.TeleporterInteraction.orig_AttemptToSpawnAllEligiblePortals orig, TeleporterInteraction self)
+        private void TeleporterInteraction_onTeleporterChargedGlobal(TeleporterInteraction teleporter)
         {
-            ModLogger.LogWarning("FINISH");
+            if (!NetworkServer.active)
+                return;
             ActivateItem();
-            orig(self);
         }
 
         private void GlobalEventManager_OnInteractionBegin(On.RoR2.GlobalEventManager.orig_OnInteractionBegin orig, GlobalEventManager self, Interactor interactor, IInteractable interactable, GameObject interactableObject)
         {
             orig(self, interactor, interactable, interactableObject);
-            if(interactableObject.name== "PortalArena(Clone)")
-            {
-                SceneDef sceneDef = Stage.instance.sceneDef;
-                if (sceneDef != SceneCatalog.GetSceneDefFromSceneName("bazaar"))
-                {
-                    RemoveClosestPlayerItem(interactableObject.transform);
-                }
-            }
-            //ModLogger.LogWarning("OBJECT" + interactableObject.name);
-        }
+            if (!NetworkServer.active || !interactableObject)
+                return;
 
-        private void TeleporterInteraction_onTeleporterFinishGlobal(TeleporterInteraction obj)
-        {
-            ModLogger.LogWarning("FINISH");
-            ActivateItem();
+            // Only portals made by this item break it; vanilla null portals are left alone.
+            AbyssalBeaconPortal portal = interactableObject.GetComponent<AbyssalBeaconPortal>();
+            if (!portal || portal.consumed)
+                return;
+            portal.consumed = true;
+
+            CharacterBody interactorBody = interactor ? interactor.GetComponent<CharacterBody>() : null;
+            if (GetCount(interactorBody) > 0)
+                interactorBody.inventory.RemoveItemPermanent(ItemDef);
+            else if (portal.owner && GetCount(portal.owner) > 0)
+                portal.owner.inventory.RemoveItemPermanent(ItemDef);
         }
 
         private void ActivateItem()
         {
-            //Get list of all Players
-            List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
-            for(int i=0;i<masterList.Count;i++)
-            {
-                //If the player isnt dead
-                if(!masterList[i].master.IsDeadAndOutOfLivesServer())
-                {
-                    //if the player has a body and an inventory AND they have the item
-                    if(masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef)>0)
-                    {
-                        CharacterBody body = masterList[i].body;
-                        Vector3 footPosition = body.footPosition;
-                        GameObject value=Addressables.LoadAssetAsync<GameObject>("RoR2/Base/PortalArena/PortalArena.prefab").WaitForCompletion();
-                        GameObject val = UnityEngine.Object.Instantiate<GameObject>(value, footPosition, Quaternion.LookRotation(body.characterDirection.forward));
-                        SceneExitController component = val.GetComponent<SceneExitController>();
-                        SceneDef sceneDef = Stage.instance.sceneDef;
-                        component.useRunNextStageScene = (UnityEngine.Object)(object)component.destinationScene == (UnityEngine.Object)(object)sceneDef;
-                        NetworkServer.Spawn(val);
-                    }
+            SceneDef arena = SceneCatalog.FindSceneDef("arena");
+            if (!arena || !Stage.instance || Stage.instance.sceneDef == arena)
+                return;
 
+            GameObject portalPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/PortalArena/PortalArena.prefab").WaitForCompletion();
+            if (!portalPrefab)
+            {
+                ModLogger.LogError("Abyssal Beacon: could not load the null portal prefab.");
+                return;
+            }
+
+            foreach (PlayerCharacterMasterController pcmc in PlayerCharacterMasterController.instances)
+            {
+                CharacterMaster master = pcmc ? pcmc.master : null;
+                if (!master || master.IsDeadAndOutOfLivesServer())
+                    continue;
+
+                CharacterBody body = master.GetBody();
+                if (!body || GetCount(body) <= 0)
+                    continue;
+
+                Vector3 forward = body.characterDirection ? body.characterDirection.forward : body.transform.forward;
+                forward.y = 0f;
+                if (forward.sqrMagnitude < 0.01f)
+                    forward = Vector3.forward;
+
+                GameObject portal = UnityEngine.Object.Instantiate(portalPrefab, body.footPosition, Quaternion.LookRotation(forward));
+                SceneExitController exit = portal.GetComponent<SceneExitController>();
+                if (exit)
+                {
+                    exit.useRunNextStageScene = false;
+                    exit.destinationScene = arena;
                 }
+                AbyssalBeaconPortal marker = portal.AddComponent<AbyssalBeaconPortal>();
+                marker.owner = master;
+                NetworkServer.Spawn(portal);
             }
         }
 
-        private void RemoveClosestPlayerItem(Transform transform)
+        public class AbyssalBeaconPortal : MonoBehaviour
         {
-            List<PlayerCharacterMasterController> masterList = new List<PlayerCharacterMasterController>(PlayerCharacterMasterController.instances);
-            int closestInventoryIndex = -1;
-            float closestDistance = float.MaxValue;
-            for (int i = 0; i < masterList.Count; i++)
-            {
-                //If the player isnt dead
-                if (!masterList[i].master.IsDeadAndOutOfLivesServer())
-                {
-                    //if the player has a body and an inventory AND they have the item
-                    if (masterList[i].body && masterList[i].body.inventory && masterList[i].body.inventory.GetItemCount(ItemDef) > 0)
-                    {
-                        //if there is no closest index make the first hit the closest player
-                        if (closestInventoryIndex == -1)
-                        {
-                            closestInventoryIndex = i;
-                            closestDistance = Vector3.Distance(masterList[i].body.transform.position, transform.position);
-                        }
-                        else
-                        {
-                            float distance = Vector3.Distance(masterList[i].body.transform.position, transform.position);
-                            if (distance < closestDistance)
-                            {
-                                closestInventoryIndex = i;
-                                closestDistance = distance;
-                            }
-                        }
-                    }
-                }
-            }
-
-            masterList[closestInventoryIndex].body.inventory.RemoveItem(ItemDef);
+            public CharacterMaster owner;
+            public bool consumed;
         }
-
     }
 }

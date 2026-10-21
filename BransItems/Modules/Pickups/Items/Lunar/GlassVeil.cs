@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Networking;
 using static Augmentum.Modules.Utils.ItemHelpers;
 using static Augmentum.Augmentum;
 
@@ -24,10 +25,10 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
         public override string ItemPickupDesc => $"Gain a veil which blocks damage then gives you invincibility and makes you immune to all indirect damage... <style=cDeath>BUT your max health cannot exceed 1</style> ";
 
         public override string ItemFullDescriptionRaw =>
-            @"Gain a veil which <style=cIsHealing>blocks</style> damage then gives you <style=cIsHealing>5 seconds</style> of <style=cIsHealing>invincibility</style>. Recharges after <style=cIsUtility>120 seconds</style>. <style=cIsHealing>Ignore indirect damage</style>. <style=cIsUtility>Discover replacements for useless items</style>. <style=cDeath>Set max health to 1</style>.";
+            @"Gain a veil which <style=cIsHealing>blocks</style> damage then gives you <style=cIsHealing>{0} seconds</style> of <style=cIsHealing>invincibility</style>. Recharges after <style=cIsUtility>{1} seconds</style>. <style=cIsHealing>Ignore indirect damage</style>. <style=cIsUtility>Discover replacements for useless items</style>. <style=cDeath>Set max health to 1</style>.";
 
         public override string ItemFullDescriptionFormatted =>
-            string.Format(GetLangDesc());
+            string.Format(GetLangDesc(), DefaultInvincibleTime, DefaultCooldownTime);
         public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Lunar;
@@ -37,11 +38,11 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
 
         public static GameObject ItemBodyModelPrefab;
 
-        public static string ConfigBlacklist => ConfigBlacklistEntry.Value;
+        public static string ConfigBlacklist => ConfigBlacklistEntry != null ? ConfigBlacklistEntry.Value : default;
         public static ConfigEntry<string> ConfigBlacklistEntry;
-        public static bool BlacklistHealCatagory => BlacklistHealCatagoryEntry.Value;
+        public static bool BlacklistHealCatagory => BlacklistHealCatagoryEntry != null ? BlacklistHealCatagoryEntry.Value : default;
         public static ConfigEntry<bool> BlacklistHealCatagoryEntry;
-        public static string HealWhitelist => HealWhitelistEntry.Value;
+        public static string HealWhitelist => HealWhitelistEntry != null ? HealWhitelistEntry.Value : default;
         public static ConfigEntry<string> HealWhitelistEntry;
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.BrotherBlacklist };
@@ -351,47 +352,58 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
         {
             orig(self);
-            if(self && self.healthComponent!=null && self.inventory!=null && self.inventory.GetItemCount(ItemDef)>0)
+            if(self && self.healthComponent && GetCount(self)>0)
             {
-                self.healthComponent.Networkbarrier = 0;
-                self.healthComponent.Networkhealth = 1;
-                self.healthComponent.Networkshield = 0;
                 self.maxBarrier = 0;
                 self.maxShield = 0;
                 self.maxHealth = 1;
                 self.regen = 0;
-                
+
+                // Only clamp. Writing health = 1 here used to fully heal the holder every time their stats recalculated.
+                if (NetworkServer.active)
+                {
+                    if (self.healthComponent.health > self.maxHealth)
+                        self.healthComponent.Networkhealth = self.maxHealth;
+                    self.healthComponent.Networkshield = 0;
+                    self.healthComponent.Networkbarrier = 0;
+                }
             }
+        }
+
+        /// <summary>
+        /// Damage over time, fall damage and damage without an attacker (fog, lava, ...) count as indirect.
+        /// The old check compared the whole DamageTypeCombo against Generic, which also contains the damage source,
+        /// so most skill hits were ignored too while others went through.
+        /// </summary>
+        public static bool IsIndirectDamage(HealthComponent self, DamageInfo damageInfo)
+        {
+            if (damageInfo.attacker == self.gameObject)
+                return false;
+            if ((damageInfo.damageType.damageType & (DamageType.DoT | DamageType.FallDamage)) != 0)
+                return true;
+            return !damageInfo.attacker;
         }
 
         private void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo)
         {
-            bool ignoreDamage = false;
-            if(self!=null && damageInfo!=null && self.body && self.body.inventory && self.body.inventory.GetItemCount(ItemDef)>0)
+            if(self && damageInfo!=null && GetCount(self.body)>0)
             {
-                if(damageInfo.damageType!=DamageType.Generic && damageInfo.attacker!=self.gameObject)
-                {
-                    ignoreDamage = true;
-                }
-                else
-                {
-                    self.ospTimer = 0;
-                }
+                if(IsIndirectDamage(self, damageInfo))
+                    return;
+
+                self.ospTimer = 0;
             }
 
-            if(!ignoreDamage)
-            {
-                orig(self, damageInfo);
-            }
+            orig(self, damageInfo);
         }
 
         private void CharacterMaster_OnItemAddedClient(On.RoR2.CharacterMaster.orig_OnItemAddedClient orig, CharacterMaster self, ItemIndex itemIndex)
         {
-            if (self && itemIndex != null && self.inventory && (self.inventory.GetItemCount(ItemDef)>0 || ItemDef.itemIndex==itemIndex))
+            if (NetworkServer.active && self && self.inventory && (GetCount(self)>0 || ItemDef.itemIndex==itemIndex))
             {
                 //Pickup blacklisted Item
                 ItemDef addedItem = ItemCatalog.GetItemDef(itemIndex);
-                if(ItemBlacklist.Contains(addedItem))
+                if(addedItem && ItemBlacklist.Contains(addedItem))
                 {
                     RerollItem(self, addedItem);
                 }
@@ -415,7 +427,8 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
 
                     //if(self.inventory.GetItemCount(ItemDef)==1)
                     //    self.GetBody().ex
-                    self.GetBody().RecalculateStats();
+                    if (self.GetBody())
+                        self.GetBody().RecalculateStats();
             
                 }
             
@@ -425,8 +438,12 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
 
         private void RerollItem(CharacterMaster self, ItemDef itemDef)
         {
-            int itemCount = self.inventory.GetItemCount(itemDef);
-            self.inventory.RemoveItem(itemDef,itemCount);
+            if (!itemDef)
+                return;
+            int itemCount = self.inventory.GetItemCountPermanent(itemDef);
+            if (itemCount <= 0)
+                return;
+            self.inventory.RemoveItemPermanent(itemDef,itemCount);
 
             ItemTier itemTier = itemDef.tier;//itemDef._itemTierDef;
             if(itemTier!=ItemTier.NoTier && self.GetBody() && self.GetBody().isPlayerControlled)
@@ -437,10 +454,11 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
 
                     List<ItemDef> AllItemsInTier = ItemDefsWithTier(ItemTierCatalog.GetItemTierDef(itemTier));
                     AllItemsInTier.RemoveAll(x => ItemBlacklist.Contains(x));
-                    Augmentum.ModLogger.LogWarning("Rerollable to:" + AllItemsInTier.ToString());
+                    if (AllItemsInTier.Count == 0)
+                        return;
 
 
-                    int WishOptions = DefaultWishOptions + self.inventory.GetItemCount(DiscoveryMedallionConsumed.instance.ItemDef) * DiscoveryMedallion.AdditionalChoices;
+                    int WishOptions = DefaultWishOptions + DiscoveryMedallionConsumed.instance.GetCount(self) * DiscoveryMedallion.AdditionalChoices;
 
                     float dropUpVelocityStrength = 20f;
 
@@ -563,10 +581,10 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
         public override Color Color => new Color32(40, 40, 40, 255);
 
         public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/GlassVeil/GhostIcon.png");
-        public virtual bool CanStack => true;
-        public virtual bool IsDebuff => true;
+        public override bool CanStack => true;
+        public override bool IsDebuff => true;
 
-        public virtual bool IsCooldown => true;
+        public override bool IsCooldown => true;
 
         public override void Init(ConfigFile config)
         {
@@ -600,10 +618,10 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
         public override Color Color => new Color32(140, 230, 240, 255);
 
         public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/GlassVeil/GhostIcon.png");
-        public virtual bool CanStack => true;
-        public virtual bool IsDebuff => false;
+        public override bool CanStack => true;
+        public override bool IsDebuff => false;
 
-        public virtual bool IsCooldown => false;
+        public override bool IsCooldown => false;
 
         public override void Init(ConfigFile config)
         {
@@ -642,11 +660,11 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
         private void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo)
         {
             bool skipDamage = false;
-            if (self && self.body && self.body.inventory)
+            if (self && self.body && self.body.inventory && damageInfo != null && !damageInfo.rejected && damageInfo.damage > 0f && damageInfo.attacker != self.gameObject)
             {
-                if (self.body && self.body.GetBuffCount(BuffDef) > 0)
+                if (self.body.GetBuffCount(BuffDef) > 0 && !GlassVeil.IsIndirectDamage(self, damageInfo))
                 {
-                    int veilCount = self.body.inventory.GetItemCount(GlassVeil.instance.ItemDef);
+                    int veilCount = GlassVeil.instance.GetCount(self.body);
                     if (veilCount>0)
                     {
                         self.body.RemoveBuff(BuffDef);
@@ -687,10 +705,10 @@ namespace Augmentum.Modules.Pickups.Items.Lunar
         public override Color Color => new Color32(240, 200, 62, 255);
 
         public override Sprite BuffIcon => MainAssets.LoadAsset<Sprite>("Assets/Models/GlassVeil/GhostIcon.png");
-        public virtual bool CanStack => true;
-        public virtual bool IsDebuff => false;
+        public override bool CanStack => true;
+        public override bool IsDebuff => false;
 
-        public virtual bool IsCooldown => false;
+        public override bool IsCooldown => false;
 
         public override void Init(ConfigFile config)
         {

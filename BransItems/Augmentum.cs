@@ -34,6 +34,9 @@ namespace Augmentum
     [BepInDependency(R2API.R2API.PluginGUID)]
     [BepInDependency(R2API.RecalculateStatsAPI.PluginGUID)]
     [BepInDependency("com.KingEnderBrine.ProperSave", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.funkfrog_sipondo.sharesuite", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("droppod.lookingglass", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.MagnusMagnuson.BiggerBazaar", BepInDependency.DependencyFlags.SoftDependency)]
 
     //This is the main declaration of our plugin class. BepInEx searches for all classes inheriting from BaseUnityPlugin to initialize on startup.
     //BaseUnityPlugin itself inherits from MonoBehaviour, so you can use this as a reference for what you can declare and use in your plugin class: https://docs.unity3d.com/ScriptReference/MonoBehaviour.html
@@ -93,6 +96,7 @@ namespace Augmentum
         public void Awake()
         {
             ModLogger = this.Logger;
+            Log.Init(this.Logger);
             AugConfig = Config;
 
             AugBackupConfig = new(Paths.ConfigPath + "\\" + ModGuid + "." + ".Backup.cfg", true);
@@ -198,9 +202,9 @@ namespace Augmentum
                             orig(self);
                             item.ItemDef.descriptionToken = item.ItemFullDescriptionFormatted;
                         };
-                        On.RoR2.Language.SetCurrentLanguage += (orig, languageIndex) =>
+                        On.RoR2.Language.SetCurrentLanguage += (orig, languageName, forceUnload) =>
                         {
-                            orig(languageIndex);
+                            orig(languageName, forceUnload);
                             item.ItemDef.descriptionToken = item.ItemFullDescriptionFormatted;
                         };
                         ModLogger.LogInfo("Item: " + item.ItemName + " Initialized!");
@@ -301,12 +305,6 @@ namespace Augmentum
                 ModLogger.LogInfo("ModCompatability: " + "ShareSuite Blacklist added to Whitelist!");
             }
 
-            var enabledHIV = ConfigManager.ConfigOptionValue("Mod Compatability: " + "HighItemVizability", "Enable Compatability Patches?", true, "Attempt to patch HighItemVizability (if installed) to work with this mod?", true);
-            if (ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled && enabledHIV)
-            {
-                ModLogger.LogInfo("ModCompatability: " + "HighItemVizability Recognized!");
-            }
-
             var enabledProperSave = ConfigManager.ConfigOptionValue("Mod Compatability: " + "ProperSave", "Enable Compatability Patches?", true, "Attempt to add Propersave compatability (if installed)?", true);
             if (ModCompatability.ProperSaveCompat.IsProperSaveInstalled && enabledProperSave)
             {
@@ -314,29 +312,14 @@ namespace Augmentum
                 ModCompatability.ProperSaveCompat.AddProperSaveFunctionality = true;
             }
 
-            //var enabledZetAspects = ConfigManager.ConfigOption("Mod Compatability: " + "ZetAspects", "Enable Compatability Patches?", true, "Attempt to force ZetAspects compatability (if installed)?");
-            //if (ModCompatability.ZetAspectsCompat.IsZetAspectsInstalled && enabledZetAspects)
-            //{
-            //    ModLogger.LogInfo("ModCompatability: " + "ZetAspects Recognized!");
-            //    ModCompatability.ZetAspectsCompat.ForceZetAspectCompat();
-            //}
-
-            var enabledJudgement = ConfigManager.ConfigOptionValue("Mod Compatability: " + "Judgment", "Enable Compatability Patches?", true, "Attempt to add Judgment compatability (if installed)?", true);
-            if (ModCompatability.JudgementCompat.IsJudgementInstalled && enabledJudgement)
+            var enabledLookingGlass = ConfigManager.ConfigOptionValue("Mod Compatability: " + "LookingGlass", "Enable Compatability Patches?", true, "Add item stats to LookingGlass (if installed)?", true);
+            if (ModCompatability.LookingGlassCompat.IsLookingGlassInstalled && enabledLookingGlass)
             {
-                ModLogger.LogInfo("ModCompatability: " + "Judgment Recognized!");
-                ModCompatability.JudgementCompat.AddJudgementCompat = true;
+                ModLogger.LogInfo("ModCompatability: " + "LookingGlass Recognized!");
+                ModCompatability.LookingGlassCompat.Init();
             }
 
-
-            //var enabledEliteReworks = Config.Bind<bool>("Mod Compatability: " + "EliteReworks", "Enable Compatability Patches?", true, "Attempt to add Elite Reworks compatability (if installed)?").Value;
-            //if (ModCompatability.EliteReworksCompat.IsEliteReworksInstalled && enabledProperSave)
-            //{
-            //    ModLogger.LogInfo("ModCompatability: " + "EliteReworks!");
-            //    ModCompatability.EliteReworksCompat.AddEliteReworksScaling = true;
-            //}
-
-            bool IfAnyLoaded = enabledShareSuite || enabledHIV || enabledProperSave;// || enabledEliteReworks;
+            bool IfAnyLoaded = enabledShareSuite || enabledProperSave;
             if(IfAnyLoaded)
             {
                 ModCompatability.FinishedLoading();
