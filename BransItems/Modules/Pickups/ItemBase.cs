@@ -74,6 +74,20 @@ namespace Augmentum.Modules.Pickups
 			return Language.GetString("ITEM_" + ItemLangTokenName + "_DESCRIPTION");
 		}
 
+		public string FormattedDescriptionToken => "ITEM_" + ItemLangTokenName + "_DESCRIPTION_FORMATTED";
+
+		/// <summary>
+		/// Registers the formatted description under its own token. Mods like LookingGlass skip
+		/// descriptions whose token isn't registered, so the raw text can't be used as the token.
+		/// </summary>
+		public void UpdateDescriptionToken()
+		{
+			if (!ItemDef) { return; }
+
+			Language.currentLanguage?.SetStringByToken(FormattedDescriptionToken, ItemFullDescriptionFormatted);
+			ItemDef.descriptionToken = FormattedDescriptionToken;
+		}
+
 		public abstract ItemDisplayRuleDict CreateItemDisplayRules();
 
 		protected void CreateItem()
@@ -82,7 +96,7 @@ namespace Augmentum.Modules.Pickups
 			ItemDef.name = "ITEM_" + ItemLangTokenName;
 			ItemDef.nameToken = "ITEM_" + ItemLangTokenName + "_NAME";
 			ItemDef.pickupToken = "ITEM_" + ItemLangTokenName + "_PICKUP";
-			ItemDef.descriptionToken = ItemFullDescriptionFormatted;
+			UpdateDescriptionToken();
 			ItemDef.loreToken = "ITEM_" + ItemLangTokenName + "_LORE";
 			ItemDef.pickupModelPrefab = ItemModel;
 			ItemDef.pickupIconSprite = ItemIcon;

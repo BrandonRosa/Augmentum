@@ -32,14 +32,12 @@ namespace Augmentum.Modules.Utils
 
         private static void PickupDisplay_DestroyModel(On.RoR2.PickupDisplay.orig_DestroyModel orig, PickupDisplay self)
         {
+            // DestroyModel also runs from PickupDisplay.OnDestroy, where AddComponent returns null,
+            // and a display without the helper has no effect to clean up anyway.
             ItemTierPickupVFXHelper ITPVFXHelper = self.gameObject.GetComponent<ItemTierPickupVFXHelper>();
-            if (!ITPVFXHelper)
-            {
-                self.gameObject.AddComponent<ItemTierPickupVFXHelper>();
-                ITPVFXHelper = self.gameObject.GetComponent<ItemTierPickupVFXHelper>();
-            }
             orig(self);
-            ITPVFXHelper.OnPickupDisplayDestroyModel();
+            if (ITPVFXHelper)
+                ITPVFXHelper.OnPickupDisplayDestroyModel();
         }
 
         private PickupDisplay display;

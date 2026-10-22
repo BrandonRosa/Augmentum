@@ -196,16 +196,16 @@ namespace Augmentum
                     if (!item.BlacklistFromPreLoad && ValidateItem(item, Items))
                     {
                         item.Init(Config);
-                        Config.SettingChanged += (object o, SettingChangedEventArgs args) => { item.ItemDef.descriptionToken = item.ItemFullDescriptionFormatted; };
+                        Config.SettingChanged += (object o, SettingChangedEventArgs args) => { item.UpdateDescriptionToken(); };
                         On.RoR2.Language.LoadStrings += (orig,self) =>
                         {
                             orig(self);
-                            item.ItemDef.descriptionToken = item.ItemFullDescriptionFormatted;
+                            item.UpdateDescriptionToken();
                         };
                         On.RoR2.Language.SetCurrentLanguage += (orig, languageName, forceUnload) =>
                         {
                             orig(languageName, forceUnload);
-                            item.ItemDef.descriptionToken = item.ItemFullDescriptionFormatted;
+                            item.UpdateDescriptionToken();
                         };
                         ModLogger.LogInfo("Item: " + item.ItemName + " Initialized!");
                         //if (item.ItemDef._itemTierDef==Core.instance.itemTierDef)
