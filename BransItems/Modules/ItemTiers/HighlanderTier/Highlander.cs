@@ -4,6 +4,7 @@ using System.Text;
 using Augmentum.Modules.ColorCatalogEntry;
 //using Augmentum.Modules.ColorCatalogEntry.CoreColors;
 using Augmentum.Modules.ItemTiers;
+using Augmentum.Modules.Pickups;
 using Augmentum.Modules.Pickups.Items.Essences;
 using Augmentum.Modules.Utils;
 using R2API;
@@ -178,7 +179,7 @@ namespace Augmentum.Modules.ItemTiers.HighlanderTier
             
             int purchaseCount = self.successfulPurchaseCount;
             orig(self, activator);
-            if (Conquest.instance.IsSelectedAndInRun())
+            if (ArtifactBase.IsActive(Conquest.instance))
                 return;
             bool success = purchaseCount < self.successfulPurchaseCount;
 
@@ -203,7 +204,7 @@ namespace Augmentum.Modules.ItemTiers.HighlanderTier
         private void DeathRewards_OnKilledServer(On.RoR2.DeathRewards.orig_OnKilledServer orig, DeathRewards self, DamageReport damageReport)
         {
             orig(self, damageReport);
-            if (Conquest.instance.IsSelectedAndInRun())
+            if (ArtifactBase.IsActive(Conquest.instance))
                 return;
             if (damageReport.victimBody.isElite)
             {
@@ -218,7 +219,7 @@ namespace Augmentum.Modules.ItemTiers.HighlanderTier
         private void BarrelInteraction_CoinDrop(On.RoR2.BarrelInteraction.orig_CoinDrop orig, BarrelInteraction self)
         {
             orig(self);
-            if (Conquest.instance.IsSelectedAndInRun())
+            if (ArtifactBase.IsActive(Conquest.instance))
                 return;
             float playerScale = (BarrelScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
             if (RoR2Application.rng.RangeFloat(0f, 1f) <= BarrelChance*playerScale)
@@ -230,7 +231,7 @@ namespace Augmentum.Modules.ItemTiers.HighlanderTier
         private void ShrineCombatBehavior_OnDefeatedServer(On.RoR2.ShrineCombatBehavior.orig_OnDefeatedServer orig, ShrineCombatBehavior self)
         {
             orig(self);
-            if (Conquest.instance.IsSelectedAndInRun())
+            if (ArtifactBase.IsActive(Conquest.instance))
                 return;
             float playerScale = (CombatShrineScalePlayers ? Math.Max(1f, (float)Math.Sqrt(PlayerCharacterMasterController.instances.Count)) : 1);
             if (RoR2Application.rng.RangeFloat(0f, 1f) <= CompatShrineChance*playerScale)
@@ -241,7 +242,11 @@ namespace Augmentum.Modules.ItemTiers.HighlanderTier
 
         private void DropItem(Transform location, float height)
         {
-            if (Spoils.instance.IsSelectedAndInRun())
+            // Every Highlander item can be disabled in the config, leaving nothing to drop.
+            if (!location || ItemHelpers.PickupDefsWithTier(this.itemTierDef).Count == 0)
+                return;
+
+            if (ArtifactBase.IsActive(Spoils.instance))
             {
                 PickupDropletController.CreatePickupDroplet(Spoils.SpoilsPickupInfo(location.position + Vector3.up * height), location.position + Vector3.up * height, Vector3.up * 25f);
             }

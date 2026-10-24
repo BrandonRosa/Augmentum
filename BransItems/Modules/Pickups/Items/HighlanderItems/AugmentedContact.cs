@@ -14,7 +14,7 @@ using Augmentum.Modules.Utils;
 
 namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 {
-    class AugmentedContact : ItemBase<CurvedHorn>
+    class AugmentedContact : ItemBase<AugmentedContact>
     {
         public override string ItemName => "Augmented Contact";
         public override string ItemLangTokenName => "AUGMENTED_CONTACT";
@@ -48,9 +48,9 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float DamageGain => DamageGainEntry.Value;
+        public static float DamageGain => DamageGainEntry != null ? DamageGainEntry.Value : default;
         public static ConfigEntry<float> DamageGainEntry;
-        public static float CritChanceGain => CritChanceGainEntry.Value;
+        public static float CritChanceGain => CritChanceGainEntry != null ? CritChanceGainEntry.Value : default;
         public static ConfigEntry<float> CritChanceGainEntry;
 
         public override void Init(ConfigFile config)

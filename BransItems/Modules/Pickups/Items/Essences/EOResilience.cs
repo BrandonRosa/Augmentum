@@ -41,7 +41,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
-        public static float ArmorGain => ArmorGainEntry.Value;
+        public static float ArmorGain => ArmorGainEntry != null ? ArmorGainEntry.Value : default;
         public static ConfigEntry<float> ArmorGainEntry;
 
 

@@ -248,10 +248,10 @@ namespace Augmentum.Modules.Pickups.Equipments
         private void EquipmentSlot_MyFixedUpdate(On.RoR2.EquipmentSlot.orig_MyFixedUpdate orig, EquipmentSlot self, float deltaTime)
         {
             orig(self,deltaTime);
-            if (self.equipmentIndex == EarthTotem.instance.EquipmentDef.equipmentIndex)
+            // Firing only ever starts on the server, so clients never need the tracker here.
+            if (NetworkServer.active && self.equipmentIndex == EarthTotem.instance.EquipmentDef.equipmentIndex && self.characterBody && self.characterBody.master)
             {
-                var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
-                if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
+                var cpt = GetOrAddTracker(self.characterBody.master);
 
                 if (cpt.Firing == true)
                 {
@@ -316,64 +316,55 @@ namespace Augmentum.Modules.Pickups.Equipments
 
         protected override bool ActivateEquipment(EquipmentSlot slot)
         {
-            //See if a pikcupController is being targetted
-            if (slot.currentTarget.pickupController
-                && Run.instance)
+            if (!Run.instance || !slot || !slot.characterBody || !slot.characterBody.master)
+                return false;
+
+            var cpt = GetOrAddTracker(slot.characterBody.master);
+
+            //See if an equipment pickup is being targetted
+            GenericPickupController pickupController = slot.currentTarget.pickupController;
+            if (TryGetAbsorbableEquipment(pickupController, out EquipmentDef equipDef))
             {
-
-                //PIKCUP TO EQUIPMENT DINDEX
-                PickupIndex pickupIndex = slot.currentTarget.pickupController.pickupIndex;
-                PickupDef pickupDef = PickupCatalog.GetPickupDef(pickupIndex);
-                EquipmentIndex equipIndex = pickupDef.equipmentIndex;
-
-                //If its not an equipment, dont run return false;
-                if (equipIndex.Equals(EquipmentIndex.None))
-                {
-                    return false;
-                }
-                EquipmentDef EquipDef = EquipmentCatalog.GetEquipmentDef(equipIndex); 
-
-                //Look for EarthTotemTracker, if its not there, add it.
-                var cpt = slot.characterBody.master.GetComponent<EarthTotemTracker>();
-                if (!cpt) cpt = slot.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
-
-                //Check for Equipment exceptions:
-                bool SkipAbsorbtion = false;
-                if(equipIndex==EarthTotem.instance.EquipmentDef.equipmentIndex)
-                {
-                    SkipAbsorbtion = true;
+                //Absorbing another Reuser only raises the absorb count, it is never fired.
+                if (equipDef == EquipmentDef)
                     cpt.EarthTotemAbsorbedCount++;
-                }
+                else
+                    cpt.AddToList(equipDef);
 
-                //Add Absorbed Item to list if SkipAbsorbtion flag wasnt triggered
-                if(!SkipAbsorbtion)
-                    cpt.AddToList(EquipDef);
-
-                //Destroy the pickup
-                GameObject.Destroy(slot.currentTarget.rootObject);
-
-                //Start the Firing Sequence
-                slot.subcooldownTimer = cpt.TimeUntilNextFire * cpt.EquipDefList.Count;
-                cpt.StartFire();
-                return true;
+                AirTotem.ConsumePickup(pickupController);
             }
-            else if(true && Run.instance)
-            {
-                //Look for EarthTotemTracker, if its not there, add it.
-                var cpt = slot.characterBody.master.GetComponent<EarthTotemTracker>();
-                if (!cpt) cpt = slot.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
 
-                //If the list is empty dont trigger equipment
-                if (cpt.EquipDefList.Count == 0)
-                    return false;
+            //If the list is empty there is nothing to fire. Absorbing a Reuser still counts as a use.
+            if (cpt.EquipDefList.Count == 0)
+                return pickupController && pickupController.GetComponent<ConsumedPickupMarker>();
 
-                //Start the Firing Sequence
-                slot.subcooldownTimer = cpt.TimeUntilNextFire * cpt.EquipDefList.Count;
-                cpt.StartFire();
-                return true;
-            }
-            return false;
+            //Start the Firing Sequence
+            slot.subcooldownTimer = cpt.FireFrequency * cpt.EquipDefList.Count;
+            cpt.StartFire();
+            return true;
         }
+
+        public static EarthTotemTracker GetOrAddTracker(CharacterMaster master)
+        {
+            var cpt = master.GetComponent<EarthTotemTracker>();
+            if (!cpt) cpt = master.gameObject.AddComponent<EarthTotemTracker>();
+            return cpt;
+        }
+
+        public static bool TryGetAbsorbableEquipment(GenericPickupController pickupController, out EquipmentDef equipDef)
+        {
+            equipDef = null;
+            if (!AirTotem.IsUsablePickup(pickupController))
+                return false;
+
+            PickupDef pickupDef = PickupCatalog.GetPickupDef(pickupController.pickupIndex);
+            if (pickupDef == null || pickupDef.equipmentIndex == EquipmentIndex.None)
+                return false;
+
+            equipDef = EquipmentCatalog.GetEquipmentDef(pickupDef.equipmentIndex);
+            return equipDef;
+        }
+
         private void UpdateTargets(On.RoR2.EquipmentSlot.orig_UpdateTargets orig, EquipmentSlot self, EquipmentIndex targetingEquipmentIndex, bool userShouldAnticipateTarget)
         {
             if (targetingEquipmentIndex != EquipmentDef.equipmentIndex)
@@ -383,33 +374,12 @@ namespace Augmentum.Modules.Pickups.Equipments
             }
             self.currentTarget = new UserTargetInfo(self.FindPickupController(self.GetAimRay(), 10f, 30f, requireLoS: true, true));
 
-            //Check to see if the master has the EarthTotemTracker, if not, add it.
-            var cpt = self.characterBody.master.GetComponent<EarthTotemTracker>();
-            if (!cpt) cpt = self.characterBody.master.gameObject.AddComponent<EarthTotemTracker>();
-
-            var targetingComponent = self.GetComponent<TargetingControllerComponent>();
-            if (self.currentTarget.rootObject != null)
+            //Only indicate equipment, items are not absorbable.
+            if (self.currentTarget.transformToIndicateAt && TryGetAbsorbableEquipment(self.currentTarget.pickupController, out _))
             {
-                //PIKCUP TO EQUIPMENT DINDEX
-                PickupIndex pickupIndex = self.currentTarget.pickupController.pickupIndex;
-                PickupDef pickupDef = PickupCatalog.GetPickupDef(pickupIndex);
-                EquipmentIndex equipIndex = pickupDef.equipmentIndex;
-
-
-                
-                //See if Equipment is being targetted
-                if (!equipIndex.Equals(EquipmentIndex.None))
-                {
-                    self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerIndicator");
-                    self.targetIndicator.active = true;
-                    self.targetIndicator.targetTransform = self.currentTarget.transformToIndicateAt;
-                }
-                else
-                {
-                    //self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerBadIndicator");
-                }
-
-                
+                self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerIndicator");
+                self.targetIndicator.active = true;
+                self.targetIndicator.targetTransform = self.currentTarget.transformToIndicateAt;
             }
             else
             {
@@ -472,6 +442,8 @@ namespace Augmentum.Modules.Pickups.Equipments
 
         public void AddToList(EquipmentDef ED)
         {
+            if (!ED)
+                return;
             EquipDefList.Add(ED);
             if (HighestCooldown < ED.cooldown)
                 HighestCooldown = ED.cooldown;
@@ -481,13 +453,19 @@ namespace Augmentum.Modules.Pickups.Equipments
         {
             if (Firing == true)
             {
+                if (!self || !self.characterBody || !self.inventory || EquipDefFireIndex < 0 || EquipDefFireIndex >= EquipDefList.Count)
+                {
+                    StopFire();
+                    return null;
+                }
+
                 TimeUntilNextFire = Mathf.Max(TimeUntilNextFire - Time.fixedDeltaTime, 0f);
                 if (TimeUntilNextFire <= 0)
                 {
                     TimeUntilNextFire = FireFrequency + Time.fixedDeltaTime;
                     EquipmentDef equipDef = EquipDefList[EquipDefFireIndex];
                     EquipDefFireIndex++;
-                    
+
                     if(EquipDefFireIndex>EquipDefList.Count-1)
                     {
                         //NEGATIVE to ADD to cooldown!
@@ -504,8 +482,11 @@ namespace Augmentum.Modules.Pickups.Equipments
                         self.characterBody.inventory.DeductActiveEquipmentCooldown(-adjustedCooldownAdded);
                         StopFire();
                     }
-                    self.UpdateTargets(equipDef.equipmentIndex, false);
-                    self.PerformEquipmentAction(equipDef);
+                    if (equipDef)
+                    {
+                        self.UpdateTargets(equipDef.equipmentIndex, false);
+                        self.PerformEquipmentAction(equipDef);
+                    }
                 }
                 else
                 {

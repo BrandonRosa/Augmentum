@@ -11,6 +11,7 @@ using UnityEngine;
 using static Augmentum.Augmentum;
 using static Augmentum.Modules.Utils.ItemHelpers;
 using Augmentum.Modules.Utils;
+using Augmentum.Modules.Compatability;
 using static RoR2.EquipmentSlot;
 using static Augmentum.Modules.Pickups.Items.Essences.EssenceHelpers;
 using Augmentum.Modules.Pickups.Items.NoTier;
@@ -44,10 +45,10 @@ namespace Augmentum.Modules.Pickups.Equipments
 
         public override float Cooldown { get; } = 30f;
 
-        public static int T1EssenceCount => T1EssenceCountEntry.Value;
-        public static int T2EssenceCount=>T2EssenceCountEntry.Value;
-        public static int T3EssenceCount=>T3EssenceCountEntry.Value;
-        public static int BossEssenceCount=>BossEssenceCountEntry.Value;
+        public static int T1EssenceCount => T1EssenceCountEntry != null ? T1EssenceCountEntry.Value : default;
+        public static int T2EssenceCount=> T2EssenceCountEntry != null ? T2EssenceCountEntry.Value : default;
+        public static int T3EssenceCount=> T3EssenceCountEntry != null ? T3EssenceCountEntry.Value : default;
+        public static int BossEssenceCount=> BossEssenceCountEntry != null ? BossEssenceCountEntry.Value : default;
 
         public static ConfigEntry<int> T1EssenceCountEntry;
         public static ConfigEntry<int> T2EssenceCountEntry;
@@ -249,79 +250,116 @@ namespace Augmentum.Modules.Pickups.Equipments
                 orig(self);
                 this.EquipmentDef.pickupToken = EquipmentPickupDesc;
             };
-            On.RoR2.Language.SetCurrentLanguage += (orig, languageIndex) =>
+            On.RoR2.Language.SetCurrentLanguage += (orig, languageName, forceUnload) =>
             {
-                orig(languageIndex);
+                orig(languageName, forceUnload);
                 this.EquipmentDef.pickupToken = EquipmentPickupDesc;
             };
         }
 
         protected override bool ActivateEquipment(EquipmentSlot slot)
         {
-            if (slot.currentTarget.pickupController
-                && Run.instance)
+            if (!Run.instance || !slot || !slot.characterBody)
+                return false;
+
+            GenericPickupController pickupController = slot.currentTarget.pickupController;
+            if (!TryGetReducibleItem(pickupController, out ItemDef itemDef))
+                return false;
+
+            Vector3 vector = slot.transform.position;
+            Vector3 direction = slot.GetAimRay().direction;
+
+            int spawnTotal = 0;
+            switch (itemDef.tier)
             {
-
-                //var pickupControllerPickupIndex = slot.currentTarget.pickupController.GetComponent<PickupIndex>();
-                ItemTier Tier= ItemTierCatalog.GetItemTierDef(ItemCatalog.GetItemDef(slot.currentTarget.pickupController.pickupIndex.itemIndex).tier).tier;  
-                if (false)
-                {
-                   // if (!oldPurch.available) return false;
-                }
-                // Vector3 vector = (slot.currentTarget.pickupController.transform ? slot.currentTarget.pickupController.transform.position : Vector3.zero);
-                Transform playerTransform = slot.transform;
-                Vector3 vector = slot.transform.position;
-                Vector3 normalized = (vector - slot.characterBody.corePosition).normalized;
-                
-                PickupIndex pickup = GetEssenceIndex(slot.rng);
-                int LootedClamCount = slot.inventory.GetItemCount(LootedBloodburstClam.instance.ItemDef.itemIndex);
-
-                Ray aimRay = slot.GetAimRay();
-                Vector3 direction=aimRay.direction;
-                //Quaternion quaternion = Quaternion.LookRotation(aimRay.direction);
-                ModLogger.LogInfo("Dir" + direction.ToString());
-                //PickupDropletController.CreatePickupDroplet(GetEssenceIndex(slot.rng), vector + new Vector3(0, 3, 0), direction * 40f); //normalized * 15f);
-                int spawnTotal = 0;
-                switch(Tier)
-                {
-                    case ItemTier.Tier1:
-                    case ItemTier.VoidTier1:
-                        spawnTotal = T1EssenceCount;
-                        break;
-                    case ItemTier.Tier2:
-                    case ItemTier.VoidTier2:
-                        spawnTotal = T2EssenceCount;
-                        break;
-                    case ItemTier.Tier3:
-                    case ItemTier.VoidTier3:
-                        spawnTotal = T3EssenceCount;
-                            break;
-                    case ItemTier.Boss:
-                        spawnTotal = BossEssenceCount;
-                        break;
-                    case ItemTier.Lunar:
-                        pickup = PickupCatalog.FindPickupIndex(RoR2Content.Items.LunarSpecialReplacement.itemIndex);
-                        PickupDropletController.CreatePickupDroplet(pickup, vector, direction * 40f);
-                        GameObject.Destroy(slot.currentTarget.rootObject);
-                        return true;
-                        break;
-
-                }
-                spawnTotal += LootedClamCount*BloodburstClam.AdditionalDrops;
-                for (int i = 1; i <= spawnTotal; i++)
-                {
-                    pickup = GetEssenceIndex(slot.rng);
-                    //ModLogger.LogInfo("Item" + PickupCatalog.GetPickupDef(pickup).internalName);
-                    PickupDropletController.CreatePickupDroplet(pickup, vector + new Vector3(.1f * i, 3, 0), direction * 40f); // normalized * 15f);
-                }
-                GameObject.Destroy(slot.currentTarget.rootObject);
-                //var pos = slot.currentTarget.rootObject.transform.position;
-
-                return true;
+                case ItemTier.Tier1:
+                case ItemTier.VoidTier1:
+                    spawnTotal = T1EssenceCount;
+                    break;
+                case ItemTier.Tier2:
+                case ItemTier.VoidTier2:
+                    spawnTotal = T2EssenceCount;
+                    break;
+                case ItemTier.Tier3:
+                case ItemTier.VoidTier3:
+                    spawnTotal = T3EssenceCount;
+                    break;
+                case ItemTier.Boss:
+                case ItemTier.VoidBoss:
+                    spawnTotal = BossEssenceCount;
+                    break;
+                case ItemTier.Lunar:
+                    ConsumePickup(pickupController);
+                    PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex(RoR2Content.Items.LunarSpecialReplacement.itemIndex), vector, direction * 40f);
+                    return true;
             }
-            return false;
+
+            if (LootedBloodburstClam.instance?.ItemDef && slot.inventory)
+                spawnTotal += slot.inventory.GetItemCount(LootedBloodburstClam.instance.ItemDef) * BloodburstClam.AdditionalDrops;
+
+            ConsumePickup(pickupController);
+            for (int i = 1; i <= spawnTotal; i++)
+            {
+                PickupDropletController.CreatePickupDroplet(GetEssenceIndex(slot.rng), vector + new Vector3(.1f * i, 3, 0), direction * 40f);
+            }
+
+            return true;
         }
-        //private void EquipmentSlot_UpdateTargets(On.RoR2.EquipmentSlot.orig_UpdateTargets orig, EquipmentSlot self, EquipmentIndex targetingEquipmentIndex, bool userShouldAnticipateTarget)
+
+        /// <summary>
+        /// Only real, still existing item pickups of a tier we know how to reduce. Equipment, essences, display-only pickups and pickups another Reducer already consumed are rejected.
+        /// </summary>
+        public static bool TryGetReducibleItem(GenericPickupController pickupController, out ItemDef itemDef)
+        {
+            itemDef = null;
+            if (!IsUsablePickup(pickupController))
+                return false;
+
+            PickupDef pickupDef = PickupCatalog.GetPickupDef(pickupController.pickupIndex);
+            if (pickupDef == null || pickupDef.itemIndex == ItemIndex.None)
+                return false;
+
+            itemDef = ItemCatalog.GetItemDef(pickupDef.itemIndex);
+            if (!itemDef)
+                return false;
+
+            switch (itemDef.tier)
+            {
+                case ItemTier.Tier1:
+                case ItemTier.Tier2:
+                case ItemTier.Tier3:
+                case ItemTier.Boss:
+                case ItemTier.VoidTier1:
+                case ItemTier.VoidTier2:
+                case ItemTier.VoidTier3:
+                case ItemTier.VoidBoss:
+                case ItemTier.Lunar:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Shared by the Reducer and Reuser: the pickup exists, has not been eaten already this frame, and is not a BiggerBazaar display item.
+        /// </summary>
+        public static bool IsUsablePickup(GenericPickupController pickupController)
+        {
+            return pickupController
+                && pickupController.gameObject.activeInHierarchy
+                && !pickupController.GetComponent<ConsumedPickupMarker>()
+                && !ModCompatability.BiggerBazaarCompat.IsDisplayItem(pickupController.gameObject);
+        }
+
+        /// <summary>
+        /// Destroy is deferred to the end of the frame, so mark the pickup to stop a second equipment use from consuming it again.
+        /// </summary>
+        public static void ConsumePickup(GenericPickupController pickupController)
+        {
+            pickupController.gameObject.AddComponent<ConsumedPickupMarker>();
+            GameObject.Destroy(pickupController.gameObject);
+        }
+
         private void UpdateTargets(On.RoR2.EquipmentSlot.orig_UpdateTargets orig, EquipmentSlot self, EquipmentIndex targetingEquipmentIndex, bool userShouldAnticipateTarget)
         {
             if (targetingEquipmentIndex != EquipmentDef.equipmentIndex)
@@ -329,30 +367,12 @@ namespace Augmentum.Modules.Pickups.Equipments
                 orig(self, targetingEquipmentIndex, userShouldAnticipateTarget);
                 return;
             }
-            self.currentTarget= new UserTargetInfo(self.FindPickupController(self.GetAimRay(), 10f, 30f, requireLoS: true, true));
-            //var res = CommonCode.FindNearestInteractable(self.gameObject, validObjectNames, self.GetAimRay(), 10f, 20f, false);
-            // Transform tsf = null;
-            //if (res) tsf = res.transform;
-            //self.currentTarget = new EquipmentSlot.UserTargetInfo
-            // {
-            //    transformToIndicateAt = tsf,
-            //     pickupController = null,
-            //     hurtBox = null,
-            //     rootObject = res
-            // };
-            var targetingComponent = self.GetComponent<TargetingControllerComponent>();
-            if (self.currentTarget.rootObject != null)
-            {
-                //var purch = res.GetComponent<PurchaseInteraction>();
-                if (true)//!res.GetComponent<RecombobulatorFlag>() && (!purch || purch.available))
-                {
-                    self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerIndicator");
-                }
-                else
-                {
-                    self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/RecyclerBadIndicator");
-                }
+            self.currentTarget = new UserTargetInfo(self.FindPickupController(self.GetAimRay(), 10f, 30f, requireLoS: true, true));
 
+            if (self.currentTarget.rootObject != null && self.currentTarget.transformToIndicateAt)
+            {
+                bool valid = TryGetReducibleItem(self.currentTarget.pickupController, out _);
+                self.targetIndicator.visualizerPrefab = LegacyResourcesAPI.Load<GameObject>(valid ? "Prefabs/RecyclerIndicator" : "Prefabs/RecyclerBadIndicator");
                 self.targetIndicator.active = true;
                 self.targetIndicator.targetTransform = self.currentTarget.transformToIndicateAt;
             }
@@ -362,7 +382,10 @@ namespace Augmentum.Modules.Pickups.Equipments
             }
         }
     }
-    
+
+    public class ConsumedPickupMarker : MonoBehaviour
+    {
+    }
 
 }
 

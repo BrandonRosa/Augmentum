@@ -42,7 +42,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
 
 
-        public static float MoveSpeedGain => MoveSpeedGainEntry.Value;
+        public static float MoveSpeedGain => MoveSpeedGainEntry != null ? MoveSpeedGainEntry.Value : default;
         public static ConfigEntry<float> MoveSpeedGainEntry;
 
 

@@ -49,9 +49,9 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float HealthPercent => HealthPercentEntry.Value;
+        public static float HealthPercent => HealthPercentEntry != null ? HealthPercentEntry.Value : default;
         public static ConfigEntry<float> HealthPercentEntry;
-        public static bool DisableSpleenOnSecondTrigger => DisableSpleenOnSecondTriggerEntry.Value;
+        public static bool DisableSpleenOnSecondTrigger => DisableSpleenOnSecondTriggerEntry != null ? DisableSpleenOnSecondTriggerEntry.Value : default;
         public static ConfigEntry<bool> DisableSpleenOnSecondTriggerEntry;
 
         public override void Init(ConfigFile config)

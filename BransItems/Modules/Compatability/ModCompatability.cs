@@ -23,40 +23,8 @@ using RiskOfOptions.Options;
 
 namespace Augmentum.Modules.Compatability
 {
-    internal static class ModCompatability
+    internal static partial class ModCompatability
     {
-        /*
-        internal static class BetterUICompat
-        {
-            public static bool IsBetterUIInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.xoxfaby.BetterUI");
-
-            public static Tuple<string, string> CreateBetterUIBuffInformation(string langTokenName, string name, string description, bool isBuff = true)
-            {
-                string nameToken = isBuff ? $"BUFF_{langTokenName}_NAME" : $"DEBUFF_{langTokenName}_NAME";
-                string descToken = isBuff ? $"BUFF_{langTokenName}_DESC" : $"DEBUFF_{langTokenName}_DESC";
-
-                LanguageAPI.Add(nameToken, name);
-                LanguageAPI.Add(descToken, description);
-
-                return Tuple.Create(nameToken, descToken);
-            }
-
-            public static void RegisterBuffInfo(BuffDef buffDef, string nameToken, string descriptionToken)
-            {
-                BetterUI.Buffs.RegisterBuffInfo(buffDef, nameToken, descriptionToken);
-            }
-
-            public static void CreateAccursedPotionStatDef()
-            {
-                BetterUI.ItemStats.ItemStat SipCooldownStatDef = new BetterUI.ItemStats.ItemStat
-                {
-                    nameToken = "AETHERIUM_ITEM_STAT_DEF_ACCURSED_POTION_SIP"
-                };
-            }
-        }
-
-        */
-
         internal static class ShareSuiteCompat
         {
             public static bool IsShareSuiteInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.funkfrog_sipondo.sharesuite");
@@ -118,12 +86,52 @@ namespace Augmentum.Modules.Compatability
 
 
         }
-        internal static class HighItemVizabilityCompat
+        internal static class BiggerBazaarCompat
         {
-            public static bool IsHighItemVizabilityInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("VizMod.HighItemVizbility");
+            public const string GUID = "com.MagnusMagnuson.BiggerBazaar";
+            public static bool IsBiggerBazaarInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(GUID);
 
-            public static Hook CustomTiersVizLines;
+            private static bool _lookupDone;
+            private static FieldInfo _bazaarField;
+            private static MethodInfo _isDisplayItemMethod;
 
+            /// <summary>
+            /// BiggerBazaar spawns real GenericPickups above its chests purely for display. Those must never be consumed by our equipment.
+            /// Its Bazaar class is internal, so this goes through reflection instead of a hard reference.
+            /// </summary>
+            public static bool IsDisplayItem(GameObject gameObject)
+            {
+                if (!gameObject || !IsBiggerBazaarInstalled)
+                    return false;
+
+                try
+                {
+                    var plugin = BepInEx.Bootstrap.Chainloader.PluginInfos[GUID].Instance;
+                    if (!plugin)
+                        return false;
+
+                    if (!_lookupDone)
+                    {
+                        _lookupDone = true;
+                        _bazaarField = plugin.GetType().GetField("bazaar", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                        _isDisplayItemMethod = _bazaarField?.FieldType.GetMethod("IsDisplayItem", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new Type[] { typeof(GameObject) }, null);
+                        if (_isDisplayItemMethod == null)
+                            Augmentum.ModLogger.LogWarning("ModCompatability: Could not find BiggerBazaar's display item check, display items may be targetable.");
+                    }
+
+                    if (_isDisplayItemMethod == null)
+                        return false;
+
+                    var bazaar = _bazaarField.GetValue(plugin);
+                    return bazaar != null && (bool)_isDisplayItemMethod.Invoke(bazaar, new object[] { gameObject });
+                }
+                catch (Exception e)
+                {
+                    Augmentum.ModLogger.LogWarning("ModCompatability: BiggerBazaar display item check failed: " + e.Message);
+                    _isDisplayItemMethod = null;
+                    return false;
+                }
+            }
         }
 
         internal static class ProperSaveCompat
@@ -145,22 +153,25 @@ namespace Augmentum.Modules.Compatability
                 string ETTDictKey = "BransExpansion_EarthTotemTrackers";
 
                 List<EarthTotemTrackerSaveStructure> ETTSStructures = obj.GetModdedData<List<EarthTotemTrackerSaveStructure>>(ETTDictKey);
+                if (ETTSStructures == null)
+                    return;
 
                 foreach (EarthTotemTrackerSaveStructure ETTS in ETTSStructures)
                 {
+                    if (ETTS.userID == null)
+                        continue;
                     NetworkUserId NUID = ETTS.userID.Load();
-                    CharacterMaster master = NetworkUser.readOnlyInstancesList.FirstOrDefault(Nuser => Nuser.id.Equals(NUID)).master;//RoR2.Run.instance.GetUserMaster(ETTS.userID.Load());
-                    int absorbedCount = ETTS.EarthTotemsAbsorbed;
+                    CharacterMaster master = NetworkUser.readOnlyInstancesList.FirstOrDefault(Nuser => Nuser && Nuser.id.Equals(NUID))?.master;
+                    if (!master)
+                        continue;
 
-                    List<EquipmentDef> equipmentDefs = new List<EquipmentDef>();
-                    foreach (string equip in ETTS.EquipList)
-                        equipmentDefs.Add(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(equip)));
-
-                    EarthTotemTracker temp = master.gameObject.AddComponent<EarthTotemTracker>();
-
-                    temp.EquipDefList = equipmentDefs;
-                    temp.EarthTotemAbsorbedCount = absorbedCount;
-
+                    EarthTotemTracker temp = EarthTotem.GetOrAddTracker(master);
+                    temp.EquipDefList.Clear();
+                    temp.HighestCooldown = 0;
+                    // Equipment from mods that are no longer installed can't be found and is skipped.
+                    foreach (string equip in ETTS.EquipList ?? new List<string>())
+                        temp.AddToList(EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(equip)));
+                    temp.EarthTotemAbsorbedCount = ETTS.EarthTotemsAbsorbed;
                 }
             }
             [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
@@ -187,14 +198,19 @@ namespace Augmentum.Modules.Compatability
                 List<EarthTotemTrackerSaveStructure> ETTSSList = new List<EarthTotemTrackerSaveStructure>();
                 foreach (EarthTotemTracker ETT in earthTotemTrackers)
                 {
+                    // Only players can be matched back up on load.
+                    NetworkUser networkUser = ETT.Master && ETT.Master.playerCharacterMasterController ? ETT.Master.playerCharacterMasterController.networkUser : null;
+                    if (!networkUser)
+                        continue;
 
                     List<string> ETTEquipList = new List<string>();
                     foreach (EquipmentDef ED in ETT.EquipDefList)
-                        ETTEquipList.Add(ED.name);
+                        if (ED)
+                            ETTEquipList.Add(ED.name);
 
                     ETTSSList.Add(new EarthTotemTrackerSaveStructure
                     {
-                        userID = new ProperSave.Data.UserIDData(ETT.Master.playerCharacterMasterController.networkUser.id),
+                        userID = ProperSave.Data.UserIDData.Create(networkUser.id),
                         EarthTotemsAbsorbed = ETT.EarthTotemAbsorbedCount,
                         EquipList = ETTEquipList
                     });
@@ -217,26 +233,6 @@ namespace Augmentum.Modules.Compatability
 
 
             }
-        }
-
-        internal static class EliteReworksCompat
-        {
-            public static bool IsEliteReworksInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Moffein.EliteReworks");
-
-            public static bool AddEliteReworksScaling = true;
-
-
-        }
-
-        internal static class JudgementCompat
-        {
-            public static bool IsJudgementInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Nuxlar.Judgement");
-
-            public static bool AddJudgementCompat = true;
-
-            public static bool IsInJudgementRun() => IsJudgementInstalled && AddJudgementCompat && Run.instance.gameModeIndex == GameModeCatalog.FindGameModeIndex("xJudgementRun");
-
-
         }
 
         public static class RiskOfOptionsCompatability
@@ -273,35 +269,6 @@ namespace Augmentum.Modules.Compatability
                 
             
         }
-
-        //internal static class ZetAspectsCompat
-        //{
-        //    public static bool IsZetAspectsInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.TPDespair.ZetAspects");
-
-        //    public static void ForceZetAspectCompat()
-        //    {
-        //        ZetAdaptiveDrop.instance.Init(Augmentum.AugConfig);
-
-        //        Augmentum.ModLogger.LogInfo("Item: " + ZetAdaptiveDrop.instance.ItemName + " Initialized!");
-
-        //        On.RoR2.PickupDropletController.CreatePickupDroplet_PickupIndex_Vector3_Vector3 += (orig, pickupIndex, position, velocity) =>
-        //        {
-        //            if (!TPDespair.ZetAspects.DropHooks.CanObtainEquipment())
-        //            {
-        //                EquipmentIndex equipIndex = PickupCatalog.GetPickupDef(pickupIndex).equipmentIndex;
-
-        //                if (equipIndex != EquipmentIndex.None && equipIndex==AffixAdaptive.instance.EliteEquipmentDef.equipmentIndex)
-        //                {
-        //                    ItemIndex newIndex = ZetAdaptiveDrop.instance.ItemDef.itemIndex;
-
-        //                    if (newIndex != ItemIndex.None) pickupIndex = PickupCatalog.FindPickupIndex(newIndex);
-        //                }
-        //            }
-
-        //            orig(pickupIndex, position, velocity);
-        //        };
-        //    }
-        //}
 
         public static event Action FinishedLoadingCompatability;
 

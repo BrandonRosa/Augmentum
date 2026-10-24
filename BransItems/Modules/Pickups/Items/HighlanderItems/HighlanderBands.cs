@@ -50,7 +50,7 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float CooldownReduction => CooldownReductionEntry.Value;
+        public static float CooldownReduction => CooldownReductionEntry != null ? CooldownReductionEntry.Value : default;
         public static ConfigEntry<float> CooldownReductionEntry;
 
         public static ProcType DamageBoostRing = (ProcType)(341);

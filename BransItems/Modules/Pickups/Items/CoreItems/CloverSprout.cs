@@ -39,7 +39,7 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
 
         public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
-        public static float LuckGain=>LuckGainEntry.Value;
+        public static float LuckGain=> LuckGainEntry != null ? LuckGainEntry.Value : default;
         public static ConfigEntry<float> LuckGainEntry;
 
 

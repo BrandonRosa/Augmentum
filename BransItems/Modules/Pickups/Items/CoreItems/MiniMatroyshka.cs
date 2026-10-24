@@ -48,7 +48,7 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.AIBlacklist, ItemTag.CannotCopy };
 
 
-        public static int DropCount=>DropCountEntry.Value;
+        public static int DropCount=> DropCountEntry != null ? DropCountEntry.Value : default;
         public static ConfigEntry<int> DropCountEntry;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
@@ -305,9 +305,9 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
                 orig(self);
                 ItemDef.pickupToken = ItemPickupDesc;
             };
-            On.RoR2.Language.SetCurrentLanguage += (orig, languageIndex) =>
+            On.RoR2.Language.SetCurrentLanguage += (orig, languageName, forceUnload) =>
             {
-                orig(languageIndex);
+                orig(languageName, forceUnload);
                 ItemDef.pickupToken = ItemPickupDesc;
             };
 
@@ -418,7 +418,7 @@ namespace Augmentum.Modules.Pickups.Items.CoreItems
 
         private void BreakItem(CharacterBody self, int count)
         {
-            self.inventory.RemoveItem(MiniMatroyshka.instance.ItemDef.itemIndex,count);
+            self.inventory.RemoveItemPermanent(MiniMatroyshka.instance.ItemDef.itemIndex,count);
 
         }
     }

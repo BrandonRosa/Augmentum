@@ -57,7 +57,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
         public override bool CanRemove => EssenceHelpers.canRemoveEssence;
 
         public override ItemTag[] ItemTags => EssenceHelpers.essenceItemTags;
-        public static float DamageGain => DamageGainEntry.Value;
+        public static float DamageGain => DamageGainEntry != null ? DamageGainEntry.Value : default;
         public static ConfigEntry<float> DamageGainEntry;
 
 

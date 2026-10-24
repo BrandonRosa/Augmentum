@@ -42,7 +42,7 @@ namespace Augmentum.Modules.Pickups.Items.Essences
 
         public override ItemTier Tier => ItemTier.AssignedAtRuntime;
 
-        public static float CritChanceGain=>CritChanceGainEntry.Value;
+        public static float CritChanceGain=> CritChanceGainEntry != null ? CritChanceGainEntry.Value : default;
         public static ConfigEntry<float> CritChanceGainEntry;
 
 

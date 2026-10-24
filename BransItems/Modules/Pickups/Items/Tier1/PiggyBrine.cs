@@ -130,7 +130,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier1
             if (NetworkServer.active && (bool)self && (bool)self.body && GetCount(self.body) > 0 && self.isHealthLow)
             {
                 int count = 1;//GetCount(self.body);
-                self.body.inventory.RemoveItem(ItemDef,count);
+                self.body.inventory.RemoveItemPermanent(ItemDef,count);
                 self.body.inventory.GiveItem(ShatteredPiggyBrine.instance.ItemDef, count);
                 CharacterMasterNotificationQueue.PushItemTransformNotification(self.body.master, ItemDef.itemIndex, ShatteredPiggyBrine.instance.ItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
                 self.TriggerOneShotProtection();

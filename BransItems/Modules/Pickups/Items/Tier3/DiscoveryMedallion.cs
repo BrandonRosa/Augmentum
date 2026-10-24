@@ -46,7 +46,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
 
         public static int Choices=2;
 
-        public static int AdditionalChoices => AdditionalChoicesEntry.Value;
+        public static int AdditionalChoices => AdditionalChoicesEntry != null ? AdditionalChoicesEntry.Value : default;
         public static ConfigEntry<int> AdditionalChoicesEntry;
 
         public static GameObject potentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
@@ -317,7 +317,7 @@ namespace Augmentum.Modules.Pickups.Items.Tier3
 
         private void BreakItem(CharacterBody self)
         {
-            self.inventory.RemoveItem(DiscoveryMedallion.instance.ItemDef.itemIndex);
+            self.inventory.RemoveItemPermanent(DiscoveryMedallion.instance.ItemDef.itemIndex);
             self.inventory.GiveItem(DiscoveryMedallionConsumed.instance.ItemDef.itemIndex);
             if (self.master)
             {

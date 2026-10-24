@@ -50,17 +50,17 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => (!AllowItemInheritance)?(new ItemTag[] { ItemTag.Damage, ItemTag.CannotCopy }): (new ItemTag[] { ItemTag.Damage});
 
-        public static float DamageDealt => DamageDealtEntry.Value;
+        public static float DamageDealt => DamageDealtEntry != null ? DamageDealtEntry.Value : default;
         public static ConfigEntry<float> DamageDealtEntry;
-        public static float Radius => RadiusEntry.Value;
+        public static float Radius => RadiusEntry != null ? RadiusEntry.Value : default;
         public static ConfigEntry<float> RadiusEntry;
-        public static float HealthPercent => HealthPercentEntry.Value;
+        public static float HealthPercent => HealthPercentEntry != null ? HealthPercentEntry.Value : default;
         public static ConfigEntry<float> HealthPercentEntry;
-        public static float SpawnCount => SpawnCountEntry.Value;
+        public static float SpawnCount => SpawnCountEntry != null ? SpawnCountEntry.Value : default;
         public static ConfigEntry<float> SpawnCountEntry;
-        public static float JellyfishDamageReductionMult => JellyfishDamageReductionMultEntry.Value;
+        public static float JellyfishDamageReductionMult => JellyfishDamageReductionMultEntry != null ? JellyfishDamageReductionMultEntry.Value : default;
         public static ConfigEntry<float> JellyfishDamageReductionMultEntry;
-        public static bool AllowItemInheritance => AllowItemInheritanceEntry.Value;
+        public static bool AllowItemInheritance => AllowItemInheritanceEntry != null ? AllowItemInheritanceEntry.Value : default;
         public static ConfigEntry<bool> AllowItemInheritanceEntry;
 
         public static Dictionary<TeamIndex, HashSet<CharacterMaster>> TeamsWithItem= new Dictionary<TeamIndex, HashSet<CharacterMaster>>();

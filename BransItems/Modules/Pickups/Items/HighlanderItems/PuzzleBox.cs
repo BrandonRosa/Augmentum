@@ -52,8 +52,8 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
-        public static float LuckGain=>LuckGainEntry.Value;
-        public static float UpgradeChance=>UpgradeChanceEntry.Value;
+        public static float LuckGain=> LuckGainEntry != null ? LuckGainEntry.Value : default;
+        public static float UpgradeChance=> UpgradeChanceEntry != null ? UpgradeChanceEntry.Value : default;
 
         public static ConfigEntry<float> LuckGainEntry;
         public static ConfigEntry<float> UpgradeChanceEntry;

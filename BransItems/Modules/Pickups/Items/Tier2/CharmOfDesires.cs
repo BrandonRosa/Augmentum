@@ -301,9 +301,17 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
         private void CharacterMaster_OnBodyStart(On.RoR2.CharacterMaster.orig_OnBodyStart orig, CharacterMaster self, CharacterBody body)
         {
             orig(self,body);
-            if (self && self.GetBody() && self.GetBody().isPlayerControlled)
+            if (NetworkServer.active && self && body && body.isPlayerControlled && Stage.instance)
             {
-                int count = self.inventory.GetItemCount(ItemDef);
+                // A body can start several times in one stage (Refightilization, Dio's, other revives). Only the first one each stage counts.
+                var tracker = self.GetComponent<CharmOfDesiresTracker>();
+                if (!tracker)
+                    tracker = self.gameObject.AddComponent<CharmOfDesiresTracker>();
+                if (tracker.lastStage == Stage.instance)
+                    return;
+                tracker.lastStage = Stage.instance;
+
+                int count = GetCount(self);
                 if (count > 0)
                 {
                     DropWishes(body.transform, self.inventory, DropCount + (count - 1) * AdditionalDrops);
@@ -311,11 +319,16 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             }
         }
 
+        public class CharmOfDesiresTracker : MonoBehaviour
+        {
+            public Stage lastStage;
+        }
+
 
         private void DropWishes(Transform transform,Inventory inventory, int count)
         {
-            int DiscoveryMedallionCount = inventory.GetItemCount(DiscoveryMedallionConsumed.instance.ItemDef.itemIndex);
-            int BloodBustClamCount = inventory.GetItemCount(LootedBloodburstClam.instance.ItemDef.itemIndex);
+            int DiscoveryMedallionCount = DiscoveryMedallionConsumed.instance.GetCount(inventory);
+            int BloodBustClamCount = LootedBloodburstClam.instance.GetCount(inventory);
             count += BloodBustClamCount;
 
             float dropUpVelocityStrength = 25f;
@@ -331,6 +344,8 @@ namespace Augmentum.Modules.Pickups.Items.Tier2
             for (int i = 0; i < count; i++)
             {
                 PickupIndex[] drops = EssenceHelpers.GetEssenceDropsWithoutRepeating(RoR2Application.rng, BaseChoices+DiscoveryMedallionCount*DiscoveryMedallion.AdditionalChoices);
+                if (drops == null || drops.Length == 0)
+                    return;
                 GenericPickupController.CreatePickupInfo pickupInfo = new GenericPickupController.CreatePickupInfo
                 {
                     pickerOptions = PickupPickerController.GenerateOptionsFromArray(drops),
