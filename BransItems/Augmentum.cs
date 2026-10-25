@@ -47,7 +47,7 @@ namespace Augmentum
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
         public const string ModGuid = "com.BrandonRosa.Augmentum"; //Our Package Name
         public const string ModName = "Augmentum";
-        public const string ModVer = "1.1.8";
+        public const string ModVer = "1.1.9";
 
 
         internal static BepInEx.Logging.ManualLogSource ModLogger;
