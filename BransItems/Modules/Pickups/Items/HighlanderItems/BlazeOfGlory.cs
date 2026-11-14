@@ -63,7 +63,6 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         public static bool AllowItemInheritance => AllowItemInheritanceEntry != null ? AllowItemInheritanceEntry.Value : default;
         public static ConfigEntry<bool> AllowItemInheritanceEntry;
 
-        public static Dictionary<TeamIndex, HashSet<CharacterMaster>> TeamsWithItem= new Dictionary<TeamIndex, HashSet<CharacterMaster>>();
 
         public override void Init(ConfigFile config)
         {
@@ -309,89 +308,24 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
             //On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
             ItemHelpers.ToggleBossGroupDamageHooks(true);
             BossGroupDamageTakenTracker.AddToPercentLostActionList(HealthPercent, BossHealthPercentageTrigger);
-            On.RoR2.Inventory.GiveItemPermanent_ItemIndex_int += Inventory_GiveItem_ItemIndex_int;
-            On.RoR2.Inventory.RemoveItemPermanent_ItemIndex_int += Inventory_RemoveItem_ItemIndex_int;
             On.RoR2.HealthComponent.Suicide += HealthComponent_Suicide;
-            On.RoR2.Run.OnClientGameOver += Run_OnClientGameOver;
         }
 
-
-
-        private void Run_OnClientGameOver(On.RoR2.Run.orig_OnClientGameOver orig, Run self, RunReport runReport)
+        // Only player-team deaths explode, checked live so a stale or enemy-held copy can't arm the monster team.
+        private static bool ShouldExplode(CharacterBody body)
         {
-            orig(self, runReport);
-            TeamsWithItem = new Dictionary<TeamIndex, HashSet<CharacterMaster>>();
+            return body && body.master && body.master.teamIndex == TeamIndex.Player
+                && body.baseNameToken != "AFFIXEARTH_HEALER_BODY_NAME"
+                && Util.GetItemCountForTeam(TeamIndex.Player, instance.ItemDef.itemIndex, false, false) > 0;
         }
 
         private void HealthComponent_Suicide(On.RoR2.HealthComponent.orig_Suicide orig, HealthComponent self, GameObject killerOverride, GameObject inflictorOverride, DamageTypeCombo damageType)
         {
-
-            if (self && killerOverride == null && inflictorOverride == null)
+            if (self && killerOverride == null && inflictorOverride == null && self.regenAccumulator <= 0f && self.health <= 0 && ShouldExplode(self.body))
             {
-                if (self.regenAccumulator <= 0f && self.health <= 0)
-                {
-                    if (self.body && self.body.master && TeamsWithItem.ContainsKey(self.body.master.teamIndex) && TeamsWithItem[self.body.master.teamIndex].Count > 0)
-                    {
-                        if (self.body.baseNameToken == "AFFIXEARTH_HEALER_BODY_NAME")
-                            return;
-                        int count = TeamsWithItem[self.body.master.teamIndex].Count;
-                        if (count > 0)
-                        {
-                            NovaOnCommand(self.body, DamageDealt / 100f, Radius);
-                        }
-
-                        if (GetCount(self.body) > 0 && self.body.master.teamIndex != TeamIndex.Player)
-                        {
-                            TeamsWithItem[self.body.master.teamIndex].Remove(self.body.master);
-                        }
-                    }
-                }
+                NovaOnCommand(self.body, DamageDealt / 100f, Radius);
             }
             orig(self, killerOverride, inflictorOverride, damageType);
-        }
-
-        private void Inventory_RemoveItem_ItemIndex_int(On.RoR2.Inventory.orig_RemoveItemPermanent_ItemIndex_int orig, Inventory self, ItemIndex itemIndex, int count)
-        {
-            orig(self, itemIndex, count);
-            if (self)
-            {
-                if (itemIndex == instance.ItemDef.itemIndex)
-                {
-                    CharacterMaster master = self.GetComponent<CharacterMaster>();
-                    TeamIndex TI = master.teamIndex;
-                    if (TeamsWithItem.ContainsKey(TI))
-                    {
-                        if(self.GetItemCountEffective(instance.ItemDef) == 0)
-                            TeamsWithItem[TI].Remove(master);
-                    }
-                    else
-                    {
-                        TeamsWithItem[TI] = new HashSet<CharacterMaster>();
-                    }
-                }
-            }
-        }
-
-        private void Inventory_GiveItem_ItemIndex_int(On.RoR2.Inventory.orig_GiveItemPermanent_ItemIndex_int orig, Inventory self, ItemIndex itemIndex, int count)
-        {
-            orig(self, itemIndex, count);
-            if(self)
-            {
-                if(itemIndex==instance.ItemDef.itemIndex)
-                {
-                    CharacterMaster master = self.GetComponent<CharacterMaster>();
-                    TeamIndex TI = master.teamIndex;
-                    if (TeamsWithItem.ContainsKey(TI))
-                    {
-                        TeamsWithItem[TI].Add(master);
-                    }
-                    else
-                    {
-                        TeamsWithItem[TI] = new HashSet<CharacterMaster>();
-                        TeamsWithItem[TI].Add(master);
-                    }
-                }
-            }    
         }
 
 
@@ -515,20 +449,9 @@ namespace Augmentum.Modules.Pickups.Items.HighlanderItems
         private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
             orig(self, damageReport);
-            if (self && damageReport.victimMaster && TeamsWithItem.ContainsKey(damageReport.victimMaster.teamIndex) && TeamsWithItem[damageReport.victimMaster.teamIndex].Count>0)
+            if (ShouldExplode(damageReport.victimBody))
             {
-                if (damageReport.victimBody.baseNameToken == "AFFIXEARTH_HEALER_BODY_NAME")
-                    return;
-                int count = TeamsWithItem[damageReport.victimMaster.teamIndex].Count;
-                if (count > 0)
-                {
-                    NovaOnCommand(damageReport.victimBody, DamageDealt/100f, Radius);
-                }
-
-                if(GetCount(damageReport.victimBody)>0 && damageReport.victimMaster.teamIndex!=TeamIndex.Player)
-                {
-                    TeamsWithItem[damageReport.victimMaster.teamIndex].Remove(damageReport.victimMaster);
-                }
+                NovaOnCommand(damageReport.victimBody, DamageDealt / 100f, Radius);
             }
         }
 
